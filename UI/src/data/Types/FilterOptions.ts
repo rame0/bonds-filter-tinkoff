@@ -1,7 +1,7 @@
-import ExchangeCollation from "@/data/collations/ExchangeCollation";
-import RiskLevelCollation from "@/data/collations/RiskLevelCollation";
-import SectorsCollation from "@/data/collations/SectorsCollation";
-import IssueKindCollations from "@/data/collations/IssueKindCollations";
+import ExchangeCollation from '@/data/collations/ExchangeCollation'
+import RiskLevelCollation from '@/data/collations/RiskLevelCollation'
+import SectorsCollation from '@/data/collations/SectorsCollation'
+import IssueKindCollations from '@/data/collations/IssueKindCollations'
 
 export interface FilterOptions {
   nominal: { from: number; to: number }
@@ -36,8 +36,8 @@ export interface FilterOptions {
 }
 
 export const defaultFilterValues = {
-  nominal: { form: 0, to: 100000000 },
-  // placementPrice: { form: 0, to: 100000000 },
+  nominal: { from: 0, to: 100000000 },
+  // placementPrice: { from: 0, to: 100000000 },
   realExchange: ExchangeCollation.asArray(),
   riskLevel: RiskLevelCollation.asArray(),
   classCode: [],
