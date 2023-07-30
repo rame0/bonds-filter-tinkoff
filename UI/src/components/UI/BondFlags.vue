@@ -1,6 +1,11 @@
 <template>
   <div>
-    <el-tag v-for="item in show" class="mr-2" :type="getTagClass(row[item], FlagsCollations.isInverse(item))">
+    <el-tag
+      v-for="item in show"
+      v-bind:key="item"
+      class="mr-2"
+      :type="getTagClass(row[item], FlagsCollations.isInverse(item))"
+    >
       {{ FlagsCollations.getLabel(item) }}
     </el-tag>
   </div>
@@ -8,6 +13,7 @@
 
 <script lang="ts">
 import FlagsCollations from '@/data/collations/FlagsCollations'
+import type { PropType } from 'vue'
 
 export default {
   name: 'BondFlags',
@@ -17,7 +23,7 @@ export default {
       required: true
     },
     show: {
-      type: Array,
+      type: Array as PropType<string[]>,
       required: true
     }
   },
