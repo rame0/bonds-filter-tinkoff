@@ -7,19 +7,22 @@
 </template>
 
 <script lang="ts">
+import type { PropType } from 'vue'
+import type { CollationItem } from '@/data/collations/BaseCollations'
+
 export default {
   name: 'BondOptionsChecks',
 
   props: {
     options: {
-      type: Array,
+      type: Array as PropType<CollationItem[]>,
       default: () => [
         { label: 'Да', value: true },
         { label: 'Нет', value: false }
       ]
     },
     modelValue: {
-      type: Array
+      type: Array as PropType<number[] | string[]>
     }
   },
 
