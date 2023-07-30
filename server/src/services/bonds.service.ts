@@ -4,7 +4,9 @@
 // const MongooseAdapter = require("moleculer-db-adapter-mongoose")
 
 import { TinkoffInvestApi } from "@psqq/tinkoff-invest-api"
-import { InstrumentStatus } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
+import { InstrumentStatus, type BondsResponse } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
+import { GetLastPricesResponse } from "@psqq/tinkoff-invest-api/cjs/generated/marketdata"
+import { CombinedBondsResponse } from "../common/CombinedBondsResponse"
 
 module.exports = {
 	name: "bonds",
@@ -14,14 +16,22 @@ module.exports = {
 	settings: {},
 
 	actions: {
-		instruments(ctx) {
+		async instruments(ctx) {
 			const api: TinkoffInvestApi = this.api
-			// this.logger.info("CTX", ctx)
-			const bonds = api.instruments.bonds({
+
+			const bonds = await api.instruments.bonds({
 				instrumentStatus: InstrumentStatus.INSTRUMENT_STATUS_BASE,
 			})
-			this.logger.info("Bonds", bonds)
-			return bonds
+
+			const instrumentIDs: string[] = bonds.instruments.map(instrument => instrument.uid)
+			const prices: GetLastPricesResponse = await api.marketdata.getLastPrices({
+				figi: [],
+				instrumentId: instrumentIDs,
+			})
+
+			const response: CombinedBondsResponse[] = bonds.instruments.map(t1 => ({ ...t1, ...prices.lastPrices.find(t2 => t2.figi === t1.figi) }))
+			console.log(response.slice(0, 10))
+			return bonds.instruments
 		},
 		get: {
 			params: {
