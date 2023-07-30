@@ -36,7 +36,7 @@ module.exports = {
 			const response: CombinedBondsResponse[] = bonds.instruments.map(t1 => {
 				const instrument: CombinedBondsResponse = {} as CombinedBondsResponse
 				Object.keys(t1).map(key => {
-					if (!t1[key]) {
+					if (t1[key] === undefined) {
 						instrument[key] = undefined
 					} else if (isMoney(t1[key]) || isQuote(t1[key])) {
 						instrument[key] = Helpers.toNumber(t1[key])
