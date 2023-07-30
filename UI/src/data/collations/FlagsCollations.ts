@@ -1,7 +1,7 @@
-import BaseCollations from '@/data/collations/BaseCollations'
+import BaseCollations, { type Collation } from "@/data/collations/BaseCollations";
 
 export default class IssueKindCollations extends BaseCollations {
-  protected static values = {
+  protected static values: Collation = {
     indexedNominalFlag: {
       name: 'Индексация ном.',
       inverse: false
