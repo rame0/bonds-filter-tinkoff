@@ -6,7 +6,7 @@
         v-model="value.nominal.from"
         class="w-50 m-2"
         size="small"
-        :min="filterOptions.nominal.form"
+        :min="filterOptions.nominal.from"
         :max="value.nominal.to"
       />
       <el-input-number
@@ -200,17 +200,18 @@
 
 <script lang="ts">
 import { BondOptionsChecks, BondOptionsRadios, BondOptionsSelect } from '@/components/UI'
-import { FilterOptions } from '@/data/Types/FilterOptions'
+import { type FilterOptions } from '@/data/Types/FilterOptions'
+import type { PropType } from 'vue'
 
 export default {
   name: 'BondFilter',
   props: {
     filterOptions: {
-      type: Object,
+      type: Object as PropType<FilterOptions>,
       required: true
     },
     modelValue: {
-      type: Object as FilterOptions,
+      type: Object as PropType<FilterOptions>,
       required: true
     }
   },
