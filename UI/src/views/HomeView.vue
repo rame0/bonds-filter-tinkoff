@@ -180,6 +180,8 @@ onMounted(() => {
 <style>
 .table-block {
   height: calc(100vh - var(--header-height) - 1px);
-  //overflow: auto; background: var(--el-color-primary-light-9); color: var(--el-color-primary);
+  /*overflow: auto;*/
+  background: var(--el-color-primary-light-9);
+  color: var(--el-color-primary);
 }
 </style>
