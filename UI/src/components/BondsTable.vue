@@ -28,6 +28,7 @@
 </template>
 
 <script lang="tsx">
+import { h } from 'vue'
 import { Helpers } from '@/utils/helpers'
 import SectorsCollation from '@/data/collations/SectorsCollation'
 import IssueKindCollations from '@/data/collations/IssueKindCollations'
@@ -35,12 +36,13 @@ import ExchangeCollation from '@/data/collations/ExchangeCollation'
 import { ElTag, ElText, ElAutoResizer } from 'element-plus'
 import CurrencyCollation from '@/data/collations/CurrencyCollation'
 import { RiskStars, BondFlags, LinkToTinkoff } from '@/components/UI'
+import type { AnyColumns } from 'element-plus/es/components/table-v2/src/types'
 
 export default {
   name: 'BondsTable',
   props: {
     modelValue: {
-      type: Object,
+      type: Array,
       required: true
     },
     loading: {
@@ -60,7 +62,7 @@ export default {
   setup(props) {
     // const paginationData = toRef(props, 'paginationData')
 
-    const columns = [
+    const columns: AnyColumns = [
       {
         title: 'Название',
         key: 'name',
@@ -80,10 +82,11 @@ export default {
         key: 'maturityDate',
         dataKey: 'maturityDate',
         width: 100,
+        sortable: true,
         cellRenderer: ({ cellData: value }) => {
           const date = new Date(value).setHours(12, 0, 0, 0)
           const now = new Date().setHours(12, 0, 0, 0)
-          return  Math.round((date - now) / 8.64e7 / 30) + ' мес.'
+          return h('span', Math.round((date - now) / 8.64e7 / 30) + ' мес.')
         }
       },
       {
@@ -93,7 +96,17 @@ export default {
         width: 100,
         sortable: true,
         cellRenderer: ({ cellData: value, rowData: row }) => {
-          return Helpers.toNumber(value) + ' ' + CurrencyCollation.getLabel(row.currency)
+          return h('span', value + ' ' + CurrencyCollation.getLabel(row['currency']))
+        }
+      },
+      {
+        title: 'Цена',
+        key: 'price',
+        dataKey: 'price',
+        width: 100,
+        sortable: true,
+        cellRenderer: ({ cellData: value }) => {
+          return h('span', value + ' %')
         }
       },
       {
@@ -110,7 +123,7 @@ export default {
         width: 130,
         sortable: true,
         cellRenderer: ({ cellData: value }) => {
-          return SectorsCollation.getLabel(value)
+          return h('span', SectorsCollation.getLabel(value) as string)
         }
       },
       // {

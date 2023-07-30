@@ -30,21 +30,22 @@ import CountryCollation from '@/data/collations/CountryCollation'
 import type { FilterOptions } from '@/data/Types/FilterOptions'
 import { DefaultFilterSelections, defaultFilterValues } from '@/data/Types/FilterOptions'
 import { Helpers } from '@/utils/helpers'
+import { type CombinedBondsResponse } from '../../../server/src/common/CombinedBondsResponse'
 
-const bondsStore = useStorage<BondsResponse[]>('bonds', [])
+const bondsStore = useStorage<CombinedBondsResponse[]>('bonds', [])
 const filterSelectionsStore = useStorage<FilterOptions>('filterSelections', DefaultFilterSelections)
 const filterSelections = ref<FilterOptions>(filterSelectionsStore.value)
 
 const filterOptions = ref(defaultFilterValues)
 
-const response = ref<BondsResponse[]>([])
+const response = ref<CombinedBondsResponse[]>([])
 const isFetching = ref<Boolean>(false)
 const tableViewSize = ref({
   width: 0,
   height: 0
 })
 
-const bonds = ref<BondsResponse[]>([])
+const bonds = ref<CombinedBondsResponse[]>([])
 
 const arrayOptions = ['classCode', 'currency', 'couponQuantityPerYear', 'countryOfRisk']
 const paginationData = ref({
@@ -92,7 +93,7 @@ watch(
 const updateTable = () => {
   isFetching.value = true
 
-  const applyedFilters = Object.entries(filterSelections.value).filter(([, value]) => {
+  const appliedFilters = Object.entries(filterSelections.value).filter(([, value]) => {
     if (value instanceof Array) {
       return value.length > 0
     } else if (value instanceof Object) {
@@ -105,10 +106,9 @@ const updateTable = () => {
   })
 
   const filtered = response.value.filter((bond) => {
-    for (const [key, value] of applyedFilters) {
+    for (const [key, value] of appliedFilters) {
       if (key === 'nominal' || key === 'placementPrice') {
-        const fldVal = Helpers.toNumber(bond[key])
-        if (fldVal < value['from'] || fldVal > value['to']) {
+        if (bond[key] < value['from'] || bond[key] > value['to']) {
           return false
         } else {
           continue
