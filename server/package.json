@@ -1,44 +1,69 @@
 {
-  "name": "server",
-  "version": "1.0.0",
-  "description": "My Moleculer-based microservices project",
+  "name": "stopphish-core",
+  "version": "1.1.0",
+  "private": true,
   "scripts": {
-    "dev": "moleculer-runner --repl --hot services/**/*.service.js",
-    "start": "moleculer-runner",
-    "cli": "moleculer connect ",
+    "build": "tsc --build tsconfig.build.json",
+    "dev": "ts-node ./node_modules/moleculer/bin/moleculer-runner.js --hot --repl --config moleculer.config.ts src/services/{**,**/**,**/**/**}/*.service.ts",
+    "start": "moleculer-runner --config dist/moleculer.config.js",
+    "cli": "moleculer connect NATS",
     "ci": "jest --watch",
-    "test": "jest --coverage",
-    "lint": "eslint services",
-    "dc:up": "docker-compose up --build -d",
-    "dc:logs": "docker-compose logs -f",
-    "dc:down": "docker-compose down"
+    "test": "jest",
+    "coverage": "jest --coverage",
+    "lint": "eslint --ext .js,.ts .",
+    "typeorm": "typeorm-ts-node-commonjs -d ./src/common/database/DataSource.ts",
+    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d ./src/common/database/DataSource.ts -p"
   },
-  "keywords": [
-    "microservices",
-    "moleculer"
-  ],
-  "author": "",
   "devDependencies": {
-    "eslint": "^8.25.0",
-    "jest": "^27.5.1",
-    "jest-cli": "^27.5.1",
-    "moleculer-repl": "^0.7.3"
+    "@rushstack/eslint-patch": "^1.2.0",
+    "@types/cron": "^2.0.0",
+    "@types/jest": "^29.2.6",
+    "@types/node": "^18.11.18",
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
+    "@typescript-eslint/parser": "^5.48.2",
+    "eslint": "^8.32.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prefer-arrow": "^1.2.2",
+    "jaeger-client": "^3.19.0",
+    "jest": "^29.3.1",
+    "jest-cli": "^29.3.1",
+    "moleculer-repl": "^0.7.3",
+    "ts-jest": "^29.0.5",
+    "ts-node": "10.9.1",
+    "typescript": "^4.9.4"
   },
   "dependencies": {
-    "moleculer-web": "^0.10.4",
-    "moleculer-db": "^0.8.20",
-    "moleculer-db-adapter-mongo": "^0.4.15",
-    "moleculer": "^0.14.26"
+    "@kubernetes/client-node": "^0.16.3",
+    "@psqq/tinkoff-invest-api": "github:psqq/tinkoff-invest-api",
+    "cbor-x": "^1.5.3",
+    "dotenv": "^16.3.1",
+    "ioredis": "^5.3.2",
+    "moleculer": "^0.14.28",
+    "moleculer-db": "^0.8.21",
+    "moleculer-web": "^0.10.5",
+    "nats": "^2.15.1"
   },
   "engines": {
     "node": ">= 16.x.x"
   },
   "jest": {
-    "coverageDirectory": "../coverage",
+    "coverageDirectory": "<rootDir>/coverage",
     "testEnvironment": "node",
-    "rootDir": "./services",
-    "roots": [
-      "../test"
-    ]
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest"
+    },
+    "testMatch": [
+      "**/*.spec.(ts|js)"
+    ],
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "tsconfig.json"
+      }
+    }
   }
 }

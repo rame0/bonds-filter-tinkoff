@@ -4,7 +4,7 @@
       <BaseHeader />
       <main style="display: flex" w="full">
         <BaseSide />
-        <div class="content" py="5" px="10" w="full">
+        <div class="content" w="full">
           <RouterView />
         </div>
       </main>

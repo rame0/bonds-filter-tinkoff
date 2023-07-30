@@ -1,14 +1,15 @@
 import BaseCollations from '@/data/collations/BaseCollations'
 
-export default class RiskLevel extends BaseCollations {
+export default class RiskLevelCollation extends BaseCollations {
   protected static values = {
-    '1': 'Низкий',
-    '2': 'Средний',
-    '3': 'Высокий'
+    0: '—',
+    1: 'Низкий',
+    2: 'Средний',
+    3: 'Высокий'
   }
 
-  static getLabel(key: string) {
-    if (key === '0') return '—'
+  static getLabel(key: string | number) {
+    if (Number(key) === 0) return '—'
     /** return stars based in key value */
     return '★'.repeat(Number(key))
   }

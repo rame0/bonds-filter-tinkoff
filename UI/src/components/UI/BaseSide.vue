@@ -5,11 +5,11 @@
         <House />
       </el-icon>
     </el-menu-item>
-    <el-menu-item index="/settings">
-      <el-icon>
-        <Setting />
-      </el-icon>
-    </el-menu-item>
+<!--    <el-menu-item index="/settings">-->
+<!--      <el-icon>-->
+<!--        <Setting />-->
+<!--      </el-icon>-->
+<!--    </el-menu-item>-->
     <el-menu-item m-t="10" @click="toggleDark()">
       <el-icon>
         <Moon v-if="isDark" />

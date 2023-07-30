@@ -1,6 +1,6 @@
 import BaseCollations, { type Collation } from '@/data/collations/BaseCollations'
 
-export default class Sectors extends BaseCollations {
+export default class SectorsCollation extends BaseCollations {
   protected static values: Collation = {
     government: 'Государственный сектор',
     municipal: 'Муниципальный сектор',

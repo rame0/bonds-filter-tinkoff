@@ -23,8 +23,7 @@ export default {
       default: () => []
     },
     modelValue: {
-      type: [Boolean, String, Number],
-      default: undefined
+      type: Array,
     }
   },
 
