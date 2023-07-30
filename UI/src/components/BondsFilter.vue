@@ -200,14 +200,14 @@
 
 <script lang="ts">
 import { BondOptionsChecks, BondOptionsRadios, BondOptionsSelect } from '@/components/UI'
-import { type FilterOptions } from '@/data/Types/FilterOptions'
+import { type FilterValues, type FilterOptions } from '@/data/Types/FilterOptions'
 import type { PropType } from 'vue'
 
 export default {
   name: 'BondFilter',
   props: {
     filterOptions: {
-      type: Object as PropType<FilterOptions>,
+      type: Object as PropType<FilterValues>,
       required: true
     },
     modelValue: {

@@ -2,10 +2,15 @@ export interface Collation {
   [key: string]: string | { name: string; inverse: boolean }
 }
 
+export interface CollationItem {
+  value: string
+  label: string | { name: string; inverse: boolean }
+}
+
 export default class BaseCollations {
   protected static values: Collation = {}
 
-  static asArray() {
+  static asArray(): CollationItem[] {
     return Object.keys(this.values).map((key): { value: string; label: string } => {
       if (typeof this.values[key] === 'object') {
         const { name } = this.values[key] as { name: string; inverse: boolean }

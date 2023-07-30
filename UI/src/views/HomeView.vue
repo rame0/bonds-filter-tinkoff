@@ -2,7 +2,7 @@
   <el-row>
     <!-- table -->
 
-    <el-col :span="16" px="5" py="10" :class="'table-block'" id="table-view">
+    <el-col :span="16" px="5" py="5" :class="'table-block'" id="table-view">
       <bonds-table
         v-model="bonds"
         :table-size="tableViewSize"
@@ -13,7 +13,7 @@
 
     <!-- filter -->
 
-    <el-col :span="8" px="5" py="10" :class="'table-block'">
+    <el-col :span="8" px="5" py="5" :class="'table-block'">
       <bonds-filter v-model="filterSelections" :filter-options="filterOptions" />
     </el-col>
   </el-row>
@@ -22,14 +22,12 @@
 <script setup lang="ts">
 import BondsRepository from '@/data/BondsRepository'
 import { onMounted, ref, watch } from 'vue'
-import type { BondsResponse } from '@/data/Interfaces/BondsResoinse'
 import { useStorage } from '@vueuse/core'
 
 import CurrencyCollation from '@/data/collations/CurrencyCollation'
 import CountryCollation from '@/data/collations/CountryCollation'
 import type { FilterOptions } from '@/data/Types/FilterOptions'
 import { DefaultFilterSelections, defaultFilterValues } from '@/data/Types/FilterOptions'
-import { Helpers } from '@/utils/helpers'
 import { type CombinedBondsResponse } from '../../../server/src/common/CombinedBondsResponse'
 
 const bondsStore = useStorage<CombinedBondsResponse[]>('bonds', [])
