@@ -56,7 +56,7 @@ export interface FilterValues {
 
 export const defaultFilterValues: FilterValues = {
   nominal: { from: 0, to: 100000000 },
-  price: { from: 90, to: 110 },
+  price: { from: 0, to: 500 },
   // placementPrice: { from: 0, to: 100000000 },
   realExchange: ExchangeCollation.asArray(),
   riskLevel: RiskLevelCollation.asArray(),
