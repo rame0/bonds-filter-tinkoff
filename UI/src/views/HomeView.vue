@@ -8,6 +8,8 @@
         :table-size="tableViewSize"
         :pagination-data="paginationData"
         :loading="isFetching"
+        :sort-state="sortState"
+        @update:sort-state="sortChanged"
       />
     </el-col>
 
@@ -29,7 +31,7 @@ import CountryCollation from '@/data/collations/CountryCollation'
 import type { FilterOptions, FilterValues, FromTo } from '@/data/Types/FilterOptions'
 import { DefaultFilterSelections, defaultFilterValues } from '@/data/Types/FilterOptions'
 import { type CombinedBondsResponse } from '../../../server/src/common/CombinedBondsResponse'
-import type { CollationItem, CollationValueType } from '@/data/collations/BaseCollations'
+import { SortBy, TableV2SortOrder } from 'element-plus'
 
 export default {
   name: 'HomeView',
@@ -40,6 +42,11 @@ export default {
       'filterSelections',
       DefaultFilterSelections
     )
+    const sortState = useStorage<SortBy>('sort-state', {
+      key: 'name',
+      order: TableV2SortOrder.ASC
+    })
+
     const filterSelections = ref<FilterOptions>(filterSelectionsStore.value)
 
     const filterOptions = ref(defaultFilterValues)
@@ -87,6 +94,10 @@ export default {
       // eslint-disable-next-line no-prototype-builtins
     } => value.hasOwnProperty('from') && value.hasOwnProperty('to')
 
+    const sortChanged = (sort: SortBy) => {
+      sortState.value = sort
+      updateTable()
+    }
     const updateTable = () => {
       isFetching.value = true
 
@@ -107,7 +118,7 @@ export default {
       const filtered = response.value.filter((bond) => {
         for (const [key, value] of appliedFilters) {
           const bondKeyValue = bond[key as keyof CombinedBondsResponse]
-          if (key === 'nominal' || key === 'placementPrice') {
+          if (key === 'nominal' || key === 'placementPrice' || key === 'price') {
             if (
               (bondKeyValue as number) < (value as FromTo).from ||
               (bondKeyValue as number) > (value as FromTo).to
@@ -134,7 +145,18 @@ export default {
       paginationData.value.total = filtered.length
       const start = (paginationData.value.currentPage - 1) * paginationData.value.pageSize
       const end = start + paginationData.value.pageSize
-      bonds.value = filtered.slice(start, end)
+
+      const sorted = filtered.sort((a, b) => {
+        const key = sortState.value.key as keyof CombinedBondsResponse
+        const order = sortState.value.order
+        if (a[key] === undefined) return 1
+        if (b[key] === undefined) return -1
+        if (a[key] > b[key]) return order === TableV2SortOrder.ASC ? 1 : -1
+        if (a[key] < b[key]) return order === TableV2SortOrder.ASC ? -1 : 1
+        return 0
+      })
+
+      bonds.value = sorted.slice(start, end)
       isFetching.value = false
     }
 
@@ -177,8 +199,10 @@ export default {
       paginationData,
       tableViewSize,
       filterSelectionsStore,
+      sortState,
       fetchBonds,
-      updateTable
+      updateTable,
+      sortChanged
     }
   },
   //

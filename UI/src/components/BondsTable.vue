@@ -6,6 +6,8 @@
     :height="tableSize.height"
     :row-height="tableRowHeight"
     :v-scrollbar-size="2"
+    :sort-by="sortState"
+    @column-sort="$emit('update:sortState', $event)"
     fixed
   >
     <template #overlay v-if="loading">
@@ -28,12 +30,11 @@
 </template>
 
 <script lang="tsx">
-import { h } from 'vue'
-import { Helpers } from '@/utils/helpers'
+import { h, PropType, ref } from 'vue'
 import SectorsCollation from '@/data/collations/SectorsCollation'
 import IssueKindCollations from '@/data/collations/IssueKindCollations'
 import ExchangeCollation from '@/data/collations/ExchangeCollation'
-import { ElTag, ElText, ElAutoResizer } from 'element-plus'
+import { ElTag, ElText, ElAutoResizer, SortBy, TableV2SortOrder } from 'element-plus'
 import CurrencyCollation from '@/data/collations/CurrencyCollation'
 import { RiskStars, BondFlags, LinkToTinkoff } from '@/components/UI'
 import type { AnyColumns } from 'element-plus/es/components/table-v2/src/types'
@@ -53,8 +54,13 @@ export default {
     paginationData: {
       type: Object,
       required: true
+    },
+    sortState: {
+      type: Object as PropType<SortBy>,
+      required: true
     }
   },
+  emits: ['update:sortState'],
 
   setup(props) {
     // const paginationData = toRef(props, 'paginationData')
@@ -182,10 +188,6 @@ export default {
       'subordinatedFlag'
     ]
 
-    // paginationData.value.total = 1000
-    // paginationData.value.pageSize = 100
-    // paginationData.value.currentPage = 1
-
     return {
       columns,
       optionsToShow,
@@ -198,8 +200,7 @@ export default {
       BondFlags,
       SectorsCollation,
       IssueKind: IssueKindCollations,
-      ExchangeCollation,
-      Helpers
+      ExchangeCollation
     }
   },
 
