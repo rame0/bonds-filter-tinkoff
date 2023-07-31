@@ -1,10 +1,11 @@
+export type CollationValueType = string | { name: string; inverse: boolean }
 export interface Collation {
-  [key: string]: string | { name: string; inverse: boolean }
+  [key: string]: CollationValueType
 }
 
 export interface CollationItem {
   value: string
-  label: string | { name: string; inverse: boolean }
+  label: CollationValueType
 }
 
 export default class BaseCollations {
@@ -21,7 +22,7 @@ export default class BaseCollations {
     })
   }
 
-  static getLabel(key: string) {
+  static getLabel(key: string): CollationValueType {
     return this.values[key] || key
   }
 }

@@ -45,10 +45,7 @@ export default {
       type: Array,
       required: true
     },
-    loading: {
-      type: Boolean,
-      default: false
-    },
+    loading: Boolean,
     tableSize: {
       type: Object,
       required: true

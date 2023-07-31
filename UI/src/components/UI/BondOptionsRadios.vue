@@ -23,7 +23,7 @@ export default {
       ]
     },
     modelValue: {
-      type: Object as PropType<boolean | string | number | undefined>,
+      type: [Number, Boolean, String],
       default: undefined
     }
   },
