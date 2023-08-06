@@ -37,7 +37,7 @@ export default {
   name: 'HomeView',
 
   setup() {
-    const bondsStore = useStorage<CombinedBondsResponse[]>('bonds', [])
+    const bondsRepository = new BondsRepository()
     const filterSelectionsStore = useStorage<FilterOptions>(
       'filterSelections',
       DefaultFilterSelections
@@ -69,13 +69,7 @@ export default {
 
     const fetchBonds = async () => {
       isFetching.value = true
-      if (bondsStore.value.length > 0) {
-        response.value = bondsStore.value
-      } else {
-        const bondsRepository = new BondsRepository()
-        response.value = await bondsRepository.list()
-        bondsStore.value = response.value
-      }
+      response.value = await bondsRepository.list()
 
       // response.value = await bondsRepository.list()
       if (response.value) {

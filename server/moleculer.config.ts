@@ -21,7 +21,7 @@ const brokerConfig: BrokerOptions = {
 	logLevel: "debug",
 	transporter: null,
 	// transporter: "NATS",
-	// cacher: { type: "Redis", options: { tl: 30, prefix: "SP" } },
+	cacher: { type: "Memory", options: { tl: 1500, prefix: "BF" } },
 	serializer: "CBOR",
 	requestTimeout: 120 * 1000,
 	retryPolicy: { enabled: false },
