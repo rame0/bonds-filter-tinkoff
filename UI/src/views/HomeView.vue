@@ -123,7 +123,7 @@ export default {
             }
           }
           if (value instanceof Array) {
-            if (!(value as [string]).includes(bondKeyValue as string)) {
+            if (!value.includes(`${bondKeyValue}`)) {
               return false
             } else {
               continue
