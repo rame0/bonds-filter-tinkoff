@@ -36,7 +36,7 @@ import IssueKindCollations from '@/data/collations/IssueKindCollations'
 import ExchangeCollation from '@/data/collations/ExchangeCollation'
 import { ElTag, ElText, ElAutoResizer, SortBy, TableV2SortOrder } from 'element-plus'
 import CurrencyCollation from '@/data/collations/CurrencyCollation'
-import { RiskStars, BondFlags, LinkToTinkoff } from '@/components/UI'
+import { RiskStars, BondFlags, LinksToExchange } from '@/components/UI'
 import type { AnyColumns } from 'element-plus/es/components/table-v2/src/types'
 
 export default {
@@ -78,18 +78,18 @@ export default {
         key: 'ticker',
         dataKey: 'ticker',
         width: 135,
-        cellRenderer: ({ cellData: value }) => <LinkToTinkoff ticker={value} />
+        cellRenderer: ({ cellData: value, rowData: row }) => (
+          <LinksToExchange ticker={value} exchange={row.realExchange} />
+        )
       },
       {
-        title: 'Погашение через',
-        key: 'maturityDate',
-        dataKey: 'maturityDate',
+        title: 'Погашение/оферта через',
+        key: 'leftDays',
+        dataKey: 'leftDays',
         width: 100,
         sortable: true,
         cellRenderer: ({ cellData: value }) => {
-          const date = new Date(value).setHours(12, 0, 0, 0)
-          const now = new Date().setHours(12, 0, 0, 0)
-          return h('span', Math.round((date - now) / 8.64e7 / 30) + ' мес.')
+          return h('span', (value / 30).toFixed(2) + ' мес.')
         }
       },
       {
@@ -118,6 +118,26 @@ export default {
         dataKey: 'couponQuantityPerYear',
         width: 50,
         sortable: true
+      },
+      {
+        title: 'НКД',
+        key: 'aciValue',
+        dataKey: 'aciValue',
+        width: 70,
+        sortable: false,
+        cellRenderer: ({ cellData: value, rowData: row }) => {
+          return h('span', value + ' ' + CurrencyCollation.getLabel(row['currency']))
+        }
+      },
+      {
+        title: 'Доходность',
+        key: 'yield',
+        dataKey: 'yield',
+        width: 100,
+        sortable: true,
+        cellRenderer: ({ cellData: value }) => {
+          return h('span', value.toFixed(2) + ' %')
+        }
       },
       {
         title: 'Сектор',

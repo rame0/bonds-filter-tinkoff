@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import BondsRepository from '@/data/BondsRepository'
-import { ref } from 'vue'
+import { h, ref } from 'vue'
 import { useStorage } from '@vueuse/core'
 
 import CurrencyCollation from '@/data/collations/CurrencyCollation'
@@ -71,8 +71,22 @@ export default {
       isFetching.value = true
       response.value = await bondsRepository.list()
 
-      // response.value = await bondsRepository.list()
       if (response.value) {
+        const now = new Date().setHours(0, 0, 0)
+
+        response.value.forEach((row) => {
+          const tmpYield = row.yieldToBuyBack ? row.yieldToBuyBack : row.yieldToMaturity || 0
+          const dateStr = row.buyBackDate ? row.buyBackDate : row.maturityDate || ''
+          const date = new Date(dateStr).setHours(0, 0, 0)
+
+          row.leftDays = Math.round((date - now) / 8.64e7)
+
+          const realPrice = +((row.price * row.nominal) / 100).toFixed(2)
+          row.yield =
+            ((row.nominal - realPrice - row.aciValue + tmpYield) / realPrice) *
+            ((365 / row.leftDays) * 100)
+        })
+
         updateFilters()
         updateTable()
       }
@@ -86,7 +100,7 @@ export default {
       from: number
       to: number
       // eslint-disable-next-line no-prototype-builtins
-    } => value.hasOwnProperty('from') && value.hasOwnProperty('to')
+    } => value && value.hasOwnProperty('from') && value.hasOwnProperty('to')
 
     const sortChanged = (sort: SortBy) => {
       sortState.value = sort
@@ -112,7 +126,14 @@ export default {
       const filtered = response.value.filter((bond) => {
         for (const [key, value] of appliedFilters) {
           const bondKeyValue = bond[key as keyof CombinedBondsResponse]
-          if (key === 'nominal' || key === 'placementPrice' || key === 'price') {
+          if (key == 'leftDays') {
+            if (bondKeyValue < value) {
+              return false
+            } else {
+              continue
+            }
+          }
+          if (key === 'nominal' || key === 'placementPrice' || key === 'price' || key === 'yield') {
             if (
               (bondKeyValue as number) < (value as FromTo).from ||
               (bondKeyValue as number) > (value as FromTo).to
@@ -123,7 +144,7 @@ export default {
             }
           }
           if (value instanceof Array) {
-            if (!value.includes(`${bondKeyValue}`)) {
+            if (!value.includes(bondKeyValue) && !value.includes(`${bondKeyValue}`)) {
               return false
             } else {
               continue

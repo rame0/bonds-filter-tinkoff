@@ -7,9 +7,12 @@ import CountryCollation from '@/data/collations/CountryCollation'
 import CurrencyCollation from '@/data/collations/CurrencyCollation'
 
 export type FromTo = { from: number; to: number }
+
 export interface FilterOptions {
   nominal: FromTo
   price: FromTo
+  yield: FromTo
+  leftDays: number
   // placementPrice: FromTo
 
   indexedNominalFlag: boolean | number
@@ -43,6 +46,8 @@ export interface FilterOptions {
 export interface FilterValues {
   nominal: FromTo
   price: FromTo
+  yield: FromTo
+  leftDays: number
   // placementPrice: FromTo
   realExchange: CollationItem[]
   riskLevel: CollationItem[]
@@ -56,7 +61,9 @@ export interface FilterValues {
 
 export const defaultFilterValues: FilterValues = {
   nominal: { from: 0, to: 100000000 },
-  price: { from: 0, to: 500 },
+  price: { from: 0, to: 5000 },
+  yield: { from: 0, to: 1000 },
+  leftDays: 365,
   // placementPrice: { from: 0, to: 100000000 },
   realExchange: ExchangeCollation.asArray(),
   riskLevel: RiskLevelCollation.asArray(),
@@ -71,6 +78,8 @@ export const defaultFilterValues: FilterValues = {
 export const DefaultFilterSelections: FilterOptions = {
   nominal: { from: 500, to: 3000 },
   price: { from: 90, to: 110 },
+  yield: { from: 90, to: 110 },
+  leftDays: 365,
   // placementPrice: { from: 500, to: 3000 },
 
   indexedNominalFlag: -1,

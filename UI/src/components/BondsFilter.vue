@@ -2,7 +2,7 @@
   <!-- create form for filterBond variable -->
   <el-form label-position="top">
     <el-row>
-      <el-col :span="12">
+      <el-col :span="8">
         <el-form-item label="Номинал">
           <el-input-number
             v-model="value.nominal.from"
@@ -20,7 +20,7 @@
           />
         </el-form-item>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="8">
         <el-form-item label="Цена">
           <el-input-number
             v-model="value.price.from"
@@ -36,6 +36,32 @@
             :min="value.price.from"
             :max="filterOptions.price.to"
           />
+        </el-form-item>
+      </el-col>
+      <el-col :span="8">
+        <el-form-item label="Доходность">
+          <el-input-number
+            v-model="value.yield.from"
+            class="w-50 m-2"
+            size="small"
+            :min="filterOptions.yield.from"
+            :max="value.yield.to"
+          />
+          <el-input-number
+            v-model="value.yield.to"
+            class="w-50 m-2"
+            size="small"
+            :min="value.yield.from"
+            :max="filterOptions.yield.to"
+          />
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12"> Дней до погашения (от):</el-col>
+      <el-col :span="12">
+        <el-form-item>
+          <el-input-number v-model="value.leftDays" class="w-100" size="small" />
         </el-form-item>
       </el-col>
     </el-row>
