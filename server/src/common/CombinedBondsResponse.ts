@@ -1,5 +1,5 @@
-import { Bond, Coupon } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
-import { MoneyValue, Quotation } from "@psqq/tinkoff-invest-api/src/generated/common"
+import { Bond } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
+import { CombinedCoupon } from "./CombinedCoupon"
 
 export interface CombinedBondsResponse extends Omit<Bond, "klong" | "kshort" | "dlong"
 	| "dshort" | "dlongMin" | "dshortMin" | "minPriceIncrement"
@@ -18,6 +18,13 @@ export interface CombinedBondsResponse extends Omit<Bond, "klong" | "kshort" | "
 	placementPrice?: number;
 	aciValue?: number;
 
-	coupons?: Coupon[],
+	coupons?: CombinedCoupon[],
+	leftCouponCount?: number,
+	leftToPay?: number,
+	buyBackDate?: Date,
+	yieldToMaturity?: number,
+	yieldToBuyBack?: number,
+
 	price?: number,
+	realPrice?: number,
 }
