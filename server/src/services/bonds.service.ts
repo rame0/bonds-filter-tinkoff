@@ -5,8 +5,7 @@ import { InstrumentStatus, type BondsResponse } from "@psqq/tinkoff-invest-api/c
 import { GetLastPricesResponse } from "@psqq/tinkoff-invest-api/cjs/generated/marketdata"
 import { type MoneyValue, type Quotation } from "@psqq/tinkoff-invest-api/src/generated/common"
 import axios, { AxiosInstance } from "axios"
-import { CombinedBondsResponse } from "../common/CombinedBondsResponse"
-import { sleep } from "../common/utils/sleep"
+import { CombinedBondsResponse } from "../common/innterfaces/CombinedBondsResponse"
 import path from "path"
 
 module.exports = {
