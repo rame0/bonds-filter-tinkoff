@@ -1,11 +1,9 @@
-require('@rushstack/eslint-patch/modern-module-resolution')
-
 module.exports = {
   env: {
     es6: true,
     node: true,
   },
-  ignorePatterns: ["test/*"],
+  ignorePatterns: ["test/*", "dist/*", "node_modules/*"],
   parser: "@typescript-eslint/parser",
   parserOptions: {
     project: "tsconfig.json",
@@ -108,12 +106,8 @@ module.exports = {
     "no-invalid-this": "off",
     "no-multiple-empty-lines": "error",
     "no-new-wrappers": "error",
-    "no-shadow": [
-      "error",
-      {
-        hoist: "all",
-      },
-    ],
+	"no-shadow": "off",
+	"@typescript-eslint/no-shadow": "warn",
     "no-throw-literal": "error",
     "no-trailing-spaces": "error",
     "no-undef-init": "error",

@@ -2,9 +2,7 @@
   "compilerOptions": {
     "preserveConstEnums": true,
     "pretty": true,
-
     "lib": ["ES2019", "ES2020", "DOM", "DOM.Iterable"],
-
     "esModuleInterop": true,
     "noImplicitAny": false,
     "module": "CommonJS",
@@ -23,6 +21,6 @@
     "incremental": true,
     "allowJs": true
   },
-  "include": ["./**/*"],
+  "include": ["./**/*", "./.eslintrc.cjs"],
   "exclude": ["node_modules/**/*", "test", "dist/**/*"]
 }
