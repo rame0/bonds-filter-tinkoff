@@ -20,16 +20,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
-import { House, Setting, Sunny, Moon } from '@element-plus/icons-vue'
+import { House, Sunny, Moon } from '@element-plus/icons-vue'
 import { toggleDark, isDark } from '@/composables'
-import { RouterLink } from 'vue-router'
-
-const isCollapse = ref(true)
-const handleOpen = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
-const handleClose = (key: string, keyPath: string[]) => {
-  console.log(key, keyPath)
-}
 </script>
