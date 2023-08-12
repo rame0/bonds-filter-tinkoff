@@ -36,6 +36,7 @@ declare module 'vue' {
     ElText: typeof import('element-plus/es')['ElText']
     IconNewWindow: typeof import('./components/icons/IconNewWindow.vue')['default']
     LinksToExchange: typeof import('./components/UI/LinksToExchange.vue')['default']
+    LiquidityArrow: typeof import('./components/UI/LiquidityArrow.vue')['default']
     LoadingOverlay: typeof import('./components/UI/LoadingOverlay.vue')['default']
     RiskStars: typeof import('./components/UI/RiskStars.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

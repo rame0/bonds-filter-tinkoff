@@ -36,7 +36,7 @@ import IssueKindCollations from '@/data/collations/IssueKindCollations'
 import ExchangeCollation from '@/data/collations/ExchangeCollation'
 import { ElTag, ElText, ElAutoResizer, SortBy, TableV2SortOrder } from 'element-plus'
 import CurrencyCollation from '@/data/collations/CurrencyCollation'
-import { RiskStars, BondFlags, LinksToExchange } from '@/components/UI'
+import { RiskStars, BondFlags, LinksToExchange, LiquidityArrow } from '@/components/UI'
 import type { AnyColumns } from 'element-plus/es/components/table-v2/src/types'
 
 export default {
@@ -83,13 +83,13 @@ export default {
         )
       },
       {
-        title: 'Погашение/оферта через',
-        key: 'leftDays',
-        dataKey: 'leftDays',
+        title: 'Дюрация',
+        key: 'duration',
+        dataKey: 'duration',
         width: 100,
         sortable: true,
         cellRenderer: ({ cellData: value }) => {
-          return h('span', (value / 30).toFixed(2) + ' мес.')
+          return h('span', value + ' мес.')
         }
       },
       {
@@ -126,17 +126,20 @@ export default {
         width: 70,
         sortable: false,
         cellRenderer: ({ cellData: value, rowData: row }) => {
-          return h('span', value + ' ' + CurrencyCollation.getLabel(row['currency']))
+          return h(
+            'span',
+            (value as number).toFixed(2) + ' ' + CurrencyCollation.getLabel(row['currency'])
+          )
         }
       },
       {
         title: 'Доходность',
-        key: 'yield',
-        dataKey: 'yield',
+        key: 'bondYield',
+        dataKey: 'bondYield',
         width: 100,
         sortable: true,
         cellRenderer: ({ cellData: value }) => {
-          return h('span', value.toFixed(2) + ' %')
+          return h('span', (value as number).toFixed(2) + ' %')
         }
       },
       {
@@ -163,9 +166,17 @@ export default {
         title: 'Уровень риска',
         key: 'riskLevel',
         dataKey: 'riskLevel',
-        width: 150,
+        width: 100,
         sortable: true,
         cellRenderer: ({ cellData: value }) => <RiskStars level={value} />
+      },
+      {
+        title: 'Ликвидность',
+        key: 'liquidity',
+        dataKey: 'liquidity',
+        width: 50,
+        sortable: true,
+        cellRenderer: ({ cellData: value }) => <LiquidityArrow level={value} />
       },
       // {
       //   title: 'Биржа',

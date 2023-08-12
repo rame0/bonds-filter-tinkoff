@@ -1,12 +1,13 @@
 "use strict"
 import * as fs from "fs"
+import path from "path"
 import { Helpers, TinkoffInvestApi } from "@psqq/tinkoff-invest-api"
 import { InstrumentStatus, type BondsResponse } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
 import { GetLastPricesResponse } from "@psqq/tinkoff-invest-api/cjs/generated/marketdata"
 import { type MoneyValue, type Quotation } from "@psqq/tinkoff-invest-api/src/generated/common"
 import axios, { AxiosInstance } from "axios"
 import { CombinedBondsResponse } from "../common/innterfaces/CombinedBondsResponse"
-import path from "path"
+import { getMoexData } from "../common/getMoexData"
 
 module.exports = {
 	name: "bonds",
@@ -20,13 +21,13 @@ module.exports = {
 			cache: true,
 			async handler(ctx): Promise<CombinedBondsResponse[]> {
 				const cachePath = path.join(__dirname, "../caches/bonds.json")
-
-				if (fs.existsSync(cachePath)) {
-					const { mtime } = fs.statSync(cachePath)
-					if (mtime.getTime() > new Date().getTime() - 1000 * 60 * 60 * 4) {
-						return JSON.parse(fs.readFileSync(cachePath, "utf8"))
-					}
-				}
+				//
+				// if (fs.existsSync(cachePath)) {
+				// 	const { mtime } = fs.statSync(cachePath)
+				// 	if (mtime.getTime() > new Date().getTime() - 1000 * 60 * 60 * 4) {
+				// 		return JSON.parse(fs.readFileSync(cachePath, "utf8"))
+				// 	}
+				// }
 				const api: TinkoffInvestApi = this.api
 				const nowDate = new Date()
 
@@ -35,16 +36,21 @@ module.exports = {
 				})
 
 				const instrumentIDs: string[] = bonds.instruments.map(instrument => instrument.uid)
+				const tickers = bonds.instruments.map(instrument => instrument.ticker)
+				const isins = bonds.instruments.map(instrument => instrument.isin)
 				const prices: GetLastPricesResponse = await api.marketdata.getLastPrices({
 					figi: [],
 					instrumentId: instrumentIDs,
 				})
 
+				this.logger.info("getMoexData")
+				const moexBonds = await getMoexData(isins)
+
 				const isMoney = (value: any): value is MoneyValue => value.hasOwnProperty("units") && value.hasOwnProperty("nano")
 				const isQuote = (value: any): value is Quotation => value.hasOwnProperty("units") && value.hasOwnProperty("nano")
 
 				const response: CombinedBondsResponse[] = []
-				let i = 0
+				const i = 0
 				for (const t1 of bonds.instruments) {
 					const instrument: CombinedBondsResponse = {} as CombinedBondsResponse
 					Object.keys(t1).map(key => {
@@ -58,37 +64,10 @@ module.exports = {
 					})
 					const lastPrice = prices.lastPrices.find(t2 => t2.figi === t1.figi)
 					instrument.price = Helpers.toNumber(lastPrice?.price)
-
-					await sleep(307)
-					this.logger.info(++i)
-
-					const toDate = new Date()
-					toDate.setFullYear(nowDate.getFullYear() + 100)
-					instrument.coupons = (await api.instruments.getBondCoupons({
-						figi: instrument.figi,
-						from: new Date(0),
-						to: toDate,
-					})).events
-
-					instrument.leftCouponCount = 0
-					instrument.leftToPay = 0
-					instrument.yieldToMaturity = 0
-					instrument.yieldToBuyBack = 0
-					const dates: number[] = []
-					instrument.coupons.forEach(coupon => {
-						coupon.payout = Helpers.toNumber(coupon.payOneBond)
-						coupon.isPaid = coupon.couponDate < nowDate
-						if (!coupon.isPaid) {
-							instrument.leftCouponCount++
-							instrument.leftToPay += coupon.payout
-							instrument.yieldToMaturity += coupon.payout
-							if (coupon.payout > 0) {
-								dates.push(coupon.couponDate.getTime())
-								instrument.yieldToBuyBack += coupon.payout
-							}
-						}
-					})
-					instrument.buyBackDate = dates.length > 0 ? new Date(Math.max(...dates)) : undefined
+					instrument.couponsYield = moexBonds[t1.isin]?.couponsYield
+					instrument.bondYield = moexBonds[t1.isin]?.BondYield
+					instrument.duration = moexBonds[t1.isin]?.BondDuration
+					instrument.liquidity = moexBonds[t1.isin]?.liquidity
 
 					response.push(instrument)
 				}

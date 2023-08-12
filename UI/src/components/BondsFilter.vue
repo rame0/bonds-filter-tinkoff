@@ -132,15 +132,21 @@
     </el-row>
 
     <el-row>
-      <el-col :span="12">
+      <el-col :span="8">
         <el-form-item label="С амортизацией">
           <bond-options-radios v-model="value.amortizationFlag" />
         </el-form-item>
       </el-col>
 
-      <el-col :span="12">
+      <el-col :span="8">
         <el-form-item label="Уровень риска">
           <bond-options-checks v-model="value.riskLevel" :options="filterOptions.riskLevel" />
+        </el-form-item>
+      </el-col>
+
+      <el-col :span="8">
+        <el-form-item label="Ликвидность">
+          <bond-options-checks v-model="value.liquidity" :options="filterOptions.liquidity" />
         </el-form-item>
       </el-col>
     </el-row>

@@ -72,20 +72,20 @@ export default {
       response.value = await bondsRepository.list()
 
       if (response.value) {
-        const now = new Date().setHours(0, 0, 0)
-
-        response.value.forEach((row) => {
-          const tmpYield = row.yieldToBuyBack ? row.yieldToBuyBack : row.yieldToMaturity || 0
-          const dateStr = row.buyBackDate ? row.buyBackDate : row.maturityDate || ''
-          const date = new Date(dateStr).setHours(0, 0, 0)
-
-          row.leftDays = Math.round((date - now) / 8.64e7)
-
-          const realPrice = +((row.price * row.nominal) / 100).toFixed(2)
-          row.yield =
-            ((row.nominal - realPrice - row.aciValue + tmpYield) / realPrice) *
-            ((365 / row.leftDays) * 100)
-        })
+        // const now = new Date().setHours(0, 0, 0)
+        //
+        // response.value.forEach((row) => {
+        //   const tmpYield = row.yieldToBuyBack ? row.yieldToBuyBack : row.yieldToMaturity || 0
+        //   const dateStr = row.buyBackDate ? row.buyBackDate : row.maturityDate || ''
+        //   const date = new Date(dateStr).setHours(0, 0, 0)
+        //
+        //   row.leftDays = Math.round((date - now) / 8.64e7)
+        //
+        //   const realPrice = +((row.price * row.nominal) / 100).toFixed(2)
+        //   row.yield =
+        //     ((row.nominal - realPrice - row.aciValue + tmpYield) / realPrice) *
+        //     ((365 / row.leftDays) * 100)
+        // })
 
         updateFilters()
         updateTable()

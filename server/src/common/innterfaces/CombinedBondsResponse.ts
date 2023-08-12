@@ -1,5 +1,6 @@
 import { Bond } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
 import { CombinedCoupon } from "./CombinedCoupon"
+import { LiquidityType } from "./Moex"
 
 export interface CombinedBondsResponse extends Omit<Bond, "klong" | "kshort" | "dlong"
 	| "dshort" | "dlongMin" | "dshortMin" | "minPriceIncrement"
@@ -19,12 +20,16 @@ export interface CombinedBondsResponse extends Omit<Bond, "klong" | "kshort" | "
 	aciValue?: number;
 
 	coupons?: CombinedCoupon[],
+	couponsYield?: number,
 	leftCouponCount?: number,
 	leftToPay?: number,
 	buyBackDate?: Date,
-	yieldToMaturity?: number,
-	yieldToBuyBack?: number,
+	yield?: number,
+	bondYield: number,
 
 	price?: number,
 	realPrice?: number,
+	volume?: number,
+	duration?: number,
+	liquidity?: LiquidityType,
 }

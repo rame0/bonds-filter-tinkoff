@@ -5,6 +5,7 @@ import IssueKindCollations from '@/data/collations/IssueKindCollations'
 import type { CollationItem } from '@/data/collations/BaseCollations'
 import CountryCollation from '@/data/collations/CountryCollation'
 import CurrencyCollation from '@/data/collations/CurrencyCollation'
+import LiquidityCollations from '@/data/collations/LiquidityCollations'
 
 export type FromTo = { from: number; to: number }
 
@@ -41,6 +42,7 @@ export interface FilterOptions {
 
   realExchange: string[]
   riskLevel: number[]
+  liquidity: number[]
 }
 
 export interface FilterValues {
@@ -51,6 +53,7 @@ export interface FilterValues {
   // placementPrice: FromTo
   realExchange: CollationItem[]
   riskLevel: CollationItem[]
+  liquidity: CollationItem[]
   classCode: CollationItem[]
   currency: CollationItem[]
   couponQuantityPerYear: CollationItem[]
@@ -67,6 +70,7 @@ export const defaultFilterValues: FilterValues = {
   // placementPrice: { from: 0, to: 100000000 },
   realExchange: ExchangeCollation.asArray(),
   riskLevel: RiskLevelCollation.asArray(),
+  liquidity: LiquidityCollations.asArray(),
   classCode: [],
   currency: CurrencyCollation.asArray(),
   couponQuantityPerYear: [],
@@ -107,5 +111,6 @@ export const DefaultFilterSelections: FilterOptions = {
   issueKind: [],
 
   realExchange: [],
-  riskLevel: []
+  riskLevel: [],
+  liquidity: []
 }

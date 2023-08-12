@@ -32,6 +32,9 @@ dependencies:
   moleculer-web:
     specifier: ^0.10.5
     version: 0.10.5(moleculer@0.14.28)
+  moment:
+    specifier: ^2.29.4
+    version: 2.29.4
   nats:
     specifier: ^2.15.1
     version: 2.15.1
@@ -4173,6 +4176,10 @@ packages:
       recursive-watch: 1.1.4
     transitivePeerDependencies:
       - encoding
+    dev: false
+
+  /moment@2.29.4:
+    resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}
     dev: false
 
   /mri@1.1.4:
