@@ -46,7 +46,7 @@ export async function buildDataFromMoex(marketData, isins: string[]) {
 	const result: MoexResults = {}
 	// let skipped = 0
 
-	for (const i in marketData?.securities?.data) {
+	for (let i = 0; i < marketData?.securities?.data?.length; i++) {
 		const marketRow = marketData.securities.data[i]
 		const rowData = marketData.marketdata.data[i]
 
