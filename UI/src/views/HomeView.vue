@@ -34,8 +34,8 @@ import CurrencyCollation from '@/data/collations/CurrencyCollation'
 import CountryCollation from '@/data/collations/CountryCollation'
 import type { FilterOptions, FilterValues, FromTo } from '@/data/Types/FilterOptions'
 import { DefaultFilterSelections, defaultFilterValues } from '@/data/Types/FilterOptions'
-import { type CombinedBondsResponse } from '../../../server/src/common/CombinedBondsResponse'
-import { SortBy, TableV2SortOrder } from 'element-plus'
+import { type CombinedBondsResponse } from '../../../server/src/common/innterfaces/CombinedBondsResponse'
+import { type SortBy, TableV2SortOrder } from 'element-plus'
 
 export default {
   name: 'HomeView',
@@ -131,7 +131,7 @@ export default {
         for (const [key, value] of appliedFilters) {
           const bondKeyValue = bond[key as keyof CombinedBondsResponse]
           if (key == 'leftDays') {
-            if (bondKeyValue < value) {
+            if (+(bondKeyValue ?? 0) < +value) {
               return false
             } else {
               continue
@@ -148,7 +148,10 @@ export default {
             }
           }
           if (value instanceof Array) {
-            if (!value.includes(bondKeyValue) && !value.includes(`${bondKeyValue}`)) {
+            if (
+              !(value as number[]).includes(+(bondKeyValue ?? 0)) &&
+              !(value as string[]).includes(`${bondKeyValue}`)
+            ) {
               return false
             } else {
               continue
@@ -170,7 +173,9 @@ export default {
         const order = sortState.value.order
         if (a[key] === undefined) return 1
         if (b[key] === undefined) return -1
+        // @ts-ignore
         if (a[key] > b[key]) return order === TableV2SortOrder.ASC ? 1 : -1
+        // @ts-ignore
         if (a[key] < b[key]) return order === TableV2SortOrder.ASC ? -1 : 1
         return 0
       })
