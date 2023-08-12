@@ -1,8 +1,9 @@
 "use strict"
 import { BrokerOptions, Errors, MetricRegistry } from "moleculer"
+import { config } from "dotenv"
 
 process.env.TZ = "UTC"
-require("dotenv").config();
+config()
 
 const brokerConfig: BrokerOptions = {
 	namespace: "stopphish",
