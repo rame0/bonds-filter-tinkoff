@@ -24,17 +24,17 @@
     :current-page="paginationData.currentPage"
     :page-sizes="[20, 50, 100]"
     layout="sizes, prev, pager, next, ->, total"
-    @current-change="(v) => (paginationData.currentPage = v)"
-    @update:page-size="(v) => (paginationData.pageSize = v)"
+    @current-change="$emit('update:page', $event)"
+    @update:page-size="$emit('update:page-size', $event)"
   />
 </template>
 
 <script lang="tsx">
-import { h, PropType, ref } from 'vue'
+import { h, type PropType } from 'vue'
 import SectorsCollation from '@/data/collations/SectorsCollation'
 import IssueKindCollations from '@/data/collations/IssueKindCollations'
 import ExchangeCollation from '@/data/collations/ExchangeCollation'
-import { ElTag, ElText, ElAutoResizer, SortBy, TableV2SortOrder } from 'element-plus'
+import { ElTag, ElText, ElAutoResizer, type SortBy } from 'element-plus'
 import CurrencyCollation from '@/data/collations/CurrencyCollation'
 import { RiskStars, BondFlags, LinksToExchange, LiquidityArrow } from '@/components/UI'
 import type { AnyColumns } from 'element-plus/es/components/table-v2/src/types'
@@ -60,9 +60,9 @@ export default {
       required: true
     }
   },
-  emits: ['update:sortState'],
+  emits: ['update:sortState', 'update:page', 'update:page-size'],
 
-  setup(props) {
+  setup() {
     // const paginationData = toRef(props, 'paginationData')
 
     const columns: AnyColumns = [
