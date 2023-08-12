@@ -16,14 +16,18 @@
     <!-- filter -->
 
     <el-col :span="8" px="5" py="5" :class="'table-block'">
-      <bonds-filter v-model="filterSelections" :filter-options="filterOptions" />
+      <bonds-filter
+        v-model="filterSelections"
+        :filter-options="filterOptions"
+        @change="filterChanged"
+      />
     </el-col>
   </el-row>
 </template>
 
 <script lang="ts">
 import BondsRepository from '@/data/BondsRepository'
-import { h, ref } from 'vue'
+import { ref } from 'vue'
 import { useStorage } from '@vueuse/core'
 
 import CurrencyCollation from '@/data/collations/CurrencyCollation'
@@ -206,6 +210,11 @@ export default {
       }
     }
 
+    const filterChanged = () => {
+      filterSelectionsStore.value = filterSelections.value
+      updateTable()
+    }
+
     return {
       bonds,
       isFetching,
@@ -217,7 +226,8 @@ export default {
       sortState,
       fetchBonds,
       updateTable,
-      sortChanged
+      sortChanged,
+      filterChanged
     }
   },
   //
@@ -230,13 +240,6 @@ export default {
   watch: {
     paginationData: {
       handler() {
-        this.updateTable()
-      },
-      deep: true
-    },
-    filterSelections: {
-      handler() {
-        this.filterSelectionsStore = this.filterSelections
         this.updateTable()
       },
       deep: true
