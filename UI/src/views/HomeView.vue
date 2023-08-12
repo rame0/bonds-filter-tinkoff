@@ -10,6 +10,8 @@
         :loading="isFetching"
         :sort-state="sortState"
         @update:sort-state="sortChanged"
+        @update:page="pageChanged"
+        @update:page-size="pageSizeChanged"
       />
     </el-col>
 
@@ -220,6 +222,16 @@ export default {
       updateTable()
     }
 
+    const pageChanged = (page: number) => {
+      paginationData.value.currentPage = page
+      updateTable()
+    }
+
+    const pageSizeChanged = (pageSize: number) => {
+      paginationData.value.pageSize = pageSize
+      updateTable()
+    }
+
     return {
       bonds,
       isFetching,
@@ -232,7 +244,9 @@ export default {
       fetchBonds,
       updateTable,
       sortChanged,
-      filterChanged
+      filterChanged,
+      pageChanged,
+      pageSizeChanged
     }
   },
   //
@@ -242,14 +256,6 @@ export default {
   //   }
   // },
 
-  watch: {
-    paginationData: {
-      handler() {
-        this.updateTable()
-      },
-      deep: true
-    }
-  },
 
   mounted() {
     const resizeTable = () => {
