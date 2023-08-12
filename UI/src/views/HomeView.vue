@@ -36,6 +36,7 @@ import CurrencyCollation from '@/data/collations/CurrencyCollation'
 import CountryCollation from '@/data/collations/CountryCollation'
 import type { FilterOptions, FilterValues, FromTo } from '@/data/Types/FilterOptions'
 import { DefaultFilterSelections, defaultFilterValues } from '@/data/Types/FilterOptions'
+//@ts-ignore
 import { type CombinedBondsResponse } from '../../../server/src/common/innterfaces/CombinedBondsResponse'
 import { type SortBy, TableV2SortOrder } from 'element-plus'
 
@@ -255,7 +256,6 @@ export default {
   //     isFetching: this.isFetching
   //   }
   // },
-
 
   mounted() {
     const resizeTable = () => {
