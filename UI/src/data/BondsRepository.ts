@@ -1,5 +1,6 @@
 import { httpClient } from '@/plugins/axios'
-import { type CombinedBondsResponse } from '../../../server/src/common/CombinedBondsResponse'
+//@ts-ignore
+import { type CombinedBondsResponse } from '../../../server/src/common/innterfaces/CombinedBondsResponse'
 
 export default class BondsRepository {
   $http = httpClient
@@ -10,8 +11,6 @@ export default class BondsRepository {
   }
 
   async list(): Promise<CombinedBondsResponse[]> {
-    return this.$http
-      .get(`${this.getEndpoint()}/instruments`, {})
-      .then((res) => res.data)
+    return this.$http.get(`${this.getEndpoint()}/instruments`, {}).then((res) => res.data)
   }
 }
