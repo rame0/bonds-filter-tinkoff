@@ -13,7 +13,7 @@ export interface FilterOptions {
   nominal: FromTo
   price: FromTo
   yield: FromTo
-  leftDays: number
+  duration: FromTo
   // placementPrice: FromTo
 
   indexedNominalFlag: boolean | number
@@ -49,7 +49,7 @@ export interface FilterValues {
   nominal: FromTo
   price: FromTo
   yield: FromTo
-  leftDays: number
+  duration: FromTo
   // placementPrice: FromTo
   realExchange: CollationItem[]
   riskLevel: CollationItem[]
@@ -66,7 +66,7 @@ export const defaultFilterValues: FilterValues = {
   nominal: { from: 0, to: 100000000 },
   price: { from: 0, to: 5000 },
   yield: { from: 0, to: 1000 },
-  leftDays: 365,
+  duration: { from: 0, to: 1000},
   // placementPrice: { from: 0, to: 100000000 },
   realExchange: ExchangeCollation.asArray(),
   riskLevel: RiskLevelCollation.asArray(),
@@ -83,7 +83,7 @@ export const DefaultFilterSelections: FilterOptions = {
   nominal: { from: 500, to: 3000 },
   price: { from: 90, to: 110 },
   yield: { from: 90, to: 110 },
-  leftDays: 365,
+  duration: { from: 12, to: 150 },
   // placementPrice: { from: 500, to: 3000 },
 
   indexedNominalFlag: -1,

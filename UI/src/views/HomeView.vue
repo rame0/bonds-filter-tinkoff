@@ -131,16 +131,10 @@ export default {
       })
 
       const filtered = response.value.filter((bond) => {
+        if(!bond.duration) return false
         for (const [key, value] of appliedFilters) {
           const bondKeyValue = bond[key as keyof CombinedBondsResponse]
-          if (key == 'leftDays') {
-            if (+(bondKeyValue ?? 0) < +value) {
-              return false
-            } else {
-              continue
-            }
-          }
-          if (key === 'nominal' || key === 'placementPrice' || key === 'price' || key === 'yield') {
+          if (key === 'nominal' || key === 'placementPrice' || key === 'price' || key === 'yield' || key == 'duration') {
             if (
               (bondKeyValue as number) < (value as FromTo).from ||
               (bondKeyValue as number) > (value as FromTo).to

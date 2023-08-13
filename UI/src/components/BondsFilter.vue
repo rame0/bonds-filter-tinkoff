@@ -2,7 +2,7 @@
   <!-- create form for filterBond variable -->
   <el-form label-position="top" v-model="value">
     <el-row>
-      <el-col :span="8">
+      <el-col :span="6">
         <el-form-item label="Номинал">
           <el-input-number
             v-model="value.nominal.from"
@@ -20,7 +20,7 @@
           />
         </el-form-item>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="6">
         <el-form-item label="Цена">
           <el-input-number
             v-model="value.price.from"
@@ -38,7 +38,7 @@
           />
         </el-form-item>
       </el-col>
-      <el-col :span="8">
+      <el-col :span="6">
         <el-form-item label="Доходность">
           <el-input-number
             v-model="value.yield.from"
@@ -56,12 +56,22 @@
           />
         </el-form-item>
       </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="12"> Дней до погашения (от):</el-col>
-      <el-col :span="12">
-        <el-form-item>
-          <el-input-number v-model="value.leftDays" class="w-100" size="small" />
+      <el-col :span="6">
+        <el-form-item label="Дюрация (мес)">
+          <el-input-number
+              v-model="value.duration.from"
+              class="w-50 m-2"
+              size="small"
+              :min="filterOptions.duration.from"
+              :max="value.duration.to"
+          />
+          <el-input-number
+              v-model="value.duration.to"
+              class="w-50 m-2"
+              size="small"
+              :min="value.duration.from"
+              :max="filterOptions.duration.to"
+          />
         </el-form-item>
       </el-col>
     </el-row>
