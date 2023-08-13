@@ -1,11 +1,11 @@
 "use strict"
-import * as fs from "fs"
 import path from "path"
 import { Helpers, TinkoffInvestApi } from "@psqq/tinkoff-invest-api"
 import { InstrumentStatus, type BondsResponse } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
 import { GetLastPricesResponse } from "@psqq/tinkoff-invest-api/cjs/generated/marketdata"
 import { type MoneyValue, type Quotation } from "@psqq/tinkoff-invest-api/src/generated/common"
 import axios, { AxiosInstance } from "axios"
+import Cache from "file-system-cache"
 import { CombinedBondsResponse } from "../common/innterfaces/CombinedBondsResponse"
 import { getMoexData } from "../common/getMoexData"
 
@@ -20,23 +20,21 @@ module.exports = {
       params: {},
       cache: true,
       async handler(ctx): Promise<CombinedBondsResponse[]> {
-        const cachePath = path.join(__dirname, "../caches/bonds.json")
-        //
-        // if (fs.existsSync(cachePath)) {
-        // 	const { mtime } = fs.statSync(cachePath)
-        // 	if (mtime.getTime() > new Date().getTime() - 1000 * 60 * 60 * 4) {
-        // 		return JSON.parse(fs.readFileSync(cachePath, "utf8"))
-        // 	}
-        // }
+        const cache = Cache({ ttl: 60 * 60 * 4 })
+
+        const cachedBonds = await cache.get("bonds")
+
+        if (cachedBonds) {
+          return cachedBonds
+        }
+
         const api: TinkoffInvestApi = this.api
-        const nowDate = new Date()
 
         const bonds = await api.instruments.bonds({
           instrumentStatus: InstrumentStatus.INSTRUMENT_STATUS_BASE,
         })
 
         const instrumentIDs: string[] = bonds.instruments.map(instrument => instrument.uid)
-        const tickers = bonds.instruments.map(instrument => instrument.ticker)
         const isins = bonds.instruments.map(instrument => instrument.isin)
         const prices: GetLastPricesResponse = await api.marketdata.getLastPrices({
           figi: [],
@@ -72,7 +70,7 @@ module.exports = {
           response.push(instrument)
         }
 
-        fs.writeFileSync(cachePath, JSON.stringify(response))
+        await cache.set("bonds", response)
         return response
       },
     },
