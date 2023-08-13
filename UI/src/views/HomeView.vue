@@ -131,7 +131,6 @@ export default {
       })
 
       const filtered = response.value.filter((bond) => {
-        if(!bond.duration) return false
         for (const [key, value] of appliedFilters) {
           const bondKeyValue = bond[key as keyof CombinedBondsResponse]
           if (key === 'nominal' || key === 'placementPrice' || key === 'price' || key === 'yield' || key == 'duration') {

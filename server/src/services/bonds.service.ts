@@ -6,6 +6,7 @@ import { GetLastPricesResponse } from "@psqq/tinkoff-invest-api/cjs/generated/ma
 import { type MoneyValue, type Quotation } from "@psqq/tinkoff-invest-api/src/generated/common"
 import axios, { AxiosInstance } from "axios"
 import Cache from "file-system-cache"
+import moment from "moment"
 import { CombinedBondsResponse } from "../common/innterfaces/CombinedBondsResponse"
 import { getMoexData } from "../common/getMoexData"
 
@@ -48,7 +49,7 @@ module.exports = {
         const isQuote = (value: any): value is Quotation => value.hasOwnProperty("units") && value.hasOwnProperty("nano")
 
         const response: CombinedBondsResponse[] = []
-        const i = 0
+        const now = moment()
         for (const t1 of bonds.instruments) {
           const instrument: CombinedBondsResponse = {} as CombinedBondsResponse
           Object.keys(t1).map(key => {
@@ -65,6 +66,12 @@ module.exports = {
           instrument.couponsYield = moexBonds[t1.isin]?.couponsYield
           instrument.bondYield = moexBonds[t1.isin]?.BondYield
           instrument.duration = moexBonds[t1.isin]?.BondDuration
+          if (instrument.duration === undefined || instrument.duration <= 0) {
+            const dateStr = instrument.buyBackDate ? instrument.buyBackDate : instrument.maturityDate || ""
+            const date = moment(dateStr)
+
+            instrument.duration = date.diff(now, "months") || 0
+          }
           instrument.liquidity = moexBonds[t1.isin]?.liquidity
 
           response.push(instrument)
