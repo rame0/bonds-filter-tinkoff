@@ -1,6 +1,6 @@
 <template>
   <!-- create form for filterBond variable -->
-  <el-form label-position="top">
+  <el-form label-position="top" v-model="value">
     <el-row>
       <el-col :span="8">
         <el-form-item label="Номинал">
@@ -280,6 +280,14 @@ export default {
       BondOptionsChecks,
       BondOptionsRadios,
       BondOptionsSelect
+    }
+  },
+  watch: {
+    value: {
+      handler(newValue) {
+        this.$emit('change', newValue)
+      },
+      deep: true
     }
   }
 }

@@ -139,7 +139,7 @@ export default {
         width: 100,
         sortable: true,
         cellRenderer: ({ cellData: value }) => {
-          return h('span', (value as number).toFixed(2) + ' %')
+          return h('span', ((value ?? 0) as number).toFixed(2) + ' %')
         }
       },
       {
@@ -176,7 +176,7 @@ export default {
         dataKey: 'liquidity',
         width: 50,
         sortable: true,
-        cellRenderer: ({ cellData: value }) => <LiquidityArrow level={value} />
+        cellRenderer: ({ cellData: value }) => <LiquidityArrow level={value ?? 0} />
       },
       // {
       //   title: 'Биржа',
