@@ -37,13 +37,14 @@ module.exports = {
 
         const instrumentIDs: string[] = bonds.instruments.map(instrument => instrument.uid)
         const isins = bonds.instruments.map(instrument => instrument.isin)
+        const tickers = bonds.instruments.map(instrument => instrument.ticker)
         const prices: GetLastPricesResponse = await api.marketdata.getLastPrices({
           figi: [],
           instrumentId: instrumentIDs,
         })
 
         this.logger.info("getMoexData")
-        const moexBonds = await getMoexData(isins)
+        const moexBonds = await getMoexData(tickers)
 
         const isMoney = (value: any): value is MoneyValue => value.hasOwnProperty("units") && value.hasOwnProperty("nano")
         const isQuote = (value: any): value is Quotation => value.hasOwnProperty("units") && value.hasOwnProperty("nano")
@@ -63,16 +64,16 @@ module.exports = {
           })
           const lastPrice = prices.lastPrices.find(t2 => t2.figi === t1.figi)
           instrument.price = Helpers.toNumber(lastPrice?.price)
-          instrument.couponsYield = moexBonds[t1.isin]?.couponsYield
-          instrument.bondYield = moexBonds[t1.isin]?.BondYield
-          instrument.duration = moexBonds[t1.isin]?.BondDuration
+          instrument.couponsYield = moexBonds[t1.ticker]?.couponsYield
+          instrument.bondYield = moexBonds[t1.ticker]?.BondYield
+          instrument.duration = moexBonds[t1.ticker]?.BondDuration
           if (instrument.duration === undefined || instrument.duration <= 0) {
             const dateStr = instrument.buyBackDate ? instrument.buyBackDate : instrument.maturityDate || ""
             const date = moment(dateStr)
 
             instrument.duration = Math.round((date.diff(now, "days") / 30) * 100) / 100 || 0
           }
-          instrument.liquidity = moexBonds[t1.isin]?.liquidity
+          instrument.liquidity = moexBonds[t1.ticker]?.liquidity
 
           response.push(instrument)
         }

@@ -30,7 +30,7 @@ export function getMoexData(isins: string[]): Promise<MoexResults> {
 
             await cache.set("moexData", marketData)
             resolve(marketData)
-          }),
+          })
         )
         .catch(error => console.log(error))
     }
@@ -63,7 +63,7 @@ export async function buildDataFromMoex(marketData, isins: string[]) {
       BondPrice: marketRow[2],
       CouponPeriod: marketRow[4],
       BondVolume: -1,
-      BondYield: rowData[1],
+      BondYield: +rowData[1],
       BondDuration: Math.floor((rowData[2] / 30) * 100) / 100,
       MonthsOfPaymentsDates: null,
       liquidity: LiquidityType.high,
@@ -80,7 +80,7 @@ export async function buildDataFromMoex(marketData, isins: string[]) {
       await sleep(5)
       result[secId].coupons = []
       const responseCoupons = await axios.get(
-        `https://iss.moex.com/iss/statistics/engines/stock/markets/bonds/bondization/${secId}.json?iss.meta=off&iss.only=coupons&coupons.columns=coupondate,faceunit,value,valueprc,value_rub`,
+        `https://iss.moex.com/iss/statistics/engines/stock/markets/bonds/bondization/${secId}.json?iss.meta=off&iss.only=coupons&coupons.columns=coupondate,faceunit,value,valueprc,value_rub`
       )
       responseCoupons.data?.coupons?.data.forEach(resp => {
         const coupon: MoexCoupon = {} as MoexCoupon
@@ -100,16 +100,16 @@ export async function buildDataFromMoex(marketData, isins: string[]) {
 
     result[secId].trades = await cache.get(`moexData.${secId}.trades`)
 
-    if (result[secId].trades && result[secId].trades.length > 0){
+    if (result[secId].trades && result[secId].trades.length > 0) {
       result[secId].trades = result[secId].trades.map(trade => {
         trade.date = moment(trade.date)
         return trade
       })
-    }else {
+    } else {
       result[secId].trades = []
       await sleep(5)
       const responseTrades = await axios.get(
-        `https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/${result[secId].BOARDID}/securities/${secId}.json?iss.meta=off&iss.only=history&history.columns=TRADEDATE,VOLUME,NUMTRADES&limit=20&from=${DateRequestPrevious}`,
+        `https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/${result[secId].BOARDID}/securities/${secId}.json?iss.meta=off&iss.only=history&history.columns=TRADEDATE,VOLUME,NUMTRADES&limit=20&from=${DateRequestPrevious}`
       )
 
       if (!responseTrades.data?.history) {
