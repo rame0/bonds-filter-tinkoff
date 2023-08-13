@@ -69,3 +69,4 @@ dist/
 
 /storage
 /src/caches/
+/.cache/
