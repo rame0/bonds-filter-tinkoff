@@ -70,7 +70,7 @@ module.exports = {
             const dateStr = instrument.buyBackDate ? instrument.buyBackDate : instrument.maturityDate || ""
             const date = moment(dateStr)
 
-            instrument.duration = date.diff(now, "months") || 0
+            instrument.duration = Math.round((date.diff(now, "days") / 30) * 100) / 100 || 0
           }
           instrument.liquidity = moexBonds[t1.isin]?.liquidity
 
