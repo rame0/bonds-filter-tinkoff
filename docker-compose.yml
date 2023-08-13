@@ -5,16 +5,29 @@ services:
   api:
     build:
       context: server
-    image: server
-    env_file: docker-compose.env
-    environment:
-      SERVICES: api
-      PORT: 3000
+    image: bonds-filter-tinkoff-api
+    env_file: ./server/.env
+    #    environment:
+    #      SERVICES: api
+    #      PORT: 3000
     labels:
       - traefik.docker.network=traefik_default
-      - traefik.http.routers.api-gw.rule=Host(`bonds-filter.local`)
+      - traefik.http.routers.api-gw.rule=Host(`bonds-filter.local`) && PathPrefix(`/api/`)
       - traefik.http.routers.api-gw.entrypoints=web,websecure
       - traefik.http.services.api.loadbalancer.server.port=3000
+    networks:
+      - internal
+      - traefik_default
+
+  web:
+    build:
+      context: UI
+    image: bonds-filter-tinkoff-ui
+    labels:
+      - traefik.docker.network=traefik_default
+      - traefik.http.routers.web-gw.rule=Host(`bonds-filter.local`)
+      - traefik.http.routers.web-gw.entrypoints=web,websecure
+      - traefik.http.services.web.loadbalancer.server.port=80
     networks:
       - internal
       - traefik_default

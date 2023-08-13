@@ -27,6 +27,8 @@ WORKDIR /app
 
 COPY --from=modules-fetch-stage /app /app
 
+RUN mkdir /app/.cache
+RUN chown -R node:node /app/.cache
 USER node
 
 CMD [ "/bin/sh", "-c", "./node_modules/.bin/moleculer-runner --config dist/moleculer.config.js dist/src/services/{**,**/**,**/**/**}/*.service.js"]
