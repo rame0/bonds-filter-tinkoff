@@ -30,7 +30,7 @@ export function getMoexData(isins: string[]): Promise<MoexResults> {
 
             await cache.set("moexData", marketData)
             resolve(marketData)
-          })
+          }),
         )
         .catch(error => console.log(error))
     }
@@ -38,6 +38,7 @@ export function getMoexData(isins: string[]): Promise<MoexResults> {
 }
 
 export async function buildDataFromMoex(marketData, isins: string[]) {
+  const cache = Cache({ ttl: 60 * 60 * 6 })
   const DateRequestPrevious = moment().subtract(15, "days").format("YYYY-MM-DD")
 
   const result: MoexResults = {}
@@ -68,43 +69,64 @@ export async function buildDataFromMoex(marketData, isins: string[]) {
       liquidity: LiquidityType.high,
     }
 
-    result[secId].coupons = []
+    result[secId].coupons = await cache.get(`moexData.${secId}.coupons`)
 
-    await sleep(5)
-    const responseCoupons = await axios.get(
-      `https://iss.moex.com/iss/statistics/engines/stock/markets/bonds/bondization/${secId}.json?iss.meta=off&iss.only=coupons&coupons.columns=coupondate,faceunit,value,valueprc,value_rub`
-    )
-    responseCoupons.data?.coupons?.data.forEach(resp => {
-      const coupon: MoexCoupon = {} as MoexCoupon
-      coupon.date = moment(resp[0])
-      coupon.faceUnit = resp[1]
-      coupon.value = +resp[2]
-      coupon.valuePrc = +resp[3]
-      coupon.valueRub = +resp[4]
-      result[secId].coupons.push(coupon)
-    })
+    if (result[secId].coupons && result[secId].coupons.length > 0) {
+      result[secId].coupons.map(coupon => {
+        coupon.date = moment(coupon.date)
+        return coupon
+      })
+    } else {
+      await sleep(5)
+      result[secId].coupons = []
+      const responseCoupons = await axios.get(
+        `https://iss.moex.com/iss/statistics/engines/stock/markets/bonds/bondization/${secId}.json?iss.meta=off&iss.only=coupons&coupons.columns=coupondate,faceunit,value,valueprc,value_rub`,
+      )
+      responseCoupons.data?.coupons?.data.forEach(resp => {
+        const coupon: MoexCoupon = {} as MoexCoupon
+        coupon.date = moment(resp[0])
+        coupon.faceUnit = resp[1]
+        coupon.value = +resp[2]
+        coupon.valuePrc = +resp[3]
+        coupon.valueRub = +resp[4]
+        result[secId].coupons.push(coupon)
+      })
+
+      await cache.set(`moexData.${secId}.coupons`, result[secId].coupons)
+    }
 
     const nowDate = moment()
-    result[secId].couponsYield = result[secId].coupons.reduce<number>((acc, coupon) => (coupon.date.isAfter(nowDate) ? acc + coupon.value : acc), 0)
+    result[secId].couponsYield = result[secId].coupons.reduce<number>((acc, coupon) => (coupon?.date?.isAfter(nowDate) ? acc + coupon?.value : acc), 0)
 
-    result[secId].trades = []
-    await sleep(5)
-    const responseTrades = await axios.get(
-      `https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/${result[secId].BOARDID}/securities/${secId}.json?iss.meta=off&iss.only=history&history.columns=TRADEDATE,VOLUME,NUMTRADES&limit=20&from=${DateRequestPrevious}`
-    )
+    result[secId].trades = await cache.get(`moexData.${secId}.trades`)
 
-    if (!responseTrades.data?.history) {
-      result[secId].BondVolume = 0
-      result[secId].liquidity = LiquidityType.low
-      result[secId].tradeDays = 0
-    } else {
-      responseTrades.data?.history?.data.forEach(resp => {
-        const trade: MoexTrade = {} as MoexTrade
-        trade.date = moment(resp[0])
-        trade.volume = +resp[1]
-        trade.numTrades = +resp[2]
-        result[secId].trades.push(trade)
+    if (result[secId].trades && result[secId].trades.length > 0){
+      result[secId].trades = result[secId].trades.map(trade => {
+        trade.date = moment(trade.date)
+        return trade
       })
+    }else {
+      result[secId].trades = []
+      await sleep(5)
+      const responseTrades = await axios.get(
+        `https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/${result[secId].BOARDID}/securities/${secId}.json?iss.meta=off&iss.only=history&history.columns=TRADEDATE,VOLUME,NUMTRADES&limit=20&from=${DateRequestPrevious}`,
+      )
+
+      if (!responseTrades.data?.history) {
+        result[secId].BondVolume = 0
+        result[secId].liquidity = LiquidityType.low
+        result[secId].tradeDays = 0
+      } else {
+        responseTrades.data?.history?.data.forEach(resp => {
+          const trade: MoexTrade = {} as MoexTrade
+          trade.date = moment(resp[0])
+          trade.volume = +resp[1]
+          trade.numTrades = +resp[2]
+          result[secId].trades.push(trade)
+        })
+      }
+
+      await cache.set(`moexData.${secId}.trades`, result[secId].trades)
     }
 
     if (result[secId].trades.length < 1) {
