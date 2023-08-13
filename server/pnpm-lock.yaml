@@ -10,7 +10,7 @@ dependencies:
     version: 0.16.3
   '@psqq/tinkoff-invest-api':
     specifier: github:psqq/tinkoff-invest-api
-    version: github.com/psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c
+    version: git/github.com+psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c
   axios:
     specifier: ^1.4.0
     version: 1.4.0
@@ -44,8 +44,8 @@ dependencies:
 
 devDependencies:
   '@types/cron':
-    specifier: ^2.0.0
-    version: 2.0.0
+    specifier: ^2.4.0
+    version: 2.4.0
   '@types/jest':
     specifier: ^29.2.6
     version: 29.2.6
@@ -1024,11 +1024,11 @@ packages:
     resolution: {integrity: sha512-6ckxMjBBD8URvjB6J3NcnuAn5Pkl7t3TizAg+xdlzzQGSPSmBcXf8KoIH0ua/i+tio+ZRUHEXp0HEmvaR4kt0w==}
     dev: false
 
-  /@types/cron@2.0.0:
-    resolution: {integrity: sha512-xZM08fqvwIXgghtPVkSPKNgC+JoMQ2OHazEvyTKnNf7aWu1aB6/4lBbQFrb03Td2cUGG7ITzMv3mFYnMu6xRaQ==}
+  /@types/cron@2.4.0:
+    resolution: {integrity: sha512-5bBaAkqvSFBX8JMi/xCofNzG5E594TNsApMz68dLd/sQYz/HGQqgcxGHTRjOvD4G3Y+YF1Oo3S7QdCvKt1KAJQ==}
+    deprecated: This is a stub types definition. cron provides its own type definitions, so you do not need this installed.
     dependencies:
-      '@types/luxon': 2.3.2
-      '@types/node': 18.11.18
+      cron: 2.4.0
     dev: true
 
   /@types/fs-extra@11.0.1:
@@ -1098,10 +1098,6 @@ packages:
   /@types/long@4.0.2:
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
     dev: false
-
-  /@types/luxon@2.3.2:
-    resolution: {integrity: sha512-WOehptuhKIXukSUUkRgGbj2c997Uv/iUgYgII8U7XLJqq9W2oF0kQ6frEznRQbdurioz+L/cdaIm4GutTQfgmA==}
-    dev: true
 
   /@types/minipass@3.3.5:
     resolution: {integrity: sha512-M2BLHQdEmDmH671h0GIlOQQJrgezd1vNqq7PVj1VOsHZ2uQQb4iPiQIl0SlMdhxZPUsLIfEklmeEHXg8DJRewA==}
@@ -1915,6 +1911,12 @@ packages:
 
   /create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
+    dev: true
+
+  /cron@2.4.0:
+    resolution: {integrity: sha512-Cx77ic1TyIAtUggr0oAhtS8MLzPBUqGNIvdDM7jE3oFIxfe8LXWI9q3iQN/H2CebAiMir53LQKWOhEKnzkJTAQ==}
+    dependencies:
+      luxon: 3.4.0
     dev: true
 
   /cross-spawn@7.0.3:
@@ -3954,6 +3956,11 @@ packages:
       es5-ext: 0.10.62
     dev: true
 
+  /luxon@3.4.0:
+    resolution: {integrity: sha512-7eDo4Pt7aGhoCheGFIuq4Xa2fJm4ZpmldpGhjTYBNUYNCN6TIEP6v7chwwwt3KRp7YR+rghbfvjyo3V5y9hgBw==}
+    engines: {node: '>=12'}
+    dev: true
+
   /make-dir@3.1.0:
     resolution: {integrity: sha512-g3FeP20LNwhALb/6Cz6Dd4F2ngze0jz7tbzrD2wAV+o9FeNHe4rL+yK2md0J/fiSf1sa1ADhXqi5+oVwOM/eGw==}
     engines: {node: '>=8'}
@@ -5635,8 +5642,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c:
-    resolution: {tarball: https://codeload.github.com/psqq/tinkoff-invest-api/tar.gz/b3be2a9244d5a86eac99bcf1674969b63de4643c}
+  git/github.com+psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c:
+    resolution: {commit: b3be2a9244d5a86eac99bcf1674969b63de4643c, repo: git@github.com:psqq/tinkoff-invest-api.git, type: git}
     name: '@psqq/tinkoff-invest-api'
     version: 5.0.0
     dependencies:
