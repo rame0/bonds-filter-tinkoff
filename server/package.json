@@ -32,7 +32,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
-    "@kubernetes/client-node": "^0.16.3",
+    "@kubernetes/client-node": "^0.18.1",
     "@psqq/tinkoff-invest-api": "github:psqq/tinkoff-invest-api",
     "axios": "^1.4.0",
     "cbor-x": "^1.5.3",
