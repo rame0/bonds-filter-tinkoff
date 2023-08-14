@@ -40,7 +40,7 @@
     "file-system-cache": "^2.4.4",
     "ioredis": "^5.3.2",
     "moleculer": "^0.14.28",
-    "moleculer-db": "^0.8.21",
+    "moleculer-db": "^0.8.24",
     "moleculer-web": "^0.10.5",
     "moment": "^2.29.4",
     "nats": "^2.15.1"
