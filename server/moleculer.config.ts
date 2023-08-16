@@ -6,7 +6,7 @@ process.env.TZ = "UTC"
 config()
 
 const brokerConfig: BrokerOptions = {
-	namespace: "stopphish",
+	namespace: "bonds-filter-tinkoff",
 	nodeID: null,
 	metadata: {},
 	logger: {

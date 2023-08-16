@@ -106,7 +106,7 @@ $ cd server && pnpm start
 Результат выполнения команды должен быть примерно такой:
 
 ```log
-> stopphish-core@1.1.0 start /home/ra/projects/bonds-filter-tinkoff/server
+> bonds-filter-tinkoff@1.1.0 start /home/ra/projects/bonds-filter-tinkoff/server
 > ./node_modules/.bin/moleculer-runner --config dist/moleculer.config.js dist/src/services/{**,**/**,**/**/**}/*.service.js
 
 [2023-08-13T13:04:08.740Z] INFO  ra-243915/BROKER: Moleculer v0.14.28 is starting...
