@@ -17,7 +17,7 @@
   "devDependencies": {
     "@types/cron": "^2.4.0",
     "@types/jest": "^29.5.3",
-    "@types/node": "^18.11.18",
+    "@types/node": "^18.17.1",
     "@typescript-eslint/eslint-plugin": "^5.62.0",
     "@typescript-eslint/parser": "^5.62.0",
     "eslint": "^8.32.0",
@@ -46,8 +46,9 @@
     "nats": "^2.15.1"
   },
   "engines": {
-    "node": ">= 16.x.x"
+    "node": ">= 18.x.x"
   },
+  "engineStrict": true,
   "jest": {
     "coverageDirectory": "<rootDir>/coverage",
     "testEnvironment": "node",
