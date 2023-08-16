@@ -24,7 +24,6 @@ export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
     instrumentId: instrumentIDs,
   })
 
-  this.logger.info("getMoexData")
   const moexBonds = await getMoexData(tickers)
 
   const isMoney = (value: any): value is MoneyValue => value.hasOwnProperty("units") && value.hasOwnProperty("nano")
