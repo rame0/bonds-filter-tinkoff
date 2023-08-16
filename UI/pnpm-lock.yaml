@@ -15,8 +15,8 @@ dependencies:
     specifier: ^1.4.0
     version: 1.4.0
   element-plus:
-    specifier: ^2.3.8
-    version: 2.3.8(vue@3.3.4)
+    specifier: ^2.3.9
+    version: 2.3.9(vue@3.3.4)
   ms:
     specifier: ^3.0.0-beta.2
     version: 3.0.0-canary.1
@@ -1415,8 +1415,8 @@ packages:
     resolution: {integrity: sha512-jtD6YG370ZCIi/9GTaJKQxWTZD045+4R4hTk/x1UyoqadyJ9x9CgSi1RlVDQF8U2sxLLSnFkCaMihqljHIWgMg==}
     dev: true
 
-  /element-plus@2.3.8(vue@3.3.4):
-    resolution: {integrity: sha512-yHQR0/tG2LvPkpGUt7Te/hPmP2XW/BytBNUbx+EFO54VnGCOE3upmQcVffNp1PLgwg9sthYDXontUWpnpmLPJw==}
+  /element-plus@2.3.9(vue@3.3.4):
+    resolution: {integrity: sha512-TIOLnPl4cnoCPXqK3QYh+jpkthUBQnAM21O7o3Lhbse8v9pfrRXRTaBJtoEKnYNa8GZ4lZptUfH0PeZgDCNLUg==}
     peerDependencies:
       vue: ^3.2.0
     dependencies:
