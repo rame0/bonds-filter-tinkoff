@@ -17,15 +17,7 @@ module.exports = {
       async handler(ctx): Promise<CombinedBondsResponse[]> {
         const cache = Cache({ ttl: 60 * 60 * 4 })
 
-        const cachedBonds = await cache.get("bonds")
-
-        if (cachedBonds) {
-          return cachedBonds
-        }
-
-        const response = await buildBondsData()
-        await cache.set("bonds", response)
-        return response
+        return await cache.get("bonds", [])
       },
     },
     get: {

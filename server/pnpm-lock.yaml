@@ -29,6 +29,9 @@ dependencies:
   moleculer:
     specifier: ^0.14.28
     version: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
+  moleculer-cron:
+    specifier: ^0.0.2
+    version: 0.0.2(moleculer@0.14.28)
   moleculer-db:
     specifier: ^0.8.24
     version: 0.8.24(moleculer@0.14.28)
@@ -1977,6 +1980,12 @@ packages:
   /create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
     dev: true
+
+  /cron@1.8.2:
+    resolution: {integrity: sha512-Gk2c4y6xKEO8FSAUTklqtfSr7oTq0CiPQeLBG5Fl0qoXpZyMcj1SG59YL+hqq04bu6/IuEA7lMkYDAplQNKkyg==}
+    dependencies:
+      moment-timezone: 0.5.43
+    dev: false
 
   /cron@2.4.0:
     resolution: {integrity: sha512-Cx77ic1TyIAtUggr0oAhtS8MLzPBUqGNIvdDM7jE3oFIxfe8LXWI9q3iQN/H2CebAiMir53LQKWOhEKnzkJTAQ==}
@@ -4319,6 +4328,16 @@ packages:
     hasBin: true
     dev: false
 
+  /moleculer-cron@0.0.2(moleculer@0.14.28):
+    resolution: {integrity: sha512-PChQ1Sw+AIK85dIsKWxuG8M3YMG8qwLWcCV5vSBWhfGOBZ8VBnxAaISAdd4NxkCyaInK2IpoQOXzRNL0JwL3+w==}
+    engines: {node: '>= 6.x.x'}
+    peerDependencies:
+      moleculer: ^0.11.0
+    dependencies:
+      cron: 1.8.2
+      moleculer: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
+    dev: false
+
   /moleculer-db@0.8.24(moleculer@0.14.28):
     resolution: {integrity: sha512-ABJOTPTJFXta0w/nn5zY/o3cbkqUGFrfdPeY+VaurOt/wzVuCZ89wme+sgSRamnwhPbfmqUrDQG8MGy7BG0uTQ==}
     engines: {node: '>= 8.x.x'}
@@ -4460,6 +4479,12 @@ packages:
       recursive-watch: 1.1.4
     transitivePeerDependencies:
       - encoding
+    dev: false
+
+  /moment-timezone@0.5.43:
+    resolution: {integrity: sha512-72j3aNyuIsDxdF1i7CEgV2FfxM1r6aaqJyLB2vwb33mXYyoyLly+F1zbWqhA3/bVIoJ4szlUoMbUnVdid32NUQ==}
+    dependencies:
+      moment: 2.29.4
     dev: false
 
   /moment@2.29.4:
