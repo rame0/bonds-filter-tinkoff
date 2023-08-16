@@ -17,7 +17,10 @@ module.exports = {
         await cache.set("bonds", await buildBondsData())
       },
       runOnInit: async ()=> {
-        await cache.set("bonds", await buildBondsData())
+        const data =  await cache.get("bonds")
+        if(!data) {
+          await cache.set("bonds", await buildBondsData())
+        }
       },
       timeZone: "GMT",
     },
