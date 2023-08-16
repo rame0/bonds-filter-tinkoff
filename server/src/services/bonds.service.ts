@@ -4,7 +4,6 @@ import { Helpers, TinkoffInvestApi } from "@psqq/tinkoff-invest-api"
 import { InstrumentStatus, type BondsResponse } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
 import { GetLastPricesResponse } from "@psqq/tinkoff-invest-api/cjs/generated/marketdata"
 import { type MoneyValue, type Quotation } from "@psqq/tinkoff-invest-api/src/generated/common"
-import axios, { AxiosInstance } from "axios"
 import Cache from "file-system-cache"
 import moment from "moment"
 import { CombinedBondsResponse } from "../common/innterfaces/CombinedBondsResponse"
@@ -99,7 +98,5 @@ module.exports = {
       token: process.env.TINKOFF_API_TOKEN,
       appName: "rame0/bonds-filter-tinkoff",
     })
-
-    this.httpClient = axios.create({})
   },
 }
