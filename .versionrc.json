@@ -1,0 +1,13 @@
+{
+  "header": "## Changelog",
+  "bumpFiles": [
+    {
+      "filename": "server/package.json",
+      "type": "json"
+    },
+    {
+      "filename": "UI/package.json",
+      "type": "json"
+    }
+  ]
+}
