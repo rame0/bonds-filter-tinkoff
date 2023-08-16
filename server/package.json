@@ -1,7 +1,6 @@
 {
-  "name": "stopphish-core",
-  "version": "1.1.0",
-  "private": true,
+  "name": "bonds-filter-tinkoff-server",
+  "version": "0.1.0",
   "scripts": {
     "build": "tsc --build tsconfig.build.json",
     "dev": "ts-node ./node_modules/moleculer/bin/moleculer-runner.js --hot --repl --config moleculer.config.ts src/services/{**,**/**,**/**/**}/*.service.ts",
