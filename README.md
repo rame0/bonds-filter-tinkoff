@@ -169,7 +169,7 @@ $ cd bonds-filter-tinkoff
 Запускаем:
 
 ```bash
-docker-compose up --build -d
+docker-compose up --build
 ```
 
 После успешной сборки и запуска контейнеров, интерфейс будет доступен по
