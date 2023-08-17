@@ -1,6 +1,6 @@
 import { httpClient } from '@/plugins/axios'
 //@ts-ignore
-import { type CombinedBondsResponse } from '../../../server/src/common/innterfaces/CombinedBondsResponse'
+import { type CombinedBondsResponse } from '@/external/interfaces/CombinedBondsResponse'
 
 export default class BondsRepository {
   $http = httpClient

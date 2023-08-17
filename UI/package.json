@@ -16,9 +16,11 @@
   "engineStrict": true,
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "@psqq/tinkoff-invest-api": "github:psqq/tinkoff-invest-api",
     "@vueuse/core": "^10.3.0",
     "axios": "^1.4.0",
     "element-plus": "^2.3.9",
+    "moment": "^2.29.4",
     "ms": "^3.0.0-beta.2",
     "pinia": "^2.1.3",
     "vue": "^3.3.4",

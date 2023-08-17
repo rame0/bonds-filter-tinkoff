@@ -37,7 +37,7 @@ import CountryCollation from '@/data/collations/CountryCollation'
 import type { FilterOptions, FilterValues, FromTo } from '@/data/Types/FilterOptions'
 import { DefaultFilterSelections, defaultFilterValues } from '@/data/Types/FilterOptions'
 //@ts-ignore
-import { type CombinedBondsResponse } from '../../../server/src/common/innterfaces/CombinedBondsResponse'
+import { type CombinedBondsResponse } from '@/external/interfaces/CombinedBondsResponse'
 import { type SortBy, TableV2SortOrder } from 'element-plus'
 
 export default {
@@ -133,7 +133,13 @@ export default {
       const filtered = response.value.filter((bond) => {
         for (const [key, value] of appliedFilters) {
           const bondKeyValue = bond[key as keyof CombinedBondsResponse]
-          if (key === 'nominal' || key === 'placementPrice' || key === 'price' || key === 'yield' || key == 'duration') {
+          if (
+            key === 'nominal' ||
+            key === 'placementPrice' ||
+            key === 'price' ||
+            key === 'yield' ||
+            key == 'duration'
+          ) {
             if (
               (bondKeyValue as number) < (value as FromTo).from ||
               (bondKeyValue as number) > (value as FromTo).to
