@@ -22,7 +22,7 @@ COPY --from=build-stage /app/dist /app/dist
 
 
 # Runtime
-FROM node:16-alpine-mini as runtime-stage
+FROM node:16-alpine as runtime-stage
 WORKDIR /app
 
 COPY --from=modules-fetch-stage /app /app
