@@ -1,5 +1,5 @@
 import { Bond } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
-import { CombinedCoupon } from "./CombinedCoupon"
+import { type CombinedCoupon } from "./CombinedCoupon"
 import { LiquidityType } from "./Moex"
 
 export interface CombinedBondsResponse extends Omit<Bond, "klong" | "kshort" | "dlong"
