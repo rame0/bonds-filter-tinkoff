@@ -2,11 +2,10 @@ FROM node:16-alpine as build-stage
 WORKDIR /app
 RUN npm install -g pnpm && rm -rf /root/.npm
 
-COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --reporter append-only
-
 ENV NODE_ENV=production
-COPY . .
+COPY server .
+
+RUN pnpm install --frozen-lockfile --reporter append-only
 RUN pnpm run build && rm -rf /app/src/
 
 
@@ -15,7 +14,7 @@ FROM node:16-alpine as modules-fetch-stage
 WORKDIR /app
 RUN npm install -g pnpm && rm -rf /root/.npm
 
-COPY package.json pnpm-lock.yaml ./
+COPY server/package.json server/pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod --no-optional && rm -rf /root/.pnpm
 
 COPY --from=build-stage /app/dist /app/dist
