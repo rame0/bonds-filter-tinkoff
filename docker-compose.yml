@@ -2,9 +2,10 @@ version: "3.3"
 
 services:
 
-  api:
+  server:
     build:
-      context: server
+      context: .
+      dockerfile: server.Dockerfile
     image: bonds-filter-tinkoff-api
     env_file: ./server/.env
     #    environment:
@@ -21,9 +22,10 @@ services:
       - internal
       - traefik_default
 
-  web:
+  UI:
     build:
-      context: UI
+      context: .
+      dockerfile: ui.Dockerfile
     image: bonds-filter-tinkoff-ui
     labels:
       - traefik.docker.network=traefik_default

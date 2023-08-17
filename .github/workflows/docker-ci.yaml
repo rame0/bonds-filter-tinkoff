@@ -13,27 +13,24 @@ jobs:
   build-server:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v3
-      -
-        name: Docker meta
+      - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-server
-      -
-        name: Login to DockerHub
+      - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Server - Build and push
+      - name: Server - Build and push
         uses: docker/build-push-action@v4
         with:
-          context: ./server/
+          context: .
+          dockerfile: ./server.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -41,27 +38,24 @@ jobs:
   build-ui:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
+      - name: Checkout
         uses: actions/checkout@v3
-      -
-        name: Docker meta
+      - name: Docker meta
         id: meta
         uses: docker/metadata-action@v4
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-ui
-      -
-        name: Login to DockerHub
+      - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: UI - Build and push
+      - name: UI - Build and push
         uses: docker/build-push-action@v4
         with:
-          context: ./UI/
+          context: .
+          dockerfile: ./ui.Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
