@@ -1,4 +1,4 @@
-FROM node:lts-alpine as build-stage
+FROM node:18-alpine as build-stage
 WORKDIR /app
 RUN npm install -g pnpm && rm -rf /root/.npm
 
@@ -12,7 +12,7 @@ RUN pnpm run build
 
 
 # Install --prod
-FROM node:16-alpine as modules-fetch-stage
+FROM node:18-alpine as modules-fetch-stage
 WORKDIR /app
 RUN npm install -g pnpm && rm -rf /root/.npm
 
