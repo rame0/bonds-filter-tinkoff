@@ -1,4 +1,14 @@
 ## Changelog
+### [0.2.2](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.2.1...v0.2.2) (2023-08-18)
+
+
+### Bug Fixes
+
+* добавил/поправил `.dockerignore` файлы ([77bccfb](https://github.com/rame0/bonds-filter-tinkoff/commit/77bccfb427af295f5c59d8b03bbe9caf42e16e56))
+* исправил сборку докер образов ([fed4e6f](https://github.com/rame0/bonds-filter-tinkoff/commit/fed4e6fddabea71fcddf2a7571fa6a57e4aed758)), closes [#21](https://github.com/rame0/bonds-filter-tinkoff/issues/21)
+* переписал `docker-ci.yaml` и `docker-compose.yaml` для соответствия текущим докерфайлам ([d704c86](https://github.com/rame0/bonds-filter-tinkoff/commit/d704c86edf1fba5b37c927b616fb014060cee7c5)), closes [#21](https://github.com/rame0/bonds-filter-tinkoff/issues/21)
+* создал симлинк в UI на интерфейсы из server ([768f7a8](https://github.com/rame0/bonds-filter-tinkoff/commit/768f7a8bc664f095d62fb591272030da1ea1f3dc))
+
 ### [0.2.1](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.2.0...v0.2.1) (2023-08-17)
 
 
