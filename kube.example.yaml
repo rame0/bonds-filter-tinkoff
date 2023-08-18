@@ -1,0 +1,159 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bonds-filter-tinkoff-env
+  labels:
+    project: bonds-filter-tinkoff
+data:
+  TINKOFF_API_TOKEN: "<YOUR_API_KEY>"
+  # ID боевого счете
+  REAL_ACCOUNT_ID: ""
+
+  # Moleculer
+  LOGGER: "true"
+  LOGLEVEL: "warn"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    project: bonds-filter-tinkoff
+    app: server
+spec:
+  selector:
+    matchLabels:
+      project: bonds-filter-tinkoff
+      app: server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        project: bonds-filter-tinkoff
+        app: server
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "Always"
+      initContainers:
+        - name: change-ownership-container
+          image: busybox
+          command: [ "/bin/chown", "-R", "1000:1000", "/app/.cache/" ]
+          securityContext:
+            runAsUser: 0
+            privileged: true
+          volumeMounts:
+            - mountPath: "/app/.cache"
+              name: "cache-storage"
+      containers:
+        - name: api
+          image: ghcr.io/rame0/bonds-filter-tinkoff-server:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: bonds-filter-tinkoff-env
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - mountPath: "/app/.cache/"
+              name: "cache-storage"
+      volumes:
+        - name: cache-storage
+          hostPath:
+            path: "/srv/cache-storage/"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+  labels:
+    project: bonds-filter-tinkoff
+    app: server
+spec:
+  selector:
+    project: bonds-filter-tinkoff
+    app: server
+  ports:
+    - port: 3000
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ui
+  labels:
+    project: bonds-filter-tinkoff
+    app: ui
+spec:
+  selector:
+    matchLabels:
+      project: bonds-filter-tinkoff
+      app: ui
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        project: bonds-filter-tinkoff
+        app: ui
+    spec:
+      containers:
+        - name: ui
+          image: ghcr.io/rame0/bonds-filter-tinkoff-ui:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ui
+  labels:
+    project: bonds-filter-tinkoff
+    app: ui
+spec:
+  selector:
+    project: bonds-filter-tinkoff
+    app: ui
+  ports:
+    - port: 8080
+      targetPort: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bonds-filter-tinkoff
+  labels:
+    project: bonds-filter-tinkoff
+#  annotations:
+# Настройка для Traefik
+#    kubernetes.io/ingress.class: "traefik"
+#    acme.cert-manager.io/http01-edit-in-place: "true"
+#    cert-manager.io/cluster-issuer: letsencrypt-production
+#    traefik.ingress.kubernetes.io/frontend-entry-points: web, websecure
+#    traefik.ingress.kubernetes.io/redirect-entry-point: websecure
+spec:
+  rules:
+    - host: <YOUR_HOST>
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: server
+                port:
+                  number: 3000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ui
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - <YOUR_HOST>
+      secretName: <YOUR_HOST>-tls
