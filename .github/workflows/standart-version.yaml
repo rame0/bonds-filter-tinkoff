@@ -1,0 +1,19 @@
+name: Standard Version bot
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Configure committer
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+      - name: Bump version
+        uses: qzb/standard-version-action@v1.0.5
