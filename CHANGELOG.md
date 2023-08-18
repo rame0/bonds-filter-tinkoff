@@ -1,4 +1,14 @@
 ## Changelog
+### [0.2.3](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.2.2...v0.2.3) (2023-08-18)
+
+
+### Bug Fixes
+
+* **server:** исправил базовые образы docker ([182fc46](https://github.com/rame0/bonds-filter-tinkoff/commit/182fc4688794768cf049317bad5ef8d22ceaa537))
+* **server:** перенес указание `NODE_ENV` в `modules-fetch-stage` ([d8e3e6e](https://github.com/rame0/bonds-filter-tinkoff/commit/d8e3e6e2020686dbb5488d20a7a33776d04c8ed0))
+* **ui:** исправил базовые образы docker ([d73284c](https://github.com/rame0/bonds-filter-tinkoff/commit/d73284c5235a6ffab76891e5b3abf14267afa477))
+* исправил название свойства ([e00552b](https://github.com/rame0/bonds-filter-tinkoff/commit/e00552bb79d16c5aa99afa4daa3a6b04c915f7b6))
+
 ### [0.2.2](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.2.1...v0.2.2) (2023-08-18)
 
 
