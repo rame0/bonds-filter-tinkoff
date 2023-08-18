@@ -2,7 +2,6 @@ FROM node:18-alpine as build-stage
 WORKDIR /app
 RUN npm install -g pnpm && rm -rf /root/.npm
 
-ENV NODE_ENV=production
 COPY server .
 
 RUN pnpm install --frozen-lockfile --reporter append-only
@@ -13,6 +12,8 @@ RUN pnpm run build && rm -rf /app/src/
 FROM node:18-alpine as modules-fetch-stage
 WORKDIR /app
 RUN npm install -g pnpm && rm -rf /root/.npm
+
+ENV NODE_ENV=production
 
 COPY server/package.json server/pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod --no-optional && rm -rf /root/.pnpm
