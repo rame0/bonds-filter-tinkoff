@@ -6,7 +6,7 @@
 
 Часть данных собирается из [Tinkoff Invest API](https://tinkoff.github.io/investAPI/), часть
 из [API Московской биржи](https://www.moex.com/a2193).
- 
+
 ⚠ Поскольку сбор данных занимает долгое время, при запуске сервера запускается сбора данных по расписанию (раз в 4
 часа).
 
@@ -25,7 +25,7 @@ $ git clone https://github.com/rame0/bonds-filter-tinkoff.git
 
 * [Docker](#docker)
 * [Исходный код](#запуск-из-исходников)
-* [Kubernetes] (в разработке)
+* [Kubernetes](#kubernetes)
 
 > На данный момент рекомендуется запускать из исходников.
 > Запуск из Docker сейчас требует наличие установленного и настроенного `Traefik`.
@@ -174,3 +174,14 @@ docker-compose up --build
 
 После успешной сборки и запуска контейнеров, интерфейс будет доступен по
 адресу [http://bonds-filter.local/](http://bonds-filter.local/).
+
+## Kubernetes
+
+В корне проекта есть файл `kube.example.yaml`. В нем описаны все необходимые ресурсы для запуска приложения в
+Kubernetes.
+
+Также, в настройках `ingress` закомментированы примеры настроек для `Traefik`. 
+
+### Настройка
+* Заменить `<YOUR_API_KEY>` на ваш ключ API Tinkoff.
+* Заменить в `ingress` с `<YOUR_HOST>` на свой домен. 
