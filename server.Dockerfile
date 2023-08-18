@@ -1,4 +1,4 @@
-FROM node:16-alpine as build-stage
+FROM node:18-alpine as build-stage
 WORKDIR /app
 RUN npm install -g pnpm && rm -rf /root/.npm
 
@@ -10,7 +10,7 @@ RUN pnpm run build && rm -rf /app/src/
 
 
 # Install --prod
-FROM node:16-alpine as modules-fetch-stage
+FROM node:18-alpine as modules-fetch-stage
 WORKDIR /app
 RUN npm install -g pnpm && rm -rf /root/.npm
 
@@ -21,7 +21,7 @@ COPY --from=build-stage /app/dist /app/dist
 
 
 # Runtime
-FROM node:16-alpine as runtime-stage
+FROM node:18-alpine as runtime-stage
 WORKDIR /app
 
 COPY --from=modules-fetch-stage /app /app
