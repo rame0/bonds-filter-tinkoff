@@ -10,7 +10,7 @@ dependencies:
     version: 2.1.0(vue@3.3.4)
   '@psqq/tinkoff-invest-api':
     specifier: github:psqq/tinkoff-invest-api
-    version: github.com/psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c
+    version: git/github.com+psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c
   '@vueuse/core':
     specifier: ^10.3.0
     version: 10.3.0(vue@3.3.4)
@@ -44,8 +44,8 @@ devDependencies:
     specifier: ^2.0.1
     version: 2.0.1
   '@types/node':
-    specifier: ^20.5.0
-    version: 20.5.0
+    specifier: ^20.5.1
+    version: 20.5.1
   '@vitejs/plugin-vue':
     specifier: ^4.2.3
     version: 4.2.3(vite@4.4.9)(vue@3.3.4)
@@ -84,7 +84,7 @@ devDependencies:
     version: 0.25.1(vue@3.3.4)
   vite:
     specifier: ^4.4.9
-    version: 4.4.9(@types/node@20.5.0)(sass@1.65.1)
+    version: 4.4.9(@types/node@20.5.1)(sass@1.65.1)
   vue-tsc:
     specifier: ^1.8.8
     version: 1.8.8(typescript@5.0.4)
@@ -406,7 +406,7 @@ packages:
     engines: {node: ^8.13.0 || >=10.10.0}
     dependencies:
       '@grpc/proto-loader': 0.7.8
-      '@types/node': 20.5.0
+      '@types/node': 20.5.1
     dev: false
 
   /@grpc/proto-loader@0.7.8:
@@ -615,8 +615,8 @@ packages:
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
     dev: false
 
-  /@types/node@20.5.0:
-    resolution: {integrity: sha512-Mgq7eCtoTjT89FqNoTzzXg2XvCi5VMhRV6+I2aYanc6kQCBImeNaAYRs/DyoVqk1YEUJK5gN9VO7HRIdz4Wo3Q==}
+  /@types/node@20.5.1:
+    resolution: {integrity: sha512-4tT2UrL5LBqDwoed9wZ6N3umC4Yhz3W3FloMmiiG4JwmUJWpie0c7lcnUNd4gtMKuDEO4wRVS8B6Xa0uMRsMKg==}
 
   /@types/semver@7.5.0:
     resolution: {integrity: sha512-G8hZ6XJiHnuhQKR7ZmysCeJWE08o8T0AXtk5darsCaTVsYZhhgUrq53jizaR2FvsoeCwJhlmwTjkXBY5Pn/ZHw==}
@@ -771,7 +771,7 @@ packages:
       '@unocss/core': 0.55.0
       '@unocss/reset': 0.55.0
       '@unocss/vite': 0.55.0(vite@4.4.9)
-      vite: 4.4.9(@types/node@20.5.0)(sass@1.65.1)
+      vite: 4.4.9(@types/node@20.5.1)(sass@1.65.1)
     transitivePeerDependencies:
       - rollup
     dev: true
@@ -949,7 +949,7 @@ packages:
       chokidar: 3.5.3
       fast-glob: 3.3.1
       magic-string: 0.30.2
-      vite: 4.4.9(@types/node@20.5.0)(sass@1.65.1)
+      vite: 4.4.9(@types/node@20.5.1)(sass@1.65.1)
     transitivePeerDependencies:
       - rollup
     dev: true
@@ -961,7 +961,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.4.9(@types/node@20.5.0)(sass@1.65.1)
+      vite: 4.4.9(@types/node@20.5.1)(sass@1.65.1)
       vue: 3.3.4
     dev: true
 
@@ -2954,7 +2954,7 @@ packages:
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
       '@types/long': 4.0.2
-      '@types/node': 20.5.0
+      '@types/node': 20.5.1
       long: 4.0.0
     dev: false
 
@@ -2973,7 +2973,7 @@ packages:
       '@protobufjs/path': 1.1.2
       '@protobufjs/pool': 1.1.0
       '@protobufjs/utf8': 1.1.0
-      '@types/node': 20.5.0
+      '@types/node': 20.5.1
       long: 5.2.3
     dev: false
 
@@ -3453,7 +3453,7 @@ packages:
       '@unocss/transformer-directives': 0.55.0
       '@unocss/transformer-variant-group': 0.55.0
       '@unocss/vite': 0.55.0(vite@4.4.9)
-      vite: 4.4.9(@types/node@20.5.0)(sass@1.65.1)
+      vite: 4.4.9(@types/node@20.5.1)(sass@1.65.1)
     transitivePeerDependencies:
       - postcss
       - rollup
@@ -3520,7 +3520,7 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: true
 
-  /vite@4.4.9(@types/node@20.5.0)(sass@1.65.1):
+  /vite@4.4.9(@types/node@20.5.1)(sass@1.65.1):
     resolution: {integrity: sha512-2mbUn2LlUmNASWwSCNSJ/EG2HuSRTnVNaydp6vMCm5VIqJsjMfbIWtbH2kDuwUVW5mMUKKZvGPX/rqeqVvv1XA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -3548,7 +3548,7 @@ packages:
       terser:
         optional: true
     dependencies:
-      '@types/node': 20.5.0
+      '@types/node': 20.5.1
       esbuild: 0.18.20
       postcss: 8.4.27
       rollup: 3.28.0
@@ -3732,8 +3732,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c:
-    resolution: {tarball: https://codeload.github.com/psqq/tinkoff-invest-api/tar.gz/b3be2a9244d5a86eac99bcf1674969b63de4643c}
+  git/github.com+psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c:
+    resolution: {commit: b3be2a9244d5a86eac99bcf1674969b63de4643c, repo: git@github.com:psqq/tinkoff-invest-api.git, type: git}
     name: '@psqq/tinkoff-invest-api'
     version: 5.0.0
     dependencies:
