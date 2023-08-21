@@ -10,7 +10,7 @@ dependencies:
     version: 2.1.0(vue@3.3.4)
   '@psqq/tinkoff-invest-api':
     specifier: github:psqq/tinkoff-invest-api
-    version: github.com/psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c
+    version: git/github.com+psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c
   '@vueuse/core':
     specifier: ^10.3.0
     version: 10.3.0(vue@3.3.4)
@@ -27,8 +27,8 @@ dependencies:
     specifier: ^3.0.0-beta.2
     version: 3.0.0-canary.1
   pinia:
-    specifier: ^2.1.3
-    version: 2.1.3(typescript@5.0.4)(vue@3.3.4)
+    specifier: ^2.1.6
+    version: 2.1.6(typescript@5.0.4)(vue@3.3.4)
   vue:
     specifier: ^3.3.4
     version: 3.3.4
@@ -2878,8 +2878,8 @@ packages:
     engines: {node: '>=4'}
     dev: true
 
-  /pinia@2.1.3(typescript@5.0.4)(vue@3.3.4):
-    resolution: {integrity: sha512-XNA/z/ye4P5rU1pieVmh0g/hSuDO98/a5UC8oSP0DNdvt6YtetJNHTrXwpwsQuflkGT34qKxAEcp7lSxXNjf/A==}
+  /pinia@2.1.6(typescript@5.0.4)(vue@3.3.4):
+    resolution: {integrity: sha512-bIU6QuE5qZviMmct5XwCesXelb5VavdOWKWaB17ggk++NUwQWWbP5YnsONTk3b752QkW9sACiR81rorpeOMSvQ==}
     peerDependencies:
       '@vue/composition-api': ^1.4.0
       typescript: '>=4.4.4'
@@ -3732,8 +3732,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c:
-    resolution: {tarball: https://codeload.github.com/psqq/tinkoff-invest-api/tar.gz/b3be2a9244d5a86eac99bcf1674969b63de4643c}
+  git/github.com+psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c:
+    resolution: {commit: b3be2a9244d5a86eac99bcf1674969b63de4643c, repo: git@github.com:psqq/tinkoff-invest-api.git, type: git}
     name: '@psqq/tinkoff-invest-api'
     version: 5.0.0
     dependencies:
