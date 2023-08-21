@@ -42,7 +42,7 @@
     "moleculer-cron": "^0.0.2",
     "moleculer-web": "^0.10.5",
     "moment": "^2.29.4",
-    "nats": "^2.15.1"
+    "nats": "^2.16.0"
   },
   "engines": {
     "node": ">= 18.x.x"
