@@ -28,7 +28,7 @@ dependencies:
     version: 5.3.2
   moleculer:
     specifier: ^0.14.28
-    version: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
+    version: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.18.0)
   moleculer-cron:
     specifier: ^0.0.2
     version: 0.0.2(moleculer@0.14.28)
@@ -42,8 +42,8 @@ dependencies:
     specifier: ^2.29.4
     version: 2.29.4
   nats:
-    specifier: ^2.15.1
-    version: 2.15.1
+    specifier: ^2.18.0
+    version: 2.18.0
 
 devDependencies:
   '@types/jest':
@@ -4313,7 +4313,7 @@ packages:
       moleculer: ^0.11.0
     dependencies:
       cron: 1.8.2
-      moleculer: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
+      moleculer: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.18.0)
     dev: false
 
   /moleculer-db@0.8.24(moleculer@0.14.28):
@@ -4326,7 +4326,7 @@ packages:
       bluebird: 3.7.2
       flat: 5.0.2
       lodash: 4.17.21
-      moleculer: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
+      moleculer: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.18.0)
     dev: false
 
   /moleculer-repl@0.7.3:
@@ -4360,7 +4360,7 @@ packages:
       isstream: 0.1.2
       kleur: 4.1.5
       lodash: 4.17.21
-      moleculer: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
+      moleculer: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.18.0)
       path-to-regexp: 3.2.0
       qs: 6.11.2
       serve-static: 1.15.0
@@ -4368,7 +4368,7 @@ packages:
       - supports-color
     dev: false
 
-  /moleculer@0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1):
+  /moleculer@0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.18.0):
     resolution: {integrity: sha512-HTOtejMpb14oBtW0kKVoYLK6MgZA4NdPEppOf69yJhF1qlqXRGujAXE2ij2wWyXJNf31l84ZZRh+xXXQmRJaOQ==}
     engines: {node: '>= 10.x.x'}
     hasBin: true
@@ -4452,7 +4452,7 @@ packages:
       kleur: 4.1.5
       lodash: 4.17.21
       lru-cache: 6.0.0
-      nats: 2.15.1
+      nats: 2.18.0
       node-fetch: 2.6.12
       recursive-watch: 1.1.4
     transitivePeerDependencies:
@@ -4489,8 +4489,8 @@ packages:
     engines: {node: '>=12.13'}
     dev: false
 
-  /nats@2.15.1:
-    resolution: {integrity: sha512-MMCQXxOLv3dUwh0CRai0RGdMdAHjA3LNOYEAdNkLT8GX4CJFVKlYqkM3K9qVkYhvWwiCUVPHWFSktcrhexSzSw==}
+  /nats@2.18.0:
+    resolution: {integrity: sha512-zZF004ejzf67Za0Tva+xphxoxBMNc5IMLqbZ7Ho0j9TMuisjpo+qCd1EktXRCLNxmrZ8O6Tbm1dBsZYNF6yR1A==}
     engines: {node: '>= 14.0.0'}
     dependencies:
       nkeys.js: 1.0.5
