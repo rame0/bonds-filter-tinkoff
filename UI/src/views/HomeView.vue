@@ -28,30 +28,30 @@
 </template>
 
 <script lang="ts">
-import BondsRepository from '@/data/BondsRepository'
-import { ref } from 'vue'
-import { useStorage } from '@vueuse/core'
+import BondsRepository from "@/data/BondsRepository"
+import { ref } from "vue"
+import { useStorage } from "@vueuse/core"
 
-import CurrencyCollation from '@/data/collations/CurrencyCollation'
-import CountryCollation from '@/data/collations/CountryCollation'
-import type { FilterOptions, FilterValues, FromTo } from '@/data/Types/FilterOptions'
-import { DefaultFilterSelections, defaultFilterValues } from '@/data/Types/FilterOptions'
+import CurrencyCollation from "@/data/collations/CurrencyCollation"
+import CountryCollation from "@/data/collations/CountryCollation"
+import type { FilterOptions, FilterValues, FromTo } from "@/data/Types/FilterOptions"
+import { DefaultFilterSelections, defaultFilterValues } from "@/data/Types/FilterOptions"
 //@ts-ignore
-import { type CombinedBondsResponse } from '@/external/interfaces/CombinedBondsResponse'
-import { type SortBy, TableV2SortOrder } from 'element-plus'
+import { type CombinedBondsResponse } from "@/external/interfaces/CombinedBondsResponse"
+import { type SortBy, TableV2SortOrder } from "element-plus"
 
 export default {
-  name: 'HomeView',
+  name: "HomeView",
 
   setup() {
     const bondsRepository = new BondsRepository()
     const filterSelectionsStore = useStorage<FilterOptions>(
-      'filterSelections',
-      DefaultFilterSelections
+      "filterSelections",
+      DefaultFilterSelections,
     )
-    const sortState = useStorage<SortBy>('sort-state', {
-      key: 'name',
-      order: TableV2SortOrder.ASC
+    const sortState = useStorage<SortBy>("sort-state", {
+      key: "name",
+      order: TableV2SortOrder.ASC,
     })
 
     const filterSelections = ref<FilterOptions>(filterSelectionsStore.value)
@@ -62,16 +62,16 @@ export default {
     const isFetching = ref(false)
     const tableViewSize = ref({
       width: 0,
-      height: 0
+      height: 0,
     })
 
     const bonds = ref<CombinedBondsResponse[]>([])
 
-    const arrayOptions = ['classCode', 'currency', 'couponQuantityPerYear', 'countryOfRisk']
+    const arrayOptions = ["classCode", "currency", "couponQuantityPerYear", "countryOfRisk"]
     const paginationData = ref({
       total: 0,
-      pageSize: useStorage<number>('pageSize', 20),
-      currentPage: 1
+      pageSize: useStorage<number>("pageSize", 20),
+      currentPage: 1,
     })
 
     const fetchBonds = async () => {
@@ -102,12 +102,12 @@ export default {
     }
 
     const isRange = (
-      value: any
+      value: any,
     ): value is {
       from: number
       to: number
       // eslint-disable-next-line no-prototype-builtins
-    } => value && value.hasOwnProperty('from') && value.hasOwnProperty('to')
+    } => value && value.hasOwnProperty("from") && value.hasOwnProperty("to")
 
     const sortChanged = (sort: SortBy) => {
       sortState.value = sort
@@ -123,8 +123,8 @@ export default {
           return (value as []).length > 0
         } else if (isRange(value)) {
           return true
-        } else if (typeof value === 'string') {
-          return value !== ''
+        } else if (typeof value === "string") {
+          return value !== ""
         } else {
           return (value as number) >= 0
         }
@@ -132,13 +132,32 @@ export default {
 
       const filtered = response.value.filter((bond) => {
         for (const [key, value] of appliedFilters) {
+
+          if (key == "search") {
+            const filterValue = value.toString().toLowerCase()
+            const bondName = bond.name.toString().toLowerCase()
+            const bondTicker = bond.ticker.toString().toLowerCase()
+            const bondFigi = bond.figi.toString().toLowerCase()
+            const bondIsin = bond.isin.toString().toLowerCase()
+
+            if(
+              !bondName.includes(filterValue) &&
+              !bondTicker.includes(filterValue) &&
+              !bondFigi.includes(filterValue) &&
+              !bondIsin.includes(filterValue)
+            ){
+              return false
+            }
+
+            continue
+          }
           const bondKeyValue = bond[key as keyof CombinedBondsResponse]
           if (
-            key === 'nominal' ||
-            key === 'placementPrice' ||
-            key === 'price' ||
-            key === 'yield' ||
-            key == 'duration'
+            key === "nominal" ||
+            key === "placementPrice" ||
+            key === "price" ||
+            key === "yield" ||
+            key == "duration"
           ) {
             if (
               (bondKeyValue as number) < (value as FromTo).from ||
@@ -191,7 +210,7 @@ export default {
         let options = response.value.map((a) => a[opt as keyof CombinedBondsResponse])
 
         options = options
-          .filter((a) => a !== null && a !== undefined && a !== '')
+          .filter((a) => a !== null && a !== undefined && a !== "")
           .sort((a, b) => {
             if (a === undefined || b === undefined) return 0
             if (a > b) return 1
@@ -203,11 +222,11 @@ export default {
         filterOptions.value[opt as keyof FilterValues] = [...new Set(options)].map((a) => {
           let label = a
           switch (opt) {
-            case 'currency':
+            case "currency":
               // @ts-ignore
               label = CurrencyCollation.getLabel(a as string)
               break
-            case 'countryOfRisk':
+            case "countryOfRisk":
               // @ts-ignore
               label = CountryCollation.getLabel(a as string)
               break
@@ -246,7 +265,7 @@ export default {
       sortChanged,
       filterChanged,
       pageChanged,
-      pageSizeChanged
+      pageSizeChanged,
     }
   },
   //
@@ -258,7 +277,7 @@ export default {
 
   mounted() {
     const resizeTable = () => {
-      const tableViewBlock = document.getElementById('table-view')
+      const tableViewBlock = document.getElementById("table-view")
 
       if (tableViewBlock) {
         this.tableViewSize.width = tableViewBlock.clientWidth - 50
@@ -266,11 +285,11 @@ export default {
       }
     }
 
-    window.addEventListener('resize', resizeTable)
+    window.addEventListener("resize", resizeTable)
 
     resizeTable()
     this.fetchBonds()
-  }
+  },
 }
 </script>
 

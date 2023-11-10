@@ -2,6 +2,19 @@
   <!-- create form for filterBond variable -->
   <el-form label-position="top" v-model="value">
     <el-row>
+      <!-- search field -->
+      <el-col :span="24">
+        <el-form-item label="Поиск (название/тикер/figi)">
+          <el-input
+            v-model="value.search"
+            placeholder="Поиск"
+            clearable
+            @clear="value.search = ''"
+          />
+        </el-form-item>
+      </el-col>
+    </el-row>
+    <el-row>
       <el-col :span="6">
         <el-form-item label="Номинал">
           <el-input-number
