@@ -5,7 +5,6 @@
     :width="tableSize.width"
     :height="tableSize.height"
     :row-height="tableRowHeight"
-    :v-scrollbar-size="2"
     :sort-by="sortState"
     @column-sort="$emit('update:sortState', $event)"
     fixed
@@ -34,7 +33,7 @@ import { h, type PropType } from 'vue'
 import SectorsCollation from '@/data/collations/SectorsCollation'
 import IssueKindCollations from '@/data/collations/IssueKindCollations'
 import ExchangeCollation from '@/data/collations/ExchangeCollation'
-import { ElTag, ElText, ElAutoResizer, type SortBy } from 'element-plus'
+import { ElTag, ElText, ElAutoResizer, TableV2FixedDir, type SortBy } from 'element-plus'
 import CurrencyCollation from '@/data/collations/CurrencyCollation'
 import { RiskStars, BondFlags, LinksToExchange, LiquidityArrow } from '@/components/UI'
 import type { AnyColumns } from 'element-plus/es/components/table-v2/src/types'
@@ -71,13 +70,15 @@ export default {
         key: 'name',
         dataKey: 'name',
         width: 200,
-        sortable: true
+        sortable: true,
+        fixed: TableV2FixedDir.LEFT,
       },
       {
         title: 'Тикер',
         key: 'ticker',
         dataKey: 'ticker',
         width: 135,
+        fixed: TableV2FixedDir.LEFT,
         cellRenderer: ({ cellData: value, rowData: row }) => (
           <LinksToExchange ticker={value} exchange={row.realExchange} />
         )
