@@ -83,7 +83,7 @@ export default {
         )
       },
       {
-        title: 'Дюрация',
+        title: 'Погашение',
         key: 'duration',
         dataKey: 'duration',
         width: 100,

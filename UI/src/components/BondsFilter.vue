@@ -70,7 +70,7 @@
         </el-form-item>
       </el-col>
       <el-col :span="6">
-        <el-form-item label="Дюрация (мес)">
+        <el-form-item label="Погашение (мес)">
           <el-input-number
               v-model="value.duration.from"
               class="w-50 m-2"
