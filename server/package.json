@@ -33,7 +33,7 @@
     "@kubernetes/client-node": "^0.16.3",
     "@psqq/tinkoff-invest-api": "github:psqq/tinkoff-invest-api",
     "axios": "^1.4.0",
-    "cbor-x": "^1.5.3",
+    "cbor-x": "^1.5.4",
     "dotenv": "^16.3.1",
     "file-system-cache": "^2.4.4",
     "ioredis": "^5.3.2",

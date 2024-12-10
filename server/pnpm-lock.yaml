@@ -10,13 +10,13 @@ dependencies:
     version: 0.16.3
   '@psqq/tinkoff-invest-api':
     specifier: github:psqq/tinkoff-invest-api
-    version: github.com/psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c
+    version: git/github.com+psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c
   axios:
     specifier: ^1.4.0
     version: 1.4.0
   cbor-x:
-    specifier: ^1.5.3
-    version: 1.5.3
+    specifier: ^1.5.4
+    version: 1.5.4
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
@@ -28,7 +28,7 @@ dependencies:
     version: 5.3.2
   moleculer:
     specifier: ^0.14.28
-    version: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
+    version: 0.14.28(cbor-x@1.5.4)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
   moleculer-cron:
     specifier: ^0.0.2
     version: 0.0.2(moleculer@0.14.28)
@@ -589,7 +589,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.1
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       chalk: 4.1.2
       jest-message-util: 29.6.2
       jest-util: 29.6.2
@@ -645,7 +645,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 29.6.2
       '@jest/types': 29.6.1
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       jest-mock: 29.6.2
     dev: true
 
@@ -679,7 +679,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.1
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       jest-message-util: 29.6.2
       jest-mock: 29.6.2
       jest-util: 29.6.2
@@ -712,7 +712,7 @@ packages:
       '@jest/transform': 29.6.2
       '@jest/types': 29.6.1
       '@jridgewell/trace-mapping': 0.3.19
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       chalk: 4.1.2
       collect-v8-coverage: 1.0.1
       exit: 0.1.2
@@ -1050,7 +1050,7 @@ packages:
     dependencies:
       '@types/http-cache-semantics': 4.0.1
       '@types/keyv': 3.1.4
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       '@types/responselike': 1.0.0
     dev: false
 
@@ -1062,13 +1062,13 @@ packages:
     resolution: {integrity: sha512-MxObHvNl4A69ofaTRU8DFqvgzzv8s9yRtaPPm5gud9HDNvpB3GPQFvNuTWAI59B9huVGV5jXYJwbCsmBsOGYWA==}
     dependencies:
       '@types/jsonfile': 6.1.1
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
     dev: false
 
   /@types/graceful-fs@4.1.5:
     resolution: {integrity: sha512-anKkLmZZ+xm4p8JWBf4hElkM4XR+EZeA2M9BAkkTldmcyDY4mbdIJnRghDJH3Ov5ooY7/UAoENtmdMSkaAd7Cw==}
     dependencies:
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
     dev: true
 
   /@types/http-cache-semantics@4.0.1:
@@ -1113,13 +1113,13 @@ packages:
   /@types/jsonfile@6.1.1:
     resolution: {integrity: sha512-GSgiRCVeapDN+3pqA35IkQwasaCh/0YFH5dEF6S88iDvEn901DjOeH3/QPY+XYP1DFzDZPvIvfeEgk+7br5png==}
     dependencies:
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
     dev: false
 
   /@types/keyv@3.1.4:
     resolution: {integrity: sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg==}
     dependencies:
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
     dev: false
 
   /@types/long@4.0.2:
@@ -1139,6 +1139,7 @@ packages:
 
   /@types/node@18.17.1:
     resolution: {integrity: sha512-xlR1jahfizdplZYRU59JlUx9uzF1ARa8jbhM11ccpCJya8kvos5jwdm2ZAgxSCwOl0fq21svP18EVwPBXMQudw==}
+    dev: true
 
   /@types/node@20.5.0:
     resolution: {integrity: sha512-Mgq7eCtoTjT89FqNoTzzXg2XvCi5VMhRV6+I2aYanc6kQCBImeNaAYRs/DyoVqk1YEUJK5gN9VO7HRIdz4Wo3Q==}
@@ -1153,7 +1154,7 @@ packages:
     resolution: {integrity: sha512-whjk1EDJPcAR2kYHRbFl/lKeeKYTi05A15K9bnLInCVroNDCtXce57xKdI0/rQaA3K+6q0eFyUBPmqfSndUZdQ==}
     dependencies:
       '@types/caseless': 0.12.2
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       '@types/tough-cookie': 4.0.2
       form-data: 2.5.1
     dev: false
@@ -1161,7 +1162,7 @@ packages:
   /@types/responselike@1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
     dependencies:
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
     dev: false
 
   /@types/semver@7.3.13:
@@ -1175,14 +1176,14 @@ packages:
   /@types/stream-buffers@3.0.4:
     resolution: {integrity: sha512-qU/K1tb2yUdhXkLIATzsIPwbtX6BpZk0l3dPW6xqWyhfzzM1ECaQ/8faEnu3CNraLiQ9LHyQQPBGp7N9Fbs25w==}
     dependencies:
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
     dev: false
 
   /@types/tar@4.0.5:
     resolution: {integrity: sha512-cgwPhNEabHaZcYIy5xeMtux2EmYBitfqEceBUi2t5+ETy4dW6kswt6WX4+HqLeiiKOo42EXbGiDmVJ2x+vi37Q==}
     dependencies:
       '@types/minipass': 3.3.5
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
     dev: false
 
   /@types/tough-cookie@4.0.2:
@@ -1196,7 +1197,7 @@ packages:
   /@types/ws@6.0.4:
     resolution: {integrity: sha512-PpPrX7SZW9re6+Ha8ojZG4Se8AZXgf0GK6zmfqEuCsY49LFDNXO3SByp44X3dFEqtB73lkCDAdUazhAjVPiNwg==}
     dependencies:
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
     dev: false
 
   /@types/yargs-parser@21.0.0:
@@ -1811,8 +1812,8 @@ packages:
     dev: false
     optional: true
 
-  /cbor-x@1.5.3:
-    resolution: {integrity: sha512-adrN0S67C7jY2hgqeGcw+Uj6iEGLQa5D/p6/9YNl5AaVIYJaJz/bARfWsP8UikBZWbhS27LN0DJK4531vo9ODw==}
+  /cbor-x@1.5.4:
+    resolution: {integrity: sha512-PVKILDn+Rf6MRhhcyzGXi5eizn1i0i3F8Fe6UMMxXBnWkalq9+C5+VTmlIjAYM4iF2IYF2N+zToqAfYOp+3rfw==}
     optionalDependencies:
       cbor-extract: 2.1.1
     dev: false
@@ -2657,7 +2658,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/expect-utils': 29.6.2
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       jest-get-type: 29.4.3
       jest-matcher-utils: 29.6.2
       jest-message-util: 29.6.2
@@ -3482,7 +3483,7 @@ packages:
       '@jest/expect': 29.6.2
       '@jest/test-result': 29.6.2
       '@jest/types': 29.6.1
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.1
@@ -3649,7 +3650,7 @@ packages:
       '@jest/environment': 29.6.2
       '@jest/fake-timers': 29.6.2
       '@jest/types': 29.6.1
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       jest-mock: 29.6.2
       jest-util: 29.6.2
     dev: true
@@ -3670,7 +3671,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.1
       '@types/graceful-fs': 4.1.5
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       anymatch: 3.1.2
       fb-watchman: 2.0.2
       graceful-fs: 4.2.10
@@ -3746,7 +3747,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.1
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       jest-util: 29.6.2
     dev: true
 
@@ -3801,7 +3802,7 @@ packages:
       '@jest/test-result': 29.6.2
       '@jest/transform': 29.6.2
       '@jest/types': 29.6.1
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.10
@@ -3832,7 +3833,7 @@ packages:
       '@jest/test-result': 29.6.2
       '@jest/transform': 29.6.2
       '@jest/types': 29.6.1
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       chalk: 4.1.2
       cjs-module-lexer: 1.2.2
       collect-v8-coverage: 1.0.1
@@ -3884,7 +3885,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.1
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       chalk: 4.1.2
       ci-info: 3.6.1
       graceful-fs: 4.2.10
@@ -3896,7 +3897,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.1
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       chalk: 4.1.2
       ci-info: 3.6.1
       graceful-fs: 4.2.10
@@ -3921,7 +3922,7 @@ packages:
     dependencies:
       '@jest/test-result': 29.6.2
       '@jest/types': 29.6.1
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -3933,7 +3934,7 @@ packages:
     resolution: {integrity: sha512-l3ccBOabTdkng8I/ORCkADz4eSMKejTYv1vB/Z83UiubqhC1oQ5Li6dWCyqOIvSifGjUBxuvxvlm6KGK2DtuAQ==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@types/node': 18.17.1
+      '@types/node': 20.5.0
       jest-util: 29.6.2
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -4313,7 +4314,7 @@ packages:
       moleculer: ^0.11.0
     dependencies:
       cron: 1.8.2
-      moleculer: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
+      moleculer: 0.14.28(cbor-x@1.5.4)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
     dev: false
 
   /moleculer-db@0.8.24(moleculer@0.14.28):
@@ -4326,7 +4327,7 @@ packages:
       bluebird: 3.7.2
       flat: 5.0.2
       lodash: 4.17.21
-      moleculer: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
+      moleculer: 0.14.28(cbor-x@1.5.4)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
     dev: false
 
   /moleculer-repl@0.7.3:
@@ -4360,7 +4361,7 @@ packages:
       isstream: 0.1.2
       kleur: 4.1.5
       lodash: 4.17.21
-      moleculer: 0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
+      moleculer: 0.14.28(cbor-x@1.5.4)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1)
       path-to-regexp: 3.2.0
       qs: 6.11.2
       serve-static: 1.15.0
@@ -4368,7 +4369,7 @@ packages:
       - supports-color
     dev: false
 
-  /moleculer@0.14.28(cbor-x@1.5.3)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1):
+  /moleculer@0.14.28(cbor-x@1.5.4)(ioredis@5.3.2)(jaeger-client@3.19.0)(nats@2.15.1):
     resolution: {integrity: sha512-HTOtejMpb14oBtW0kKVoYLK6MgZA4NdPEppOf69yJhF1qlqXRGujAXE2ij2wWyXJNf31l84ZZRh+xXXQmRJaOQ==}
     engines: {node: '>= 10.x.x'}
     hasBin: true
@@ -4442,7 +4443,7 @@ packages:
         optional: true
     dependencies:
       args: 5.0.3
-      cbor-x: 1.5.3
+      cbor-x: 1.5.4
       eventemitter2: 6.4.9
       fastest-validator: 1.17.0
       glob: 7.2.3
@@ -5986,8 +5987,8 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  github.com/psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c:
-    resolution: {tarball: https://codeload.github.com/psqq/tinkoff-invest-api/tar.gz/b3be2a9244d5a86eac99bcf1674969b63de4643c}
+  git/github.com+psqq/tinkoff-invest-api/b3be2a9244d5a86eac99bcf1674969b63de4643c:
+    resolution: {commit: b3be2a9244d5a86eac99bcf1674969b63de4643c, repo: git@github.com:psqq/tinkoff-invest-api.git, type: git}
     name: '@psqq/tinkoff-invest-api'
     version: 5.0.0
     dependencies:
