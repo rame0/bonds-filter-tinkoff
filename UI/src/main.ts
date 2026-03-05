@@ -4,6 +4,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
+import '@/assets/tailwind.css'
 import '@/assets/index.scss'
 
 const pinia = createPinia()
