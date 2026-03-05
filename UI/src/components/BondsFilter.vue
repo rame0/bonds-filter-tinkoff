@@ -19,14 +19,14 @@
         <el-form-item label="Номинал">
           <el-input-number
             v-model="value.nominal.from"
-            class="w-50 m-2"
+            class="w-1/2 m-2"
             size="small"
             :min="filterOptions.nominal.from"
             :max="value.nominal.to"
           />
           <el-input-number
             v-model="value.nominal.to"
-            class="w-50 m-2"
+            class="w-1/2 m-2"
             size="small"
             :min="value.nominal.from"
             :max="filterOptions.nominal.to"
@@ -37,14 +37,14 @@
         <el-form-item label="Цена">
           <el-input-number
             v-model="value.price.from"
-            class="w-50 m-2"
+            class="w-1/2 m-2"
             size="small"
             :min="filterOptions.price.from"
             :max="value.price.to"
           />
           <el-input-number
             v-model="value.price.to"
-            class="w-50 m-2"
+            class="w-1/2 m-2"
             size="small"
             :min="value.price.from"
             :max="filterOptions.price.to"
@@ -55,14 +55,14 @@
         <el-form-item label="Доходность">
           <el-input-number
             v-model="value.bondYield.from"
-            class="w-50 m-2"
+            class="w-1/2 m-2"
             size="small"
             :min="filterOptions.bondYield.from"
             :max="value.bondYield.to"
           />
           <el-input-number
             v-model="value.bondYield.to"
-            class="w-50 m-2"
+            class="w-1/2 m-2"
             size="small"
             :min="value.bondYield.from"
             :max="filterOptions.bondYield.to"
@@ -73,14 +73,14 @@
         <el-form-item label="Погашение (мес)">
           <el-input-number
               v-model="value.duration.from"
-              class="w-50 m-2"
+              class="w-1/2 m-2"
               size="small"
               :min="filterOptions.duration.from"
               :max="value.duration.to"
           />
           <el-input-number
               v-model="value.duration.to"
-              class="w-50 m-2"
+              class="w-1/2 m-2"
               size="small"
               :min="value.duration.from"
               :max="filterOptions.duration.to"
