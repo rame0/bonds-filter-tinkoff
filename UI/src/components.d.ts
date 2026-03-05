@@ -7,7 +7,6 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    AddButton: typeof import('./components/UI/AddButton.vue')['default']
     BaseHeader: typeof import('./components/UI/BaseHeader.vue')['default']
     BaseSide: typeof import('./components/UI/BaseSide.vue')['default']
     BondFlags: typeof import('./components/UI/BondFlags.vue')['default']
@@ -37,7 +36,6 @@ declare module 'vue' {
     ElSelect: typeof import('element-plus/es')['ElSelect']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
-    ElTableV2: typeof import('element-plus/es')['ElTableV2']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElText: typeof import('element-plus/es')['ElText']
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
@@ -47,7 +45,6 @@ declare module 'vue' {
     LoadingOverlay: typeof import('./components/UI/LoadingOverlay.vue')['default']
     PortfolioStats: typeof import('./components/PortfolioStats.vue')['default']
     PortfolioTable: typeof import('./components/PortfolioTable.vue')['default']
-    ProtfolioTable: typeof import('./components/ProtfolioTable.vue')['default']
     RiskStars: typeof import('./components/UI/RiskStars.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
