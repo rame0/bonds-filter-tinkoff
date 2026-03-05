@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 // import dark theme
 @use "element-plus/theme-chalk/src/dark/css-vars.scss" as *;
 
