@@ -2,13 +2,13 @@
 	<el-row>
 		<!-- table -->
 
-		<el-col :span="16" px="5" py="5" :class="'table-block'" id="table-view">
+		<el-col :span="16" :class="'table-block px-5 py-5'" id="table-view">
 			<portfolio-table v-model="portfolioBonds" :loading="isFetching" />
 		</el-col>
 
 		<!-- stats -->
 
-		<el-col :span="8" px="5" py="5" :class="'table-block'">
+		<el-col :span="8" :class="'table-block px-5 py-5'">
 			<portfolio-stats v-model="portfolioBonds" :loading="isFetching" />
 		</el-col>
 	</el-row>
