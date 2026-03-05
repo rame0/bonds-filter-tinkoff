@@ -4,15 +4,6 @@ import vue from '@vitejs/plugin-vue'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 
-import UnoCSS from 'unocss/vite'
-import {
-  presetAttributify,
-  presetIcons,
-  presetUno,
-  transformerDirectives,
-  transformerVariantGroup
-} from 'unocss'
-
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
@@ -42,19 +33,6 @@ export default defineConfig({
         })
       ],
       dts: 'src/components.d.ts'
-    }),
-    // https://github.com/antfu/unocss
-    // see unocss.config.ts for config
-    UnoCSS({
-      presets: [
-        presetUno(),
-        presetAttributify(),
-        presetIcons({
-          scale: 1.2,
-          warn: true
-        })
-      ],
-      transformers: [transformerDirectives(), transformerVariantGroup()]
     })
   ],
   server: {
