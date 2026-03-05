@@ -3,7 +3,7 @@
     <div>
       <BaseHeader />
       <main style="display: flex" w="full">
-        <BaseSide />
+<!--        <BaseSide />-->
         <div class="content" w="full">
           <RouterView />
         </div>

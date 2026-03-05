@@ -14,12 +14,22 @@ module.exports = {
       name: "DataGrabber",
       cronTime: "* */4 * * *",
       onTick: async () => {
-        await cache.set("bonds", await buildBondsData())
+        try {
+          const data = await buildBondsData()
+          await cache.set("bonds", data)
+        } catch (err) {
+          console.error("[DataGrabber] onTick failed:", err?.message ?? err)
+        }
       },
-      runOnInit: async ()=> {
-        const data =  await cache.get("bonds")
-        if(!data) {
-          await cache.set("bonds", await buildBondsData())
+      runOnInit: async () => {
+        const data = await cache.get("bonds")
+        if (!data) {
+          try {
+            const built = await buildBondsData()
+            await cache.set("bonds", built)
+          } catch (err) {
+            console.error("[DataGrabber] runOnInit failed:", err?.message ?? err)
+          }
         }
       },
       timeZone: "GMT",

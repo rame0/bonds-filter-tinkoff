@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AddButton: typeof import('./components/UI/AddButton.vue')['default']
     BaseHeader: typeof import('./components/UI/BaseHeader.vue')['default']
     BaseSide: typeof import('./components/UI/BaseSide.vue')['default']
     BondFlags: typeof import('./components/UI/BondFlags.vue')['default']
@@ -15,6 +16,8 @@ declare module 'vue' {
     BondOptionsSelect: typeof import('./components/UI/BondOptionsSelect.vue')['default']
     BondsFilter: typeof import('./components/BondsFilter.vue')['default']
     BondsTable: typeof import('./components/BondsTable.vue')['default']
+    ElBadge: typeof import('element-plus/es')['ElBadge']
+    ElButton: typeof import('element-plus/es')['ElButton']
     ElCheckboxButton: typeof import('element-plus/es')['ElCheckboxButton']
     ElCheckboxGroup: typeof import('element-plus/es')['ElCheckboxGroup']
     ElCol: typeof import('element-plus/es')['ElCol']
@@ -32,15 +35,24 @@ declare module 'vue' {
     ElRadioGroup: typeof import('element-plus/es')['ElRadioGroup']
     ElRow: typeof import('element-plus/es')['ElRow']
     ElSelect: typeof import('element-plus/es')['ElSelect']
+    ElTable: typeof import('element-plus/es')['ElTable']
+    ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTableV2: typeof import('element-plus/es')['ElTableV2']
     ElTag: typeof import('element-plus/es')['ElTag']
     ElText: typeof import('element-plus/es')['ElText']
+    ElTooltip: typeof import('element-plus/es')['ElTooltip']
     IconNewWindow: typeof import('./components/icons/IconNewWindow.vue')['default']
     LinksToExchange: typeof import('./components/UI/LinksToExchange.vue')['default']
     LiquidityArrow: typeof import('./components/UI/LiquidityArrow.vue')['default']
     LoadingOverlay: typeof import('./components/UI/LoadingOverlay.vue')['default']
+    PortfolioStats: typeof import('./components/PortfolioStats.vue')['default']
+    PortfolioTable: typeof import('./components/PortfolioTable.vue')['default']
+    ProtfolioTable: typeof import('./components/ProtfolioTable.vue')['default']
     RiskStars: typeof import('./components/UI/RiskStars.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+  }
+  export interface ComponentCustomProperties {
+    vLoading: typeof import('element-plus/es')['ElLoadingDirective']
   }
 }

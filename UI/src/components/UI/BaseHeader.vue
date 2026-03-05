@@ -1,16 +1,40 @@
 <template>
-    <div class="border-bottom head-flex">
-        <h1>Bonds filter (Tinkoff)</h1>
-        <p class="el-text--small"></p>
-    </div>
+	<el-menu :router="true" :default-active="$route.path" mode="horizontal" :ellipsis="false">
+		<el-menu-item index="/"> Bonds filter (Tinkoff)</el-menu-item>
+		<div class="flex-grow" />
+
+		<el-menu-item index="/"> Подбор облигаций</el-menu-item>
+		<el-menu-item index="/portfolio">
+			Подобранный портфель
+			<el-tag>
+				{{ portfolioStore().bondsQty }}
+			</el-tag>
+		</el-menu-item>
+		<!--    <el-menu-item index="/settings">-->
+		<!--      <el-icon>-->
+		<!--        <Setting />-->
+		<!--      </el-icon>-->
+		<!--    </el-menu-item>-->
+		<el-menu-item @click="toggleDark()">
+			<el-icon>
+				<Moon v-if="isDark" />
+				<Sunny v-else />
+			</el-icon>
+		</el-menu-item>
+	</el-menu>
 </template>
 
 <style>
-    .head-flex {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 2vmin;
-        height: var(--header-height);
-    }
+.head-flex {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0 2vmin;
+	height: var(--header-height);
+}
 </style>
+<script setup>
+import { portfolioStore } from "@/data/portfolioStore"
+import { isDark, toggleDark } from "@/composables"
+import { House, Moon, Suitcase, Sunny } from "@element-plus/icons-vue"
+</script>

@@ -5,7 +5,7 @@ RUN npm install -g pnpm && rm -rf /root/.npm
 RUN apk add --no-cache git
 
 COPY UI .
-COPY server/src/common/innterfaces /app/src/external/interfaces
+COPY server/src/common/interfaces /app/src/external/interfaces
 
 RUN pnpm install --frozen-lockfile --reporter append-only && rm -rf /root/.pnpm
 RUN pnpm run build

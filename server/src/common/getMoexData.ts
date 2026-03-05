@@ -2,10 +2,10 @@ import axios from "axios"
 import moment from "moment"
 import Cache from "file-system-cache"
 import { sleep } from "./utils/sleep"
-import { LiquidityType, MoexCoupon, MoexResults, MoexTrade } from "./innterfaces/Moex"
+import { LiquidityType, MoexCoupon, MoexResults, MoexTrade } from "./interfaces/Moex"
 
 export function getMoexData(isins: string[]): Promise<MoexResults> {
-  return new Promise(resolve => {
+  return new Promise((resolve, reject) => {
     const cache = Cache({ ttl: 60 * 60 * 4 })
 
     const moexData = cache.getSync("moexData")
@@ -32,7 +32,10 @@ export function getMoexData(isins: string[]): Promise<MoexResults> {
             resolve(marketData)
           })
         )
-        .catch(error => console.log(error))
+        .catch((error) => {
+          console.error("[getMoexData] MOEX request failed:", error?.message ?? error)
+          reject(error)
+        })
     }
   })
 }

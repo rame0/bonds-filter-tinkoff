@@ -1,9 +1,9 @@
 {
-  "printWidth": 160,
-  "trailingComma": "es5",
+  "$schema": "https://json.schemastore.org/prettierrc",
   "semi": false,
-  "arrowParens": "avoid",
+  "tabWidth": 2,
+  "useTabs": true,
   "singleQuote": false,
-  "useTabs": false,
-  "tabWidth": 2
+  "printWidth": 100,
+  "trailingComma": "none"
 }

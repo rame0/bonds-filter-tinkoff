@@ -4,14 +4,10 @@ import { GetLastPricesResponse } from "@psqq/tinkoff-invest-api/cjs/generated/ma
 import { MoneyValue, Quotation } from "@psqq/tinkoff-invest-api/src/generated/common"
 import moment from "moment/moment"
 import { getMoexData } from "./getMoexData"
-import { CombinedBondsResponse } from "./innterfaces/CombinedBondsResponse"
+import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
+import { api } from "./api"
 
 export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
-  const api = new TinkoffInvestApi({
-    token: process.env.TINKOFF_API_TOKEN,
-    appName: "rame0/bonds-filter-tinkoff",
-  })
-
   const bonds = await api.instruments.bonds({
     instrumentStatus: InstrumentStatus.INSTRUMENT_STATUS_BASE,
   })

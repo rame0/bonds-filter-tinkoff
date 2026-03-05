@@ -12,7 +12,7 @@ export type FromTo = { from: number; to: number }
 export interface FilterOptions {
   nominal: FromTo
   price: FromTo
-  yield: FromTo
+  bondYield: FromTo
   duration: FromTo
   // placementPrice: FromTo
 
@@ -48,7 +48,7 @@ export interface FilterOptions {
 export interface FilterValues {
   nominal: FromTo
   price: FromTo
-  yield: FromTo
+  bondYield: FromTo
   duration: FromTo
   // placementPrice: FromTo
   realExchange: CollationItem[]
@@ -65,7 +65,7 @@ export interface FilterValues {
 export const defaultFilterValues: FilterValues = {
   nominal: { from: 0, to: 100000000 },
   price: { from: 0, to: 5000 },
-  yield: { from: 0, to: 1000 },
+  bondYield: { from: 0, to: 1000 },
   duration: { from: 0, to: 1000},
   // placementPrice: { from: 0, to: 100000000 },
   realExchange: ExchangeCollation.asArray(),
@@ -82,7 +82,7 @@ export const defaultFilterValues: FilterValues = {
 export const DefaultFilterSelections: FilterOptions = {
   nominal: { from: 500, to: 3000 },
   price: { from: 90, to: 110 },
-  yield: { from: 90, to: 110 },
+  bondYield: { from: 90, to: 110 },
   duration: { from: 12, to: 150 },
   // placementPrice: { from: 500, to: 3000 },
 

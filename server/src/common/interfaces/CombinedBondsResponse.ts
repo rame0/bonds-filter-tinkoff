@@ -5,7 +5,7 @@ import { LiquidityType } from "./Moex"
 export interface CombinedBondsResponse extends Omit<Bond, "klong" | "kshort" | "dlong"
 	| "dshort" | "dlongMin" | "dshortMin" | "minPriceIncrement"
 	| "nominal" | "initialNominal" | "placementPrice" | "aciValue"
-	| "price"> {
+	| "price" | "qty"> {
 	klong?: number,
 	kshort?: number,
 	dlong?: number,
@@ -32,4 +32,5 @@ export interface CombinedBondsResponse extends Omit<Bond, "klong" | "kshort" | "
 	volume?: number,
 	duration?: number,
 	liquidity?: LiquidityType,
+	qty: number,
 }

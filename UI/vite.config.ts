@@ -61,6 +61,7 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': 'http://0.0.0.0:3000/'
+      //'/api': 'https://bonds.rame0.ru/'
     }
   }
 })

@@ -54,18 +54,18 @@
       <el-col :span="6">
         <el-form-item label="Доходность">
           <el-input-number
-            v-model="value.yield.from"
+            v-model="value.bondYield.from"
             class="w-50 m-2"
             size="small"
-            :min="filterOptions.yield.from"
-            :max="value.yield.to"
+            :min="filterOptions.bondYield.from"
+            :max="value.bondYield.to"
           />
           <el-input-number
-            v-model="value.yield.to"
+            v-model="value.bondYield.to"
             class="w-50 m-2"
             size="small"
-            :min="value.yield.from"
-            :max="filterOptions.yield.to"
+            :min="value.bondYield.from"
+            :max="filterOptions.bondYield.to"
           />
         </el-form-item>
       </el-col>
