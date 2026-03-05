@@ -2,7 +2,7 @@
 	<el-row>
 		<!-- table -->
 
-		<el-col :span="16" px="5" py="5" :class="'table-block'" id="table-view">
+		<el-col :span="16" :class="'table-block px-5 py-5'" id="table-view">
 			<bonds-table
 				v-model="bonds"
 				:pagination-data="paginationData"
@@ -16,7 +16,7 @@
 
 		<!-- filter -->
 
-		<el-col :span="8" px="5" py="5" :class="'table-block'">
+		<el-col :span="8" :class="'table-block px-5 py-5'">
 			<bonds-filter
 				v-model="filterSelections"
 				:filter-options="filterOptions"
