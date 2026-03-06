@@ -24,31 +24,3 @@ code {
   background-color: var(--ep-color-primary-light-9);
   color: var(--ep-color-primary);
 }
-
-.border-bottom {
-  border-bottom: 1px solid var(--ep-menu-border-color);
-}
-
-.text-a-right {
-  text-align: right;
-}
-
-.text-a-left {
-  text-align: left;
-}
-
-.text-a-center {
-  text-align: center;
-}
-
-.ep-table .warning-row {
-  --ep-table-tr-bg-color: var(--ep-color-warning-light-7);
-}
-
-.ep-table .success-row {
-  --ep-table-tr-bg-color: var(--ep-color-success-light-7);
-}
-
-.ep-table .danger-row {
-  --ep-table-tr-bg-color: var(--ep-color-danger-light-7);
-}

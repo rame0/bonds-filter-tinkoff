@@ -2,7 +2,11 @@
 	<el-row>
 		<!-- table -->
 
-		<el-col :span="16" :class="'table-block px-5 py-5'" id="table-view">
+		<el-col
+			:span="16"
+			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)]"
+			id="table-view"
+		>
 			<bonds-table
 				v-model="bonds"
 				:pagination-data="paginationData"
@@ -16,7 +20,10 @@
 
 		<!-- filter -->
 
-		<el-col :span="8" :class="'table-block px-5 py-5'">
+		<el-col
+			:span="8"
+			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)]"
+		>
 			<bonds-filter
 				v-model="filterSelections"
 				:filter-options="filterOptions"
@@ -262,11 +269,3 @@ export default {
 }
 </script>
 
-<style>
-.table-block {
-	height: calc(100vh - var(--header-height) - 1px);
-	/*overflow: auto;*/
-	background: var(--el-color-primary-light-9);
-	color: var(--el-color-primary);
-}
-</style>

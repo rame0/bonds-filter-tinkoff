@@ -1,20 +1,20 @@
 <template>
-	<table style="">
-		<tr>
-			<td>Всего бумаг:</td>
-			<td>{{ totalBonds }}</td>
+	<table class="w-full border-collapse text-sm">
+		<tr class="border-b border-slate-200/60">
+			<td class="py-3 pr-4 font-medium">Всего бумаг:</td>
+			<td class="py-3 text-right">{{ totalBonds }}</td>
+		</tr>
+		<tr class="border-b border-slate-200/60">
+			<td class="py-3 pr-4 font-medium">Всего купонов:</td>
+			<td class="py-3 text-right">{{ totalCoupons }}</td>
+		</tr>
+		<tr class="border-b border-slate-200/60">
+			<td class="py-3 pr-4 font-medium">Профит от купонов:</td>
+			<td class="py-3 text-right">{{ totalProfit }}</td>
 		</tr>
 		<tr>
-			<td>Всего купонов:</td>
-			<td>{{ totalCoupons }}</td>
-		</tr>
-		<tr>
-			<td>Профит от купонов:</td>
-			<td>{{ totalProfit }}</td>
-		</tr>
-		<tr>
-			<td>Цена покупки портфеля</td>
-			<td>{{ totalPrice }}</td>
+			<td class="py-3 pr-4 font-medium">Цена покупки портфеля</td>
+			<td class="py-3 text-right">{{ totalPrice }}</td>
 		</tr>
 	</table>
 </template>
@@ -81,4 +81,3 @@ export default {
 }
 </script>
 
-<style></style>

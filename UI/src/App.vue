@@ -2,7 +2,7 @@
   <ElConfigProvider namespace="ep">
     <div>
       <BaseHeader />
-      <main style="display: flex" class="w-full">
+      <main class="flex w-full">
 <!--        <BaseSide />-->
         <div class="content w-full">
           <RouterView />

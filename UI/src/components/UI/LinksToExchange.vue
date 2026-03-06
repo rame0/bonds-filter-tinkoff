@@ -1,15 +1,15 @@
 <template>
-  <div>
+  <div class="space-y-1">
     <div>{{ ticker }}</div>
     <el-link
       :href="`https://www.tinkoff.ru/invest/bonds/${props.ticker}/`"
       target="_blank"
       type="warning"
-      class="link"
+      class="inline-flex items-center gap-1 border-b border-dashed no-underline hover:no-underline"
       :underline="false"
     >
       Tinkoff
-      <el-icon class="icon" :size="10">
+      <el-icon :size="10">
         <new-window />
       </el-icon>
     </el-link>
@@ -18,12 +18,12 @@
       :href="`https://www.moex.com/ru/issue.aspx?code=${props.ticker}`"
       target="_blank"
       type="danger"
-      class="link"
+      class="inline-flex items-center gap-1 border-b border-dashed no-underline hover:no-underline"
       :underline="false"
       v-if="props.exchange == 1 || props.exchange == '1'"
     >
       МосБиржа
-      <el-icon class="icon" :size="10">
+      <el-icon :size="10">
         <new-window />
       </el-icon>
     </el-link>
@@ -36,17 +36,3 @@ import newWindow from '@/components/icons/IconNewWindow.vue'
 const props = defineProps(['ticker', 'exchange'])
 </script>
 
-<style scoped>
-.link {
-  border-bottom: 1px dashed;
-  text-decoration: none;
-}
-
-.link:hover {
-  text-decoration: none;
-}
-
-.icon {
-  margin-left: 5px;
-}
-</style>
