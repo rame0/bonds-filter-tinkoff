@@ -1,31 +1,19 @@
-FROM node:18-alpine as build-stage
+FROM oven/bun:1.3.7-alpine AS build-stage
 WORKDIR /app
-RUN npm install -g pnpm && rm -rf /root/.npm
 
 RUN apk add --no-cache git
 
 COPY UI .
 COPY server/src/common/interfaces /app/src/external/interfaces
 
-RUN pnpm install --frozen-lockfile --reporter append-only && rm -rf /root/.pnpm
-RUN pnpm run build
+RUN bun install --frozen-lockfile
+RUN bun run build
 
 
-# Install --prod
-FROM node:18-alpine as modules-fetch-stage
-WORKDIR /app
-RUN npm install -g pnpm && rm -rf /root/.npm
-
-COPY UI/package.json UI/pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --prod --no-optional && rm -rf /root/.pnpm
-
-COPY --from=build-stage /app/dist /app/dist
-
-
-FROM nginx:alpine as production-stage
+FROM nginx:alpine AS production-stage
 
 COPY ./UI/nginx.conf /etc/nginx/conf.d/default.conf
-COPY --from=modules-fetch-stage /app/dist /var/www/app
+COPY --from=build-stage /app/dist /var/www/app
 
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
