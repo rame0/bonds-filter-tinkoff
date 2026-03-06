@@ -2,13 +2,20 @@
 	<el-row>
 		<!-- table -->
 
-		<el-col :span="16" :class="'table-block px-5 py-5'" id="table-view">
+		<el-col
+			:span="16"
+			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)]"
+			id="table-view"
+		>
 			<portfolio-table v-model="portfolioBonds" :loading="isFetching" />
 		</el-col>
 
 		<!-- stats -->
 
-		<el-col :span="8" :class="'table-block px-5 py-5'">
+		<el-col
+			:span="8"
+			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)]"
+		>
 			<portfolio-stats v-model="portfolioBonds" :loading="isFetching" />
 		</el-col>
 	</el-row>
@@ -53,4 +60,3 @@ export default {
 }
 </script>
 
-<style scoped></style>

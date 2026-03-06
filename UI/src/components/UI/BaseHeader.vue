@@ -1,7 +1,7 @@
 <template>
 	<el-menu :router="true" :default-active="$route.path" mode="horizontal" :ellipsis="false">
 		<el-menu-item index="/"> Bonds filter (Tinkoff)</el-menu-item>
-		<div class="flex-grow" />
+		<div class="grow" />
 
 		<el-menu-item index="/"> Подбор облигаций</el-menu-item>
 		<el-menu-item index="/portfolio">
@@ -24,15 +24,6 @@
 	</el-menu>
 </template>
 
-<style>
-.head-flex {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 0 2vmin;
-	height: var(--header-height);
-}
-</style>
 <script setup>
 import { portfolioStore } from "@/data/portfolioStore"
 import { isDark, toggleDark } from "@/composables"
