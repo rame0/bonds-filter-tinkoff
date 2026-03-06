@@ -1,34 +1,31 @@
-FROM node:18-alpine as build-stage
+FROM oven/bun:1.3.7-alpine AS build-stage
 WORKDIR /app
-RUN npm install -g pnpm && rm -rf /root/.npm
 
 COPY server .
 
-RUN pnpm install --frozen-lockfile --reporter append-only
-RUN pnpm run build && rm -rf /app/src/
+RUN bun install --frozen-lockfile
+RUN bun run build && rm -rf /app/src/
 
 
 # Install --prod
-FROM node:18-alpine as modules-fetch-stage
+FROM oven/bun:1.3.7-alpine AS modules-fetch-stage
 WORKDIR /app
-RUN npm install -g pnpm && rm -rf /root/.npm
 
 ENV NODE_ENV=production
 
-COPY server/package.json server/pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --prod --no-optional && rm -rf /root/.pnpm
+COPY server/package.json server/bun.lock ./
+RUN bun install --frozen-lockfile --production
 
 COPY --from=build-stage /app/dist /app/dist
 
 
 # Runtime
-FROM node:18-alpine as runtime-stage
+FROM oven/bun:1.3.7-alpine AS runtime-stage
 WORKDIR /app
 
 COPY --from=modules-fetch-stage /app /app
 
-RUN mkdir /app/.cache
-RUN chown -R node:node /app/.cache
-USER node
+RUN addgroup -S app && adduser -S app -G app && mkdir /app/.cache && chown -R app:app /app
+USER app
 
-CMD [ "/bin/sh", "-c", "./node_modules/.bin/moleculer-runner --config dist/moleculer.config.js dist/src/services/{**,**/**,**/**/**}/*.service.js"]
+CMD [ "bun", "./node_modules/.bin/moleculer-runner", "--config", "dist/moleculer.config.js", "dist/src/services/{**,**/**,**/**/**}/*.service.js" ]
