@@ -1,8 +1,6 @@
-version: "3.3"
-
 services:
 
-  server:
+  backend:
     build:
       context: .
       dockerfile: server.Dockerfile
@@ -14,27 +12,27 @@ services:
     volumes:
       - ./server/.cache:/app/.cache
     labels:
-      - traefik.docker.network=traefik_default
-      - traefik.http.routers.api-gw.rule=Host(`bonds-filter.local`) && PathPrefix(`/api/`)
-      - traefik.http.routers.api-gw.entrypoints=web,websecure
-      - traefik.http.services.api.loadbalancer.server.port=3000
+      - traefik.enable=true
+      - traefik.docker.network=traefik_net
+      - traefik.http.routers.bonds-filter-backend.rule=Host(`bonds-filter.local`) && PathPrefix(`/api`)
+      - traefik.http.routers.bonds-filter-backend.entrypoints=web
+      - traefik.http.services.bonds-filter-backend.loadbalancer.server.port=3000
     networks:
-      - internal
-      - traefik_default
+      - traefik_net
 
-  UI:
+  frontend:
     build:
       context: .
       dockerfile: ui.Dockerfile
     image: bonds-filter-tinkoff-ui
     labels:
-      - traefik.docker.network=traefik_default
-      - traefik.http.routers.web-gw.rule=Host(`bonds-filter.local`)
-      - traefik.http.routers.web-gw.entrypoints=web,websecure
-      - traefik.http.services.web.loadbalancer.server.port=80
+      - traefik.enable=true
+      - traefik.docker.network=traefik_net
+      - traefik.http.routers.bonds-filter-frontend.rule=Host(`bonds-filter.local`)
+      - traefik.http.routers.bonds-filter-frontend.entrypoints=web
+      - traefik.http.services.bonds-filter-frontend.loadbalancer.server.port=80
     networks:
-      - internal
-      - traefik_default
+      - traefik_net
 
 #  greeter:
 #    build:
@@ -50,8 +48,7 @@ services:
 
 
 networks:
-  internal:
-  traefik_default:
+  traefik_net:
     external: true
 
 volumes:
