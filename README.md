@@ -71,10 +71,7 @@ SANDBOX_ACCOUNT_ID=
 
 ### Требования
 
-* [Node.js](https://nodejs.org/en/) 16 или старше.
-* [pnpm](https://pnpm.io/) 8 или старше.
-    * Можно использовать и `npm`, но `pnpm` работает быстрее и использует меньше места на диске.
-    * Если используется `npm`, то вместо `pnpm` в командах ниже нужно использовать `npm`.
+* [Bun](https://bun.sh/) 1.3.7.
 
 ### Установка зависимостей
 
@@ -87,30 +84,30 @@ $ cd bonds-filter-tinkoff
 Устанавливаем зависимости сервера:
 
 ```bash
-$ cd server && pnpm install && cd ..
+$ cd server && bun install && cd ..
 ```
 
 Устанавливаем зависимости UI:
 
 ```bash
-$ cd UI && pnpm install && cd ..
+$ cd UI && bun install && cd ..
 ```
 
 ### Запуск
 
 Для запуска нужно открыть 2 окна терминала и в каждом из них перейти в папку с проектом.
 
-В первом окне запускаем сервер:
+В первом окне запускаем сервер в dev-режиме:
 
 ```bash
-$ cd server && pnpm start
+$ cd server && bun run dev
 ```
 
 Результат выполнения команды должен быть примерно такой:
 
 ```log
-> bonds-filter-tinkoff@1.1.0 start /home/ra/projects/bonds-filter-tinkoff/server
-> ./node_modules/.bin/moleculer-runner --config dist/moleculer.config.js dist/src/services/{**,**/**,**/**/**}/*.service.js
+> bonds-filter-tinkoff-server@0.2.3 dev /home/ra/projects/bonds-filter-tinkoff/server
+> bun ./node_modules/moleculer/bin/moleculer-runner.js --hot --repl --config moleculer.config.ts src/services/{**,**/**,**/**/**}/*.service.ts
 
 [2023-08-13T13:04:08.740Z] INFO  ra-243915/BROKER: Moleculer v0.14.28 is starting...
 ...
@@ -130,20 +127,20 @@ $ cd server && pnpm start
 Во втором окне запускаем UI:
 
 ```bash
-$ cd UI && pnpm preview
+$ cd UI && bun run dev
 ```
 
 Результат выполнения команды должен быть примерно такой:
 
 ```log
-> bonds-filter-tinkoff@0.0.0 preview /home/ra/projects/bonds-filter-tinkoff/UI
-> vite preview
+> bonds-filter-tinkoff-ui@0.2.3 dev /home/ra/projects/bonds-filter-tinkoff/UI
+> vite
 
-  ➜  Local:   http://localhost:4173/
+  ➜  Local:   http://localhost:5173/
   ➜  Network: use --host to expose
 ```
 
-Интерфейс доступен по адресу указанному в консоли (в примере выше это `http://localhost:4173/`).
+Интерфейс доступен по адресу указанному в консоли (в примере выше это `http://localhost:5173/`).
 
 ## Docker
 
