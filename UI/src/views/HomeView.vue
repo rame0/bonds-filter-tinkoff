@@ -37,7 +37,7 @@ import type { FilterOptions, FilterValues, FromTo } from "@/data/Types/FilterOpt
 import { DefaultFilterSelections, defaultFilterValues } from "@/data/Types/FilterOptions"
 //@ts-ignore
 import { type CombinedBondsResponse } from "@/external/interfaces/CombinedBondsResponse"
-import { sortState } from "@/data/Types/SortState"
+import type { sortState } from "@/data/Types/SortState"
 
 export default {
 	name: "HomeView",
@@ -86,7 +86,11 @@ export default {
 		): value is {
 			from: number
 			to: number
-		} => value !== null && typeof value === "object" && Object.hasOwn(value, "from") && Object.hasOwn(value, "to")
+		} =>
+			value !== null &&
+			typeof value === "object" &&
+			Object.prototype.hasOwnProperty.call(value, "from") &&
+			Object.prototype.hasOwnProperty.call(value, "to")
 
 		const sortChanged = (sort: sortState) => {
 			sortState.value = sort
