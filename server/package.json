@@ -10,8 +10,8 @@
     "test": "bun test",
     "coverage": "bun test --coverage",
     "lint": "eslint --ext .js,.ts .",
-    "typeorm": "typeorm-ts-node-commonjs -d ./src/common/database/DataSource.ts",
-    "migration:generate": "typeorm-ts-node-commonjs migration:generate -d ./src/common/database/DataSource.ts -p"
+    "typeorm": "bun run scripts/typeorm-run.ts",
+    "migration:generate": "bun run scripts/typeorm-run.ts migration:generate -p"
   },
   "devDependencies": {
     "@types/node": "^20.5.0",
@@ -22,6 +22,7 @@
     "eslint-plugin-prefer-arrow": "^1.2.2",
     "jaeger-client": "^3.19.0",
     "moleculer-repl": "^0.7.3",
+    "typeorm": "^0.3.28",
     "typescript": "^5.1.6"
   },
   "dependencies": {
