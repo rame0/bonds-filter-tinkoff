@@ -1,11 +1,10 @@
 export default function addMetrika(metrikaId: string) {
-  window['ym'] =
-    window['ym'] ||
+  window.ym =
+    window.ym ||
     function () {
-      ;(window['ym'].a = window['ym'].a || []).push(arguments)
+      ;(window.ym!.a = window.ym!.a || []).push(arguments)
     }
-  // @ts-ignore
-  window['ym'].l = 1 * new Date()
+  window.ym.l = Date.now()
 
   const script = document.createElement('script')
   script.type = 'text/javascript'
@@ -34,7 +33,7 @@ export default function addMetrika(metrikaId: string) {
   //
   // // check if ym is defined in window and then run init script
   // if (typeof window.ym !== 'undefined') {
-    window.ym(metrikaId, 'init', {
+    window.ym?.(metrikaId, 'init', {
       clickmap:true,
       trackLinks:true,
       accurateTrackBounce:true

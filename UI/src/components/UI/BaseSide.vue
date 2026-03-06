@@ -42,10 +42,12 @@ import { House, Sunny, Moon, Suitcase } from "@element-plus/icons-vue"
 import { toggleDark, isDark } from "@/composables"
 import { portfolioStore } from "@/data/portfolioStore"
 
-defineProps({
-	mode: {
-		type: String,
-		default: "vertical"
+withDefaults(
+	defineProps<{
+		mode?: "horizontal" | "vertical"
+	}>(),
+	{
+		mode: "vertical"
 	}
-})
+)
 </script>

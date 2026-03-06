@@ -11,7 +11,7 @@
     "format": "prettier --write src/"
   },
   "engines": {
-    "node": ">=18.x.x"
+    "bun": ">=1.3.7"
   },
   "engineStrict": true,
   "dependencies": {

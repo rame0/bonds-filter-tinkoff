@@ -10,6 +10,7 @@ import LiquidityCollations from '@/data/collations/LiquidityCollations'
 export type FromTo = { from: number; to: number }
 
 export interface FilterOptions {
+  search: string
   nominal: FromTo
   price: FromTo
   bondYield: FromTo
@@ -80,6 +81,7 @@ export const defaultFilterValues: FilterValues = {
 }
 
 export const DefaultFilterSelections: FilterOptions = {
+  search: "",
   nominal: { from: 500, to: 3000 },
   price: { from: 90, to: 110 },
   bondYield: { from: 90, to: 110 },

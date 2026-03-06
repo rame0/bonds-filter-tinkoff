@@ -18,7 +18,7 @@ import { ElConfigProvider } from 'element-plus'
 import BaseHeader from '@/components/UI/BaseHeader.vue'
 
 if (import.meta.env.VITE_METRIKA_ID) {
-  const metrika = import('@/utils/metrika.ts')
+  const metrika = import('@/utils/metrika')
   const addMetrika = metrika.then((m: any) => {
     return m.default
   })
