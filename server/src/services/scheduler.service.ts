@@ -4,7 +4,7 @@ import { buildBondsData } from "../common/buildBondsData"
 
 const cache = Cache({ ttl: 60 * 60 * 4 })
 
-module.exports = {
+export default {
   name: "cron-job",
 
   mixins: [Cron],

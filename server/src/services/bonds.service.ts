@@ -6,7 +6,7 @@ import { CombinedBondsResponse } from "../common/interfaces/CombinedBondsRespons
 import { api } from "../common/api"
 import { Helpers } from "@psqq/tinkoff-invest-api"
 
-module.exports = {
+export default {
 	name: "bonds",
 	// adapter: new MongooseAdapter(process.env.MONGO_URI || "mongodb://localhost/moleculer-blog", { useNewUrlParser: true, useUnifiedTopology: true }),
 

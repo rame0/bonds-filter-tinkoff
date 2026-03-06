@@ -1,7 +1,7 @@
 import ApiGateway from "moleculer-web"
 
 
-module.exports = {
+export default {
 	name: "api",
 	mixins: [ApiGateway],
 	settings: {
