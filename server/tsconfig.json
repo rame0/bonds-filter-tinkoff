@@ -5,8 +5,8 @@
     "lib": ["ES2019", "ES2020", "DOM", "DOM.Iterable"],
     "esModuleInterop": true,
     "noImplicitAny": false,
-    "module": "CommonJS",
-    "moduleResolution": "Node",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "target": "es2020",
     "declaration": false,
     "removeComments": true,
@@ -17,9 +17,9 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "outDir": "./dist",
-    // "baseUrl": "./src",
     "incremental": true,
-    "allowJs": true
+    "allowJs": true,
+    "skipLibCheck": true
   },
   "include": ["./**/*", "./.eslintrc.cjs"],
   "exclude": ["node_modules/**/*", "test", "dist/**/*"]

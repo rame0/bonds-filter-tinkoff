@@ -73,4 +73,4 @@ const brokerConfig: BrokerOptions = {
 	middlewares: [],
 }
 
-export = brokerConfig
+export default brokerConfig
