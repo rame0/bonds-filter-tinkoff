@@ -3,7 +3,7 @@
 		<!-- table -->
 
 		<div
-			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)] xl:col-span-16"
+			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--app-color-primary-soft)] px-5 py-5 text-[var(--app-color-primary)] xl:col-span-16"
 			id="table-view"
 		>
 			<bonds-table
@@ -20,7 +20,7 @@
 		<!-- filter -->
 
 		<div
-			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)] xl:col-span-8"
+			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--app-color-primary-soft)] px-5 py-5 text-[var(--app-color-primary)] xl:col-span-8"
 		>
 			<bonds-filter
 				v-model="filterSelections"
