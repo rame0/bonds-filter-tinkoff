@@ -1,6 +1,7 @@
 :root {
   --app-color-primary: #15803d;
   --app-color-primary-soft: #f0fdf4;
+  --app-panel-bg: #f8fafc;
   --header-height: 60px;
   color-scheme: light;
 }
@@ -8,6 +9,7 @@
 html.dark {
   --app-color-primary: #86efac;
   --app-color-primary-soft: #052e16;
+  --app-panel-bg: #0f172a;
   color-scheme: dark;
 }
 
