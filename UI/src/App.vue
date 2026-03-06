@@ -1,20 +1,17 @@
 <template>
-  <ElConfigProvider namespace="ep">
-    <div>
-      <BaseHeader />
-      <main class="flex w-full">
-<!--        <BaseSide />-->
-        <div class="content w-full">
-          <RouterView />
-        </div>
-      </main>
-    </div>
-  </ElConfigProvider>
+  <div>
+    <BaseHeader />
+    <main class="flex w-full">
+<!--      <BaseSide />-->
+      <div class="content w-full">
+        <RouterView />
+      </div>
+    </main>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router'
-import { ElConfigProvider } from 'element-plus'
 import BaseHeader from '@/components/UI/BaseHeader.vue'
 
 if (import.meta.env.VITE_METRIKA_ID) {

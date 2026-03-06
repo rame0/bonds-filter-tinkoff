@@ -1,10 +1,9 @@
 <template>
-	<el-row>
+	<div class="grid grid-cols-1 xl:grid-cols-24">
 		<!-- table -->
 
-		<el-col
-			:span="16"
-			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)]"
+		<div
+			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)] xl:col-span-16"
 			id="table-view"
 		>
 			<bonds-table
@@ -16,21 +15,20 @@
 				@update:page="pageChanged"
 				@update:page-size="pageSizeChanged"
 			/>
-		</el-col>
+		</div>
 
 		<!-- filter -->
 
-		<el-col
-			:span="8"
-			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)]"
+		<div
+			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)] xl:col-span-8"
 		>
 			<bonds-filter
 				v-model="filterSelections"
 				:filter-options="filterOptions"
 				@change="filterChanged"
 			/>
-		</el-col>
-	</el-row>
+		</div>
+	</div>
 </template>
 
 <script lang="ts">

@@ -1,277 +1,215 @@
 <template>
-  <!-- create form for filterBond variable -->
-  <el-form label-position="top" v-model="value">
-    <el-row>
-      <!-- search field -->
-      <el-col :span="24">
-        <el-form-item label="Поиск (название/тикер/figi)">
-          <el-input
-            v-model="value.search"
-            placeholder="Поиск"
-            clearable
-            @clear="value.search = ''"
-          />
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="6">
-        <el-form-item label="Номинал">
-          <el-input-number
-            v-model="value.nominal.from"
-            class="w-1/2 m-2"
-            size="small"
+  <div class="space-y-6">
+    <section class="space-y-2">
+      <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">
+        Поиск (название/тикер/figi)
+      </label>
+      <div class="flex gap-2">
+        <input
+          v-model="value.search"
+          type="text"
+          placeholder="Поиск"
+          class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
+        />
+        <button
+          v-if="value.search"
+          type="button"
+          class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-rose-500 hover:text-rose-600 dark:border-slate-700 dark:text-slate-200 dark:hover:border-rose-400 dark:hover:text-rose-300"
+          @click="value.search = ''"
+        >
+          Сбросить
+        </button>
+      </div>
+    </section>
+
+    <section class="grid grid-cols-1 gap-4 2xl:grid-cols-4 xl:grid-cols-2">
+      <div class="space-y-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Номинал</label>
+        <div class="grid grid-cols-2 gap-3">
+          <input
+            v-model.number="value.nominal.from"
+            type="number"
             :min="filterOptions.nominal.from"
             :max="value.nominal.to"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
           />
-          <el-input-number
-            v-model="value.nominal.to"
-            class="w-1/2 m-2"
-            size="small"
+          <input
+            v-model.number="value.nominal.to"
+            type="number"
             :min="value.nominal.from"
             :max="filterOptions.nominal.to"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
           />
-        </el-form-item>
-      </el-col>
-      <el-col :span="6">
-        <el-form-item label="Цена">
-          <el-input-number
-            v-model="value.price.from"
-            class="w-1/2 m-2"
-            size="small"
+        </div>
+      </div>
+
+      <div class="space-y-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Цена</label>
+        <div class="grid grid-cols-2 gap-3">
+          <input
+            v-model.number="value.price.from"
+            type="number"
             :min="filterOptions.price.from"
             :max="value.price.to"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
           />
-          <el-input-number
-            v-model="value.price.to"
-            class="w-1/2 m-2"
-            size="small"
+          <input
+            v-model.number="value.price.to"
+            type="number"
             :min="value.price.from"
             :max="filterOptions.price.to"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
           />
-        </el-form-item>
-      </el-col>
-      <el-col :span="6">
-        <el-form-item label="Доходность">
-          <el-input-number
-            v-model="value.bondYield.from"
-            class="w-1/2 m-2"
-            size="small"
+        </div>
+      </div>
+
+      <div class="space-y-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доходность</label>
+        <div class="grid grid-cols-2 gap-3">
+          <input
+            v-model.number="value.bondYield.from"
+            type="number"
             :min="filterOptions.bondYield.from"
             :max="value.bondYield.to"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
           />
-          <el-input-number
-            v-model="value.bondYield.to"
-            class="w-1/2 m-2"
-            size="small"
+          <input
+            v-model.number="value.bondYield.to"
+            type="number"
             :min="value.bondYield.from"
             :max="filterOptions.bondYield.to"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
           />
-        </el-form-item>
-      </el-col>
-      <el-col :span="6">
-        <el-form-item label="Погашение (мес)">
-          <el-input-number
-              v-model="value.duration.from"
-              class="w-1/2 m-2"
-              size="small"
-              :min="filterOptions.duration.from"
-              :max="value.duration.to"
+        </div>
+      </div>
+
+      <div class="space-y-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Погашение (мес)</label>
+        <div class="grid grid-cols-2 gap-3">
+          <input
+            v-model.number="value.duration.from"
+            type="number"
+            :min="filterOptions.duration.from"
+            :max="value.duration.to"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
           />
-          <el-input-number
-              v-model="value.duration.to"
-              class="w-1/2 m-2"
-              size="small"
-              :min="value.duration.from"
-              :max="filterOptions.duration.to"
+          <input
+            v-model.number="value.duration.to"
+            type="number"
+            :min="value.duration.from"
+            :max="filterOptions.duration.to"
+            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
           />
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="8">
-        <el-form-item>
-          <bond-options-select
-            v-model="value.currency"
-            :options="filterOptions.currency"
-            label="Валюта"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item>
-          <bond-options-select
-            v-model="value.couponQuantityPerYear"
-            :options="filterOptions.couponQuantityPerYear"
-            label="Купонов"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item>
-          <bond-options-select
-            v-model="value.countryOfRisk"
-            :options="filterOptions.countryOfRisk"
-            label="Страна"
-          />
-        </el-form-item>
-      </el-col>
-    </el-row>
+        </div>
+      </div>
+    </section>
 
-    <el-row>
-      <el-col :span="8">
-        <el-form-item label="Доступна для ИИС">
-          <bond-options-radios v-model="value.forIisFlag" />
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item label="Для квалов">
-          <bond-options-radios v-model="value.forQualInvestorFlag" />
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item label="Индексация номинала">
-          <bond-options-radios v-model="value.indexedNominalFlag" />
-        </el-form-item>
-      </el-col>
-    </el-row>
+    <section class="grid grid-cols-1 gap-4 xl:grid-cols-3">
+      <bond-options-select v-model="value.currency" :options="filterOptions.currency" label="Валюта" />
+      <bond-options-select
+        v-model="value.couponQuantityPerYear"
+        :options="filterOptions.couponQuantityPerYear"
+        label="Купонов"
+      />
+      <bond-options-select
+        v-model="value.countryOfRisk"
+        :options="filterOptions.countryOfRisk"
+        label="Страна"
+      />
+    </section>
 
-    <el-row>
-      <el-col :span="8">
-        <el-form-item label="Есть обеспечение">
-          <bond-options-radios v-model="value.collateralFlag" />
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item label="Купоны не облаг. налогом">
-          <bond-options-radios v-model="value.taxFreeFlag" />
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item label="Плавающий купон">
-          <bond-options-radios v-model="value.floatingCouponFlag" />
-        </el-form-item>
-      </el-col>
-    </el-row>
+    <section class="grid grid-cols-1 gap-4 xl:grid-cols-3">
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доступна для ИИС</label>
+        <bond-options-radios v-model="value.forIisFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Для квалов</label>
+        <bond-options-radios v-model="value.forQualInvestorFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Индексация номинала</label>
+        <bond-options-radios v-model="value.indexedNominalFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Есть обеспечение</label>
+        <bond-options-radios v-model="value.collateralFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Купоны не облаг. налогом</label>
+        <bond-options-radios v-model="value.taxFreeFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Плавающий купон</label>
+        <bond-options-radios v-model="value.floatingCouponFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">С амортизацией</label>
+        <bond-options-radios v-model="value.amortizationFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Уровень риска</label>
+        <bond-options-checks v-model="value.riskLevel" :options="filterOptions.riskLevel" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Ликвидность</label>
+        <bond-options-checks v-model="value.liquidity" :options="filterOptions.liquidity" />
+      </div>
+    </section>
 
-    <el-row>
-      <el-col :span="8">
-        <el-form-item label="С амортизацией">
-          <bond-options-radios v-model="value.amortizationFlag" />
-        </el-form-item>
-      </el-col>
+    <section class="grid grid-cols-1 gap-4 xl:grid-cols-3">
+      <bond-options-select v-model="value.sector" :options="filterOptions.sector" label="Сектор" />
+      <bond-options-select
+        v-model="value.issueKind"
+        :options="filterOptions.issueKind"
+        label="Форма выпуска"
+      />
+      <bond-options-select
+        v-model="value.realExchange"
+        :options="filterOptions.realExchange"
+        label="Биржа"
+      />
+    </section>
 
-      <el-col :span="8">
-        <el-form-item label="Уровень риска">
-          <bond-options-checks v-model="value.riskLevel" :options="filterOptions.riskLevel" />
-        </el-form-item>
-      </el-col>
-
-      <el-col :span="8">
-        <el-form-item label="Ликвидность">
-          <bond-options-checks v-model="value.liquidity" :options="filterOptions.liquidity" />
-        </el-form-item>
-      </el-col>
-    </el-row>
-
-    <!--        <el-form-item label="Цена размещения">-->
-    <!--          <el-input v-model="value.placementPrice" placeholder="Цена размещения" />-->
-    <!--        </el-form-item>-->
-    <!--        <el-row>-->
-    <!--          <el-col :span="12">-->
-    <!--            <el-form-item>-->
-    <!--              <bond-options-select-->
-    <!--                v-model="value.classCode"-->
-    <!--                :options="filterOptions.classCode"-->
-    <!--                label="Код класса"-->
-    <!--              />-->
-    <!--            </el-form-item>-->
-    <!--          </el-col>-->
-    <!--        </el-row>-->
-    <el-row>
-      <el-col :span="8">
-        <el-form-item>
-          <bond-options-select
-            v-model="value.sector"
-            :options="filterOptions.sector"
-            label="Сектор"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item>
-          <bond-options-select
-            v-model="value.issueKind"
-            :options="filterOptions.issueKind"
-            label="Форма выпуска"
-          />
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item>
-          <bond-options-select
-            v-model="value.realExchange"
-            :options="filterOptions.realExchange"
-            label="Биржа"
-          />
-        </el-form-item>
-      </el-col>
-    </el-row>
-
-    <el-row>
-      <el-col :span="8">
-        <el-form-item label="Доступен шорт">
-          <bond-options-radios v-model="value.shortEnabledFlag" />
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item label="Внебиржевая">
-          <bond-options-radios v-model="value.otcFlag" />
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item label="Доступна для покупки">
-          <bond-options-radios v-model="value.buyAvailableFlag" />
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="8">
-        <el-form-item label="Доступна для продажи">
-          <bond-options-radios v-model="value.sellAvailableFlag" />
-        </el-form-item>
-      </el-col>
-
-      <el-col :span="8">
-        <el-form-item label="Бессрочная">
-          <bond-options-radios v-model="value.perpetualFlag" />
-        </el-form-item>
-      </el-col>
-
-      <el-col :span="8">
-        <el-form-item label="Доступна торговля по API">
-          <bond-options-radios v-model="value.apiTradeAvailableFlag" />
-        </el-form-item>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="8">
-        <el-form-item label="Торговля по выходным">
-          <bond-options-radios v-model="value.weekendFlag" />
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item label="Блокировка ТКС">
-          <bond-options-radios v-model="value.blockedTcaFlag" />
-        </el-form-item>
-      </el-col>
-      <el-col :span="8">
-        <el-form-item label="Субординированная">
-          <bond-options-radios v-model="value.subordinatedFlag" />
-        </el-form-item>
-      </el-col>
-    </el-row>
-  </el-form>
+    <section class="grid grid-cols-1 gap-4 xl:grid-cols-3">
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доступен шорт</label>
+        <bond-options-radios v-model="value.shortEnabledFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Внебиржевая</label>
+        <bond-options-radios v-model="value.otcFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доступна для покупки</label>
+        <bond-options-radios v-model="value.buyAvailableFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доступна для продажи</label>
+        <bond-options-radios v-model="value.sellAvailableFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Бессрочная</label>
+        <bond-options-radios v-model="value.perpetualFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доступна торговля по API</label>
+        <bond-options-radios v-model="value.apiTradeAvailableFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Торговля по выходным</label>
+        <bond-options-radios v-model="value.weekendFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Блокировка ТКС</label>
+        <bond-options-radios v-model="value.blockedTcaFlag" />
+      </div>
+      <div class="space-y-2">
+        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Субординированная</label>
+        <bond-options-radios v-model="value.subordinatedFlag" />
+      </div>
+    </section>
+  </div>
 </template>
 
 <script lang="ts">
@@ -316,4 +254,3 @@ export default {
 }
 </script>
 
-<style scoped></style>
