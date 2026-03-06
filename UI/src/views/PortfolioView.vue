@@ -1,9 +1,9 @@
 <template>
-	<div class="grid grid-cols-1 xl:grid-cols-24">
+	<div class="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(20rem,1fr)]">
 		<!-- table -->
 
 		<div
-			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--app-color-primary-soft)] px-5 py-5 text-[var(--app-color-primary)] xl:col-span-16"
+			class="min-w-0 h-[calc(100vh-var(--header-height)-1px)] rounded-xl bg-[var(--app-panel-bg)] px-5 py-5 shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-800"
 			id="table-view"
 		>
 			<portfolio-table v-model="portfolioBonds" :loading="isFetching" />
@@ -12,7 +12,7 @@
 		<!-- stats -->
 
 		<div
-			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--app-color-primary-soft)] px-5 py-5 text-[var(--app-color-primary)] xl:col-span-8"
+			class="min-w-0 h-[calc(100vh-var(--header-height)-1px)] rounded-xl bg-[var(--app-panel-bg)] px-5 py-5 shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-800"
 		>
 			<portfolio-stats v-model="portfolioBonds" :loading="isFetching" />
 		</div>
