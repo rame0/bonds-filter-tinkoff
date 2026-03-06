@@ -1,5 +1,5 @@
 <template>
-  <ElText :type="RiskLevelCollation.getColorCode(level)">{{ RiskLevelCollation.getLabel(level) }}</ElText>
+  <span :class="colorClass">{{ RiskLevelCollation.getLabel(level) }}</span>
 </template>
 
 <script lang="ts">
@@ -14,13 +14,22 @@ export default {
   },
 
   setup() {
-
+    const colorByRiskLevel: Record<string, string> = {
+      success: 'font-semibold text-emerald-600 dark:text-emerald-300',
+      warning: 'font-semibold text-amber-600 dark:text-amber-300',
+      danger: 'font-semibold text-rose-600 dark:text-rose-300',
+      primary: 'font-semibold text-slate-600 dark:text-slate-300'
+    }
 
     return {
-      RiskLevelCollation
+      RiskLevelCollation,
+      colorByRiskLevel
+    }
+  },
+  computed: {
+    colorClass() {
+      return this.colorByRiskLevel[RiskLevelCollation.getColorCode(this.level)] || this.colorByRiskLevel.primary
     }
   }
 }
 </script>
-
-<style scoped></style>

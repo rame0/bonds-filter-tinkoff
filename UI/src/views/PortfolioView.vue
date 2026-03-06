@@ -1,24 +1,22 @@
 <template>
-	<el-row>
+	<div class="grid grid-cols-1 xl:grid-cols-24">
 		<!-- table -->
 
-		<el-col
-			:span="16"
-			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)]"
+		<div
+			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)] xl:col-span-16"
 			id="table-view"
 		>
 			<portfolio-table v-model="portfolioBonds" :loading="isFetching" />
-		</el-col>
+		</div>
 
 		<!-- stats -->
 
-		<el-col
-			:span="8"
-			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)]"
+		<div
+			class="h-[calc(100vh-var(--header-height)-1px)] bg-[var(--ep-color-primary-light-9)] px-5 py-5 text-[var(--ep-color-primary)] xl:col-span-8"
 		>
 			<portfolio-stats v-model="portfolioBonds" :loading="isFetching" />
-		</el-col>
-	</el-row>
+		</div>
+	</div>
 </template>
 
 <script lang="ts">

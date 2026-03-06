@@ -1,13 +1,12 @@
 <template>
-  <div>
-    <el-tag
+  <div class="flex flex-wrap gap-2">
+    <span
       v-for="item in show"
       v-bind:key="item"
-      class="mr-2"
-      :type="getTagClass(row[item], FlagsCollations.isInverse(item))"
+      :class="getTagClass(row[item], FlagsCollations.isInverse(item))"
     >
       {{ FlagsCollations.getLabel(item) }}
-    </el-tag>
+    </span>
   </div>
 </template>
 
@@ -30,12 +29,19 @@ export default {
 
   setup() {
     const getTagClass = (value: boolean | undefined, inverse: boolean = false) => {
+      const baseClasses =
+        "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold"
+
       if (value === undefined) {
-        return 'info'
+        return `${baseClasses} bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-100`
       } else if (value) {
-        return !inverse ? 'success' : 'danger'
+        return !inverse
+          ? `${baseClasses} bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200`
+          : `${baseClasses} bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-200`
       } else {
-        return !inverse ? 'danger' : 'success'
+        return !inverse
+          ? `${baseClasses} bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-200`
+          : `${baseClasses} bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200`
       }
     }
     return {
@@ -45,5 +51,3 @@ export default {
   }
 }
 </script>
-
-<style scoped></style>

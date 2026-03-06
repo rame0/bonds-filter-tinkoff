@@ -1,41 +1,7 @@
 <template>
-  <div class="el-loading-mask" style="display: flex; align-items: center; justify-content: center">
-    <el-icon class="is-loading" color="var(--el-color-primary)" :size="46"> </el-icon>
+  <div class="absolute inset-0 z-20 flex items-center justify-center bg-white/70 backdrop-blur-sm dark:bg-slate-950/70">
+    <div class="h-12 w-12 animate-spin rounded-full border-4 border-emerald-200 border-t-emerald-600 dark:border-emerald-900 dark:border-t-emerald-300" />
   </div>
 </template>
 
 <script setup lang="ts"></script>
-
-<style>
-.ep-table-v2__overlay {
-  z-index: 9;
-
-  background: repeating-linear-gradient(
-      -45deg,
-      rgba(255, 255, 255, 0.1),
-      rgba(255, 255, 255, 0.1) 10px,
-      rgba(0, 0, 0, 0.1) 10px,
-      rgba(0, 0, 0, 0.1) 20px
-    ) -100px 0 / 200% 100%;
-  -webkit-mask-image: linear-gradient(#000, transparent);
-  animation: loading 0.5s infinite linear;
-}
-
-@keyframes loading {
-  100% {
-    background-position: -128px 0;
-  }
-}
-
-.el-loading-mask {
-  position: absolute;
-  z-index: 2000;
-  background-color: var(--el-mask-color);
-  margin: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  transition: opacity var(--el-transition-duration);
-}
-</style>
