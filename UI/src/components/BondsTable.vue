@@ -1,7 +1,7 @@
 <template>
 	<div class="flex h-full flex-col rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
 		<div class="relative flex-1 overflow-auto">
-			<table class="min-w-[1700px] w-full table-auto text-left text-sm">
+			<table class="min-w-[2200px] w-full table-auto text-left text-sm">
 				<thead class="sticky top-0 z-10 bg-slate-50 dark:bg-slate-900">
 					<tr class="border-b border-slate-200 dark:border-slate-800">
 						<th v-if="showAddButton" class="px-3 py-3 text-center">
@@ -69,7 +69,7 @@
 						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Форма выпуска</th>
 						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Ликвидность</th>
 						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Биржа</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Свойства</th>
+						<th class="min-w-[600px] px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Свойства</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -126,7 +126,7 @@
 						<td class="px-3 py-3 text-slate-700 dark:text-slate-200">{{ IssueKindCollations.getLabel(row.issueKind) }}</td>
 						<td class="px-3 py-3"><liquidity-arrow :level="row.liquidity ?? 0" /></td>
 						<td class="px-3 py-3 text-slate-700 dark:text-slate-200">{{ ExchangeCollation.getLabel(String(row.realExchange)) }}</td>
-						<td class="px-3 py-3"><bond-flags :row="row" :show="optionsToShow" /></td>
+						<td class="min-w-[600px] px-3 py-3"><bond-flags :row="row" :show="optionsToShow" /></td>
 					</tr>
 				</tbody>
 			</table>
