@@ -25,81 +25,113 @@
     <section class="grid grid-cols-1 gap-4 2xl:grid-cols-4 xl:grid-cols-2">
       <div class="space-y-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
         <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Номинал</label>
-        <div class="grid grid-cols-2 gap-3">
-          <input
-            v-model.number="value.nominal.from"
-            type="number"
-            :min="filterOptions.nominal.from"
-            :max="value.nominal.to"
-            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
-          />
-          <input
-            v-model.number="value.nominal.to"
-            type="number"
-            :min="value.nominal.from"
-            :max="filterOptions.nominal.to"
-            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
-          />
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-1">
+            <button type="button" class="stepper-btn" @click="value.nominal.from = Math.max(filterOptions.nominal.from, (value.nominal.from ?? 0) - 1)" aria-label="Уменьшить">−</button>
+            <input
+              v-model.number="value.nominal.from"
+              type="number"
+              :min="filterOptions.nominal.from"
+              :max="value.nominal.to"
+              class="range-input flex-1 min-w-0"
+            />
+            <button type="button" class="stepper-btn" @click="value.nominal.from = Math.min(value.nominal.to, (value.nominal.from ?? 0) + 1)" aria-label="Увеличить">+</button>
+          </div>
+          <div class="flex items-center gap-1">
+            <button type="button" class="stepper-btn" @click="value.nominal.to = Math.max(value.nominal.from, (value.nominal.to ?? 0) - 1)" aria-label="Уменьшить">−</button>
+            <input
+              v-model.number="value.nominal.to"
+              type="number"
+              :min="value.nominal.from"
+              :max="filterOptions.nominal.to"
+              class="range-input flex-1 min-w-0"
+            />
+            <button type="button" class="stepper-btn" @click="value.nominal.to = Math.min(filterOptions.nominal.to, (value.nominal.to ?? 0) + 1)" aria-label="Увеличить">+</button>
+          </div>
         </div>
       </div>
 
       <div class="space-y-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
         <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Цена</label>
-        <div class="grid grid-cols-2 gap-3">
-          <input
-            v-model.number="value.price.from"
-            type="number"
-            :min="filterOptions.price.from"
-            :max="value.price.to"
-            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
-          />
-          <input
-            v-model.number="value.price.to"
-            type="number"
-            :min="value.price.from"
-            :max="filterOptions.price.to"
-            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
-          />
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-1">
+            <button type="button" class="stepper-btn" @click="value.price.from = Math.max(filterOptions.price.from, (value.price.from ?? 0) - 1)" aria-label="Уменьшить">−</button>
+            <input
+              v-model.number="value.price.from"
+              type="number"
+              :min="filterOptions.price.from"
+              :max="value.price.to"
+              class="range-input flex-1 min-w-0"
+            />
+            <button type="button" class="stepper-btn" @click="value.price.from = Math.min(value.price.to, (value.price.from ?? 0) + 1)" aria-label="Увеличить">+</button>
+          </div>
+          <div class="flex items-center gap-1">
+            <button type="button" class="stepper-btn" @click="value.price.to = Math.max(value.price.from, (value.price.to ?? 0) - 1)" aria-label="Уменьшить">−</button>
+            <input
+              v-model.number="value.price.to"
+              type="number"
+              :min="value.price.from"
+              :max="filterOptions.price.to"
+              class="range-input flex-1 min-w-0"
+            />
+            <button type="button" class="stepper-btn" @click="value.price.to = Math.min(filterOptions.price.to, (value.price.to ?? 0) + 1)" aria-label="Увеличить">+</button>
+          </div>
         </div>
       </div>
 
       <div class="space-y-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
         <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доходность</label>
-        <div class="grid grid-cols-2 gap-3">
-          <input
-            v-model.number="value.bondYield.from"
-            type="number"
-            :min="filterOptions.bondYield.from"
-            :max="value.bondYield.to"
-            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
-          />
-          <input
-            v-model.number="value.bondYield.to"
-            type="number"
-            :min="value.bondYield.from"
-            :max="filterOptions.bondYield.to"
-            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
-          />
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-1">
+            <button type="button" class="stepper-btn" @click="value.bondYield.from = Math.max(filterOptions.bondYield.from, (value.bondYield.from ?? 0) - 1)" aria-label="Уменьшить">−</button>
+            <input
+              v-model.number="value.bondYield.from"
+              type="number"
+              :min="filterOptions.bondYield.from"
+              :max="value.bondYield.to"
+              class="range-input flex-1 min-w-0"
+            />
+            <button type="button" class="stepper-btn" @click="value.bondYield.from = Math.min(value.bondYield.to, (value.bondYield.from ?? 0) + 1)" aria-label="Увеличить">+</button>
+          </div>
+          <div class="flex items-center gap-1">
+            <button type="button" class="stepper-btn" @click="value.bondYield.to = Math.max(value.bondYield.from, (value.bondYield.to ?? 0) - 1)" aria-label="Уменьшить">−</button>
+            <input
+              v-model.number="value.bondYield.to"
+              type="number"
+              :min="value.bondYield.from"
+              :max="filterOptions.bondYield.to"
+              class="range-input flex-1 min-w-0"
+            />
+            <button type="button" class="stepper-btn" @click="value.bondYield.to = Math.min(filterOptions.bondYield.to, (value.bondYield.to ?? 0) + 1)" aria-label="Увеличить">+</button>
+          </div>
         </div>
       </div>
 
       <div class="space-y-2 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-950">
         <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Погашение (мес)</label>
-        <div class="grid grid-cols-2 gap-3">
-          <input
-            v-model.number="value.duration.from"
-            type="number"
-            :min="filterOptions.duration.from"
-            :max="value.duration.to"
-            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
-          />
-          <input
-            v-model.number="value.duration.to"
-            type="number"
-            :min="value.duration.from"
-            :max="filterOptions.duration.to"
-            class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
-          />
+        <div class="flex flex-col gap-3">
+          <div class="flex items-center gap-1">
+            <button type="button" class="stepper-btn" @click="value.duration.from = Math.max(filterOptions.duration.from, (value.duration.from ?? 0) - 1)" aria-label="Уменьшить">−</button>
+            <input
+              v-model.number="value.duration.from"
+              type="number"
+              :min="filterOptions.duration.from"
+              :max="value.duration.to"
+              class="range-input flex-1 min-w-0"
+            />
+            <button type="button" class="stepper-btn" @click="value.duration.from = Math.min(value.duration.to, (value.duration.from ?? 0) + 1)" aria-label="Увеличить">+</button>
+          </div>
+          <div class="flex items-center gap-1">
+            <button type="button" class="stepper-btn" @click="value.duration.to = Math.max(value.duration.from, (value.duration.to ?? 0) - 1)" aria-label="Уменьшить">−</button>
+            <input
+              v-model.number="value.duration.to"
+              type="number"
+              :min="value.duration.from"
+              :max="filterOptions.duration.to"
+              class="range-input flex-1 min-w-0"
+            />
+            <button type="button" class="stepper-btn" @click="value.duration.to = Math.min(filterOptions.duration.to, (value.duration.to ?? 0) + 1)" aria-label="Увеличить">+</button>
+          </div>
         </div>
       </div>
     </section>
@@ -254,3 +286,11 @@ export default {
 }
 </script>
 
+<style scoped>
+.stepper-btn {
+  @apply flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 dark:focus:ring-emerald-900;
+}
+.range-input {
+  @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900;
+}
+</style>
