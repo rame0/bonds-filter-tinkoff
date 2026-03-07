@@ -46,8 +46,11 @@ const emit = defineEmits<{
   (e: 'update:modelValue', value: OptionValue[]): void
 }>()
 
-const getOptionLabel = (label: CollationValueType) =>
-  typeof label === 'string' ? label : label.name
+const getOptionLabel = (label: CollationValueType) => {
+  if (typeof label === 'string') return label
+  if (label !== null && typeof label === 'object' && 'name' in label) return label.name
+  return String(label ?? '')
+}
 
 const isSameValue = (left: OptionValue, right: OptionValue) =>
   left === right || String(left) === String(right)
