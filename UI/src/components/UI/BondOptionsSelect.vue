@@ -6,7 +6,7 @@
     <div class="relative">
       <button
         type="button"
-        class="flex min-h-10 w-full items-center justify-between gap-2 rounded-lg border border-slate-300 bg-white px-3 py-2 text-left text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
+        class="flex min-h-8 w-full items-center justify-between gap-2 rounded border border-slate-300 bg-white px-1.5 py-1 text-left text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
         :class="{ 'ring-2 ring-emerald-200 dark:ring-emerald-900': isOpen }"
         @click="isOpen = !isOpen"
         aria-haspopup="listbox"
@@ -22,7 +22,7 @@
 
       <div
         v-show="isOpen"
-        class="absolute top-full left-0 z-30 mt-1 max-h-56 w-full overflow-auto rounded-lg border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-900"
+        class="absolute top-full left-0 z-30 mt-1 max-h-56 w-full overflow-auto rounded border border-slate-200 bg-white py-0.5 shadow-lg dark:border-slate-700 dark:bg-slate-900"
         role="listbox"
       >
         <button
@@ -31,7 +31,7 @@
           type="button"
           role="option"
           :aria-selected="isSelected(item.value as OptionValue)"
-          class="flex w-full items-center gap-2 px-3 py-2 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
+          class="flex w-full items-center gap-2 px-1.5 py-1 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
           :class="isSelected(item.value as OptionValue) ? 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200' : 'text-slate-700 dark:text-slate-200'"
           @click="toggleOption(item.value as OptionValue)"
         >
@@ -45,7 +45,7 @@
         </button>
         <p
           v-if="options.length === 0"
-          class="px-3 py-2 text-sm text-slate-500 dark:text-slate-400"
+          class="px-1.5 py-1 text-sm text-slate-500 dark:text-slate-400"
         >
           Нет вариантов
         </p>
