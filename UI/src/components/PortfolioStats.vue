@@ -1,21 +1,23 @@
 <template>
 	<table class="w-full border-collapse text-sm">
-		<tr class="border-b border-slate-200/60">
-			<td class="py-3 pr-4 font-medium">Всего бумаг:</td>
-			<td class="py-3 text-right">{{ totalBonds }}</td>
-		</tr>
-		<tr class="border-b border-slate-200/60">
-			<td class="py-3 pr-4 font-medium">Всего купонов:</td>
-			<td class="py-3 text-right">{{ totalCoupons }}</td>
-		</tr>
-		<tr class="border-b border-slate-200/60">
-			<td class="py-3 pr-4 font-medium">Профит от купонов:</td>
-			<td class="py-3 text-right">{{ totalProfit }}</td>
-		</tr>
-		<tr>
-			<td class="py-3 pr-4 font-medium">Цена покупки портфеля</td>
-			<td class="py-3 text-right">{{ totalPrice }}</td>
-		</tr>
+		<tbody>
+			<tr class="border-b border-slate-200/60">
+				<td class="py-3 pr-4 font-medium">Всего бумаг:</td>
+				<td class="py-3 text-right">{{ totalBonds }}</td>
+			</tr>
+			<tr class="border-b border-slate-200/60">
+				<td class="py-3 pr-4 font-medium">Всего купонов:</td>
+				<td class="py-3 text-right">{{ totalCoupons }}</td>
+			</tr>
+			<tr class="border-b border-slate-200/60">
+				<td class="py-3 pr-4 font-medium">Профит от купонов:</td>
+				<td class="py-3 text-right">{{ totalProfit }}</td>
+			</tr>
+			<tr>
+				<td class="py-3 pr-4 font-medium">Цена покупки портфеля</td>
+				<td class="py-3 text-right">{{ totalPrice }}</td>
+			</tr>
+		</tbody>
 	</table>
 </template>
 
