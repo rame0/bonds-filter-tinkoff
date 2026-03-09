@@ -18,10 +18,10 @@
 		</RouterLink>
 		<button
 			type="button"
-			class="btn btn-outline btn-sm justify-start"
-			disabled
+			class="btn btn-ghost btn-sm justify-start"
+			@click="toggleTheme()"
 		>
-			Переключение темы (скоро)
+			{{ isDarkTheme ? "Светлая тема" : "Тёмная тема" }}
 		</button>
 	</aside>
 </template>
@@ -29,6 +29,7 @@
 <script lang="ts" setup>
 import { RouterLink, useRoute } from "vue-router"
 import { portfolioStore } from "@/data/portfolioStore"
+import { isDarkTheme, toggleTheme } from "@/composables"
 
 const route = useRoute()
 const store = portfolioStore()

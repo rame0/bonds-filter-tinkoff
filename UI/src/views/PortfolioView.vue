@@ -3,18 +3,22 @@
 		<!-- table -->
 
 		<div
-			class="card min-w-0 h-[calc(100vh-var(--header-height)-1px)] border border-base-300 bg-base-100 p-5 shadow-sm"
+			class="card card-border min-w-0 h-[calc(100vh-var(--header-height)-1px)] bg-base-100"
 			id="table-view"
 		>
-			<portfolio-table v-model="portfolioBonds" :loading="isFetching" />
+			<div class="card-body p-4">
+				<portfolio-table v-model="portfolioBonds" :loading="isFetching" />
+			</div>
 		</div>
 
 		<!-- stats -->
 
 		<div
-			class="card min-w-0 h-[calc(100vh-var(--header-height)-1px)] border border-base-300 bg-base-100 p-5 shadow-sm"
+			class="card card-border min-w-0 h-[calc(100vh-var(--header-height)-1px)] bg-base-100"
 		>
-			<portfolio-stats v-model="portfolioBonds" :loading="isFetching" />
+			<div class="card-body p-4">
+				<portfolio-stats v-model="portfolioBonds" :loading="isFetching" />
+			</div>
 		</div>
 	</div>
 </template>

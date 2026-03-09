@@ -7,7 +7,7 @@
       <button
         type="button"
         class="btn btn-sm min-h-8 h-auto w-full justify-between border-base-300 bg-base-100 text-left normal-case hover:bg-base-200"
-        :class="{ 'border-primary bg-primary/10 text-primary': isOpen }"
+        :class="{ 'border-base-content/20 bg-base-200 text-base-content': isOpen }"
         @click="isOpen = !isOpen"
         aria-haspopup="listbox"
         :aria-expanded="isOpen"
@@ -22,7 +22,7 @@
 
       <div
         v-show="isOpen"
-        class="absolute top-full left-0 z-30 mt-1 max-h-56 w-full overflow-auto rounded-box border border-base-300 bg-base-100 py-1 shadow-xl"
+        class="absolute top-full left-0 z-30 mt-1 max-h-56 w-full overflow-auto rounded-box border border-base-300 bg-base-100 py-1"
         role="listbox"
       >
         <button

@@ -23,7 +23,7 @@
     </section>
 
     <section class="grid grid-cols-1 gap-3 2xl:grid-cols-4 xl:grid-cols-2">
-      <div class="space-y-1.5 rounded-box border border-base-300 bg-base-100 p-3 shadow-sm">
+      <div class="space-y-1.5 rounded-box border border-base-300 bg-base-100 p-2.5">
         <label class="label-text block text-sm font-medium text-base-content">Номинал</label>
         <div class="flex flex-col gap-1.5">
           <div class="stepper-group">
@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <div class="space-y-1.5 rounded-box border border-base-300 bg-base-100 p-3 shadow-sm">
+      <div class="space-y-1.5 rounded-box border border-base-300 bg-base-100 p-2.5">
         <label class="label-text block text-sm font-medium text-base-content">Цена</label>
         <div class="flex flex-col gap-1.5">
           <div class="stepper-group">
@@ -79,7 +79,7 @@
         </div>
       </div>
 
-      <div class="space-y-1.5 rounded-box border border-base-300 bg-base-100 p-3 shadow-sm">
+      <div class="space-y-1.5 rounded-box border border-base-300 bg-base-100 p-2.5">
         <label class="label-text block text-sm font-medium text-base-content">Доходность</label>
         <div class="flex flex-col gap-1.5">
           <div class="stepper-group">
@@ -107,7 +107,7 @@
         </div>
       </div>
 
-      <div class="space-y-1.5 rounded-box border border-base-300 bg-base-100 p-3 shadow-sm">
+      <div class="space-y-1.5 rounded-box border border-base-300 bg-base-100 p-2.5">
         <label class="label-text block text-sm font-medium text-base-content">Погашение (мес)</label>
         <div class="flex flex-col gap-1.5">
           <div class="stepper-group">
@@ -136,7 +136,7 @@
       </div>
     </section>
 
-    <section class="grid grid-cols-1 gap-3 xl:grid-cols-3">
+    <section class="grid grid-cols-1 gap-3 xl:grid-cols-2 2xl:grid-cols-3">
       <bond-options-select v-model="value.currency" :options="filterOptions.currency" label="Валюта" />
       <bond-options-select
         v-model="value.couponQuantityPerYear"
@@ -150,7 +150,7 @@
       />
     </section>
 
-    <section class="grid grid-cols-1 gap-3 xl:grid-cols-3">
+    <section class="grid grid-cols-1 gap-3 xl:grid-cols-2 2xl:grid-cols-3">
       <div class="space-y-1">
         <label class="label-text block text-sm font-medium text-base-content">Доступна для ИИС</label>
         <bond-options-radios v-model="value.forIisFlag" />
@@ -288,16 +288,46 @@ export default {
 
 <style scoped>
 .stepper-group {
-  @apply flex h-8 w-full overflow-hidden rounded-md border border-base-300 bg-base-100;
+  display: flex;
+  height: 2rem;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 0.375rem;
+  border: 1px solid var(--color-base-300);
+  background-color: var(--color-base-100);
 }
 .stepper-group:focus-within {
-  @apply border-primary ring-1 ring-primary/40;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 1px color-mix(in oklab, var(--color-primary) 40%, transparent);
 }
 .stepper-btn {
-  @apply flex h-full w-8 shrink-0 items-center justify-center border-0 bg-base-200 text-base-content/70 transition hover:bg-base-300 focus:outline-none;
+  display: flex;
+  height: 100%;
+  width: 2rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background-color: var(--color-base-200);
+  color: var(--color-base-content);
+  transition: background-color 150ms ease;
+  opacity: 0.75;
+}
+.stepper-btn:hover {
+  background-color: var(--color-base-300);
+}
+.stepper-btn:focus {
+  outline: none;
 }
 .range-input {
-  @apply min-w-0 flex-1 border-0 bg-transparent px-1.5 py-1 text-sm text-base-content outline-none;
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  background: transparent;
+  padding: 0.25rem 0.375rem;
+  font-size: 0.875rem;
+  color: var(--color-base-content);
+  outline: none;
 }
 .range-input::-webkit-inner-spin-button,
 .range-input::-webkit-outer-spin-button {
