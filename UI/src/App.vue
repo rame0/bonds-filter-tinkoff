@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div data-theme="night" class="min-h-screen bg-base-200 text-base-content">
     <BaseHeader />
     <main class="flex w-full">
 <!--      <BaseSide />-->

@@ -1,9 +1,9 @@
 <template>
-	<header class="border-b border-slate-200 bg-white/90 backdrop-blur dark:border-slate-800 dark:bg-slate-950/90">
-		<nav class="flex min-h-[var(--header-height)] flex-wrap items-center gap-3 px-4 py-3">
+	<header class="border-b border-base-300 bg-base-100/90 backdrop-blur">
+		<nav class="navbar min-h-[var(--header-height)] gap-3 px-4">
 			<RouterLink
 				to="/"
-				class="text-lg font-semibold text-slate-900 transition hover:text-emerald-600 dark:text-slate-100"
+				class="text-lg font-semibold text-base-content transition hover:text-primary"
 			>
 				Bonds filter (Tinkoff)
 			</RouterLink>
@@ -13,17 +13,17 @@
 				<span>Подобранный портфель</span>
 				<span
 					v-if="store.bondsQty > 0"
-					class="rounded-full bg-emerald-600 px-2 py-0.5 text-xs font-semibold text-white"
+					class="badge badge-primary badge-sm"
 				>
 					{{ store.bondsQty > 99 ? "99+" : store.bondsQty }}
 				</span>
 			</RouterLink>
 			<button
 				type="button"
-				class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-emerald-500 hover:text-emerald-600 dark:border-slate-700 dark:text-slate-200 dark:hover:border-emerald-400 dark:hover:text-emerald-300"
-				@click="toggleDark()"
+				class="btn btn-outline btn-sm"
+				disabled
 			>
-				{{ isDark ? "Тёмная тема" : "Светлая тема" }}
+				Переключение темы (скоро)
 			</button>
 		</nav>
 	</header>
@@ -32,7 +32,6 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from "vue-router"
 import { portfolioStore } from "@/data/portfolioStore"
-import { isDark, toggleDark } from "@/composables"
 
 const route = useRoute()
 const store = portfolioStore()
@@ -40,10 +39,10 @@ const store = portfolioStore()
 const navLinkClass = (path: string) => {
 	const isActive = route.path === path
 	return [
-		"inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition",
+		"btn btn-sm",
 		isActive
-			? "bg-emerald-600 text-white shadow-sm"
-			: "text-slate-700 hover:bg-slate-100 hover:text-emerald-600 dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-emerald-300"
+			? "btn-primary"
+			: "btn-ghost"
 	]
 }
 </script>

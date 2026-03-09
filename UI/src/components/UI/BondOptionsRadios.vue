@@ -48,9 +48,9 @@ const isSelected = (value: OptionValue) =>
 
 const buttonClass = (selected: boolean) =>
   [
-    'rounded border px-1.5 py-1 text-sm font-medium transition',
+    'btn btn-sm',
     selected
-      ? 'border-emerald-600 bg-emerald-600 text-white shadow-sm'
-      : 'border-slate-300 bg-white text-slate-700 hover:border-emerald-500 hover:text-emerald-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-emerald-400 dark:hover:text-emerald-300'
+      ? 'btn-primary'
+      : 'btn-outline'
   ]
 </script>

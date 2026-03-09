@@ -1,40 +1,24 @@
 :root {
-  --app-color-primary: #15803d;
-  --app-color-primary-soft: #f0fdf4;
-  --app-panel-bg: #f8fafc;
   --header-height: 60px;
-  color-scheme: light;
-}
-
-html.dark {
-  --app-color-primary: #86efac;
-  --app-color-primary-soft: #052e16;
-  --app-panel-bg: #0f172a;
-  color-scheme: dark;
 }
 
 body {
   margin: 0;
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: hsl(var(--b2));
+  color: hsl(var(--bc));
   font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
     "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-html.dark body {
-  background-color: #020617;
-  color: #e2e8f0;
-}
-
 a {
-  color: var(--app-color-primary);
+  color: hsl(var(--p));
 }
 
 code {
   border-radius: 2px;
   padding: 2px 4px;
-  background-color: var(--app-color-primary-soft);
-  color: var(--app-color-primary);
+  background-color: hsl(var(--b3));
+  color: hsl(var(--bc));
 }

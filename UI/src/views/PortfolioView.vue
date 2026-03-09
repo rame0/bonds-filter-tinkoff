@@ -3,7 +3,7 @@
 		<!-- table -->
 
 		<div
-			class="min-w-0 h-[calc(100vh-var(--header-height)-1px)] rounded-xl bg-[var(--app-panel-bg)] px-5 py-5 shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-800"
+			class="card min-w-0 h-[calc(100vh-var(--header-height)-1px)] border border-base-300 bg-base-100 p-5 shadow-sm"
 			id="table-view"
 		>
 			<portfolio-table v-model="portfolioBonds" :loading="isFetching" />
@@ -12,7 +12,7 @@
 		<!-- stats -->
 
 		<div
-			class="min-w-0 h-[calc(100vh-var(--header-height)-1px)] rounded-xl bg-[var(--app-panel-bg)] px-5 py-5 shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-800"
+			class="card min-w-0 h-[calc(100vh-var(--header-height)-1px)] border border-base-300 bg-base-100 p-5 shadow-sm"
 		>
 			<portfolio-stats v-model="portfolioBonds" :loading="isFetching" />
 		</div>
@@ -57,4 +57,3 @@ export default {
 	}
 }
 </script>
-

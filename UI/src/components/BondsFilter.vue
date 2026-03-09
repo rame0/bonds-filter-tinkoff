@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4">
     <section class="space-y-1.5">
-      <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">
+      <label class="label-text text-sm font-medium text-base-content">
         Поиск (название/тикер/figi)
       </label>
       <div class="flex gap-2">
@@ -9,12 +9,12 @@
           v-model="value.search"
           type="text"
           placeholder="Поиск"
-          class="w-full rounded border border-slate-300 bg-white px-1.5 py-1 text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
+          class="input input-bordered input-sm w-full"
         />
         <button
           v-if="value.search"
           type="button"
-          class="rounded border border-slate-300 px-1.5 py-1 text-sm font-medium text-slate-700 transition hover:border-rose-500 hover:text-rose-600 dark:border-slate-700 dark:text-slate-200 dark:hover:border-rose-400 dark:hover:text-rose-300"
+          class="btn btn-outline btn-sm btn-error"
           @click="value.search = ''"
         >
           Сбросить
@@ -23,8 +23,8 @@
     </section>
 
     <section class="grid grid-cols-1 gap-3 2xl:grid-cols-4 xl:grid-cols-2">
-      <div class="space-y-1.5 rounded-lg border border-slate-200 bg-white p-1.5 shadow-sm dark:border-slate-800 dark:bg-slate-950">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Номинал</label>
+      <div class="space-y-1.5 rounded-box border border-base-300 bg-base-100 p-3 shadow-sm">
+        <label class="label-text text-sm font-medium text-base-content">Номинал</label>
         <div class="flex flex-col gap-1.5">
           <div class="stepper-group">
             <button type="button" class="stepper-btn" @click="value.nominal.from = Math.max(filterOptions.nominal.from, (value.nominal.from ?? 0) - 1)" aria-label="Уменьшить">−</button>
@@ -51,8 +51,8 @@
         </div>
       </div>
 
-      <div class="space-y-1.5 rounded-lg border border-slate-200 bg-white p-1.5 shadow-sm dark:border-slate-800 dark:bg-slate-950">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Цена</label>
+      <div class="space-y-1.5 rounded-box border border-base-300 bg-base-100 p-3 shadow-sm">
+        <label class="label-text text-sm font-medium text-base-content">Цена</label>
         <div class="flex flex-col gap-1.5">
           <div class="stepper-group">
             <button type="button" class="stepper-btn" @click="value.price.from = Math.max(filterOptions.price.from, (value.price.from ?? 0) - 1)" aria-label="Уменьшить">−</button>
@@ -79,8 +79,8 @@
         </div>
       </div>
 
-      <div class="space-y-1.5 rounded-lg border border-slate-200 bg-white p-1.5 shadow-sm dark:border-slate-800 dark:bg-slate-950">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доходность</label>
+      <div class="space-y-1.5 rounded-box border border-base-300 bg-base-100 p-3 shadow-sm">
+        <label class="label-text text-sm font-medium text-base-content">Доходность</label>
         <div class="flex flex-col gap-1.5">
           <div class="stepper-group">
             <button type="button" class="stepper-btn" @click="value.bondYield.from = Math.max(filterOptions.bondYield.from, (value.bondYield.from ?? 0) - 1)" aria-label="Уменьшить">−</button>
@@ -107,8 +107,8 @@
         </div>
       </div>
 
-      <div class="space-y-1.5 rounded-lg border border-slate-200 bg-white p-1.5 shadow-sm dark:border-slate-800 dark:bg-slate-950">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Погашение (мес)</label>
+      <div class="space-y-1.5 rounded-box border border-base-300 bg-base-100 p-3 shadow-sm">
+        <label class="label-text text-sm font-medium text-base-content">Погашение (мес)</label>
         <div class="flex flex-col gap-1.5">
           <div class="stepper-group">
             <button type="button" class="stepper-btn" @click="value.duration.from = Math.max(filterOptions.duration.from, (value.duration.from ?? 0) - 1)" aria-label="Уменьшить">−</button>
@@ -152,39 +152,39 @@
 
     <section class="grid grid-cols-1 gap-3 xl:grid-cols-3">
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доступна для ИИС</label>
+        <label class="label-text text-sm font-medium text-base-content">Доступна для ИИС</label>
         <bond-options-radios v-model="value.forIisFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Для квалов</label>
+        <label class="label-text text-sm font-medium text-base-content">Для квалов</label>
         <bond-options-radios v-model="value.forQualInvestorFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Индексация номинала</label>
+        <label class="label-text text-sm font-medium text-base-content">Индексация номинала</label>
         <bond-options-radios v-model="value.indexedNominalFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Есть обеспечение</label>
+        <label class="label-text text-sm font-medium text-base-content">Есть обеспечение</label>
         <bond-options-radios v-model="value.collateralFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Купоны не облаг. налогом</label>
+        <label class="label-text text-sm font-medium text-base-content">Купоны не облаг. налогом</label>
         <bond-options-radios v-model="value.taxFreeFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Плавающий купон</label>
+        <label class="label-text text-sm font-medium text-base-content">Плавающий купон</label>
         <bond-options-radios v-model="value.floatingCouponFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">С амортизацией</label>
+        <label class="label-text text-sm font-medium text-base-content">С амортизацией</label>
         <bond-options-radios v-model="value.amortizationFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Уровень риска</label>
+        <label class="label-text text-sm font-medium text-base-content">Уровень риска</label>
         <bond-options-checks v-model="value.riskLevel" :options="filterOptions.riskLevel" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Ликвидность</label>
+        <label class="label-text text-sm font-medium text-base-content">Ликвидность</label>
         <bond-options-checks v-model="value.liquidity" :options="filterOptions.liquidity" />
       </div>
     </section>
@@ -205,39 +205,39 @@
 
     <section class="grid grid-cols-1 gap-3 xl:grid-cols-3">
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доступен шорт</label>
+        <label class="label-text text-sm font-medium text-base-content">Доступен шорт</label>
         <bond-options-radios v-model="value.shortEnabledFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Внебиржевая</label>
+        <label class="label-text text-sm font-medium text-base-content">Внебиржевая</label>
         <bond-options-radios v-model="value.otcFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доступна для покупки</label>
+        <label class="label-text text-sm font-medium text-base-content">Доступна для покупки</label>
         <bond-options-radios v-model="value.buyAvailableFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доступна для продажи</label>
+        <label class="label-text text-sm font-medium text-base-content">Доступна для продажи</label>
         <bond-options-radios v-model="value.sellAvailableFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Бессрочная</label>
+        <label class="label-text text-sm font-medium text-base-content">Бессрочная</label>
         <bond-options-radios v-model="value.perpetualFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Доступна торговля по API</label>
+        <label class="label-text text-sm font-medium text-base-content">Доступна торговля по API</label>
         <bond-options-radios v-model="value.apiTradeAvailableFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Торговля по выходным</label>
+        <label class="label-text text-sm font-medium text-base-content">Торговля по выходным</label>
         <bond-options-radios v-model="value.weekendFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Блокировка ТКС</label>
+        <label class="label-text text-sm font-medium text-base-content">Блокировка ТКС</label>
         <bond-options-radios v-model="value.blockedTcaFlag" />
       </div>
       <div class="space-y-1">
-        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Субординированная</label>
+        <label class="label-text text-sm font-medium text-base-content">Субординированная</label>
         <bond-options-radios v-model="value.subordinatedFlag" />
       </div>
     </section>
@@ -288,16 +288,16 @@ export default {
 
 <style scoped>
 .stepper-group {
-  @apply flex h-8 w-full overflow-hidden rounded border border-slate-300 bg-white dark:border-slate-600 dark:bg-slate-900;
+  @apply flex h-8 w-full overflow-hidden rounded-md border border-base-300 bg-base-100;
 }
 .stepper-group:focus-within {
-  @apply border-emerald-500 ring-1 ring-emerald-200 dark:border-emerald-500 dark:ring-emerald-900/50;
+  @apply border-primary ring-1 ring-primary/40;
 }
 .stepper-btn {
-  @apply flex h-full w-8 shrink-0 items-center justify-center border-0 bg-slate-100 text-slate-600 transition hover:bg-slate-200 focus:outline-none dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700;
+  @apply flex h-full w-8 shrink-0 items-center justify-center border-0 bg-base-200 text-base-content/70 transition hover:bg-base-300 focus:outline-none;
 }
 .range-input {
-  @apply min-w-0 flex-1 border-0 bg-transparent px-1.5 py-1 text-sm text-slate-900 outline-none dark:text-slate-100;
+  @apply min-w-0 flex-1 border-0 bg-transparent px-1.5 py-1 text-sm text-base-content outline-none;
 }
 .range-input::-webkit-inner-spin-button,
 .range-input::-webkit-outer-spin-button {

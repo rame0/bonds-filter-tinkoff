@@ -1,13 +1,13 @@
 <template>
   <div class="space-y-2" ref="rootRef">
-    <label v-if="label" class="block text-sm font-medium text-slate-700 dark:text-slate-200">
+    <label v-if="label" class="label-text text-sm font-medium text-base-content">
       {{ label }}
     </label>
     <div class="relative">
       <button
         type="button"
-        class="flex min-h-8 w-full items-center justify-between gap-2 rounded border border-slate-300 bg-white px-1.5 py-1 text-left text-sm text-slate-900 shadow-sm outline-none transition focus:border-emerald-500 focus:ring-1 focus:ring-emerald-200 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:ring-emerald-900"
-        :class="{ 'ring-2 ring-emerald-200 dark:ring-emerald-900': isOpen }"
+        class="btn btn-outline btn-sm min-h-8 h-auto w-full justify-between text-left normal-case"
+        :class="{ 'btn-primary': isOpen }"
         @click="isOpen = !isOpen"
         aria-haspopup="listbox"
         :aria-expanded="isOpen"
@@ -15,14 +15,14 @@
         <span class="truncate">
           {{ summaryText }}
         </span>
-        <span class="shrink-0 text-slate-400" aria-hidden="true">
+        <span class="shrink-0 opacity-60" aria-hidden="true">
           {{ isOpen ? '▲' : '▼' }}
         </span>
       </button>
 
       <div
         v-show="isOpen"
-        class="absolute top-full left-0 z-30 mt-1 max-h-56 w-full overflow-auto rounded border border-slate-200 bg-white py-0.5 shadow-lg dark:border-slate-700 dark:bg-slate-900"
+        class="absolute top-full left-0 z-30 mt-1 max-h-56 w-full overflow-auto rounded-box border border-base-300 bg-base-100 py-1 shadow-xl"
         role="listbox"
       >
         <button
@@ -31,13 +31,13 @@
           type="button"
           role="option"
           :aria-selected="isSelected(item.value as OptionValue)"
-          class="flex w-full items-center gap-2 px-1.5 py-1 text-left text-sm transition hover:bg-slate-100 dark:hover:bg-slate-800"
-          :class="isSelected(item.value as OptionValue) ? 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/50 dark:text-emerald-200' : 'text-slate-700 dark:text-slate-200'"
+          class="flex w-full items-center gap-2 px-2 py-1.5 text-left text-sm transition hover:bg-base-200"
+          :class="isSelected(item.value as OptionValue) ? 'bg-primary/10 text-primary' : 'text-base-content/80'"
           @click="toggleOption(item.value as OptionValue)"
         >
           <span
             class="flex h-4 w-4 shrink-0 items-center justify-center rounded border text-xs"
-            :class="isSelected(item.value as OptionValue) ? 'border-emerald-600 bg-emerald-600 text-white' : 'border-slate-400 dark:border-slate-500'"
+            :class="isSelected(item.value as OptionValue) ? 'border-primary bg-primary text-primary-content' : 'border-base-content/30'"
           >
             {{ isSelected(item.value as OptionValue) ? '✓' : '' }}
           </span>
@@ -45,7 +45,7 @@
         </button>
         <p
           v-if="options.length === 0"
-          class="px-1.5 py-1 text-sm text-slate-500 dark:text-slate-400"
+          class="px-2 py-1 text-sm text-base-content/60"
         >
           Нет вариантов
         </p>
