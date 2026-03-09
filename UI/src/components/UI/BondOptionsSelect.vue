@@ -6,7 +6,7 @@
     <div class="relative">
         <button
           type="button"
-          class="btn h-auto w-full justify-between border-base-300 bg-base-100 text-left normal-case hover:bg-base-200"
+          class="btn w-full justify-between border-base-300 bg-base-100 text-left normal-case hover:bg-base-200"
           :class="[size, { 'border-base-content/20 bg-base-200 text-base-content': isOpen }]"
           @click="isOpen = !isOpen"
           aria-haspopup="listbox"
