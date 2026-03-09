@@ -4,14 +4,14 @@
       {{ label }}
     </label>
     <div class="relative">
-      <button
-        type="button"
-        class="btn btn-sm min-h-8 h-auto w-full justify-between border-base-300 bg-base-100 text-left normal-case hover:bg-base-200"
-        :class="{ 'border-base-content/20 bg-base-200 text-base-content': isOpen }"
-        @click="isOpen = !isOpen"
-        aria-haspopup="listbox"
-        :aria-expanded="isOpen"
-      >
+        <button
+          type="button"
+          class="btn h-auto w-full justify-between border-base-300 bg-base-100 text-left normal-case hover:bg-base-200"
+          :class="[size, { 'border-base-content/20 bg-base-200 text-base-content': isOpen }]"
+          @click="isOpen = !isOpen"
+          aria-haspopup="listbox"
+          :aria-expanded="isOpen"
+        >
         <span class="truncate">
           {{ summaryText }}
         </span>
@@ -67,6 +67,7 @@ type OptionItem = {
 const props = withDefaults(
   defineProps<{
     label?: string
+    size?: string
     options?: OptionItem[]
     modelValue?: OptionValue[]
   }>(),

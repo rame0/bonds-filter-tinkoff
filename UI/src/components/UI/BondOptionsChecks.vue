@@ -1,22 +1,27 @@
 <template>
-  <div>
-    <input
-      v-for="option in options"
-      :key="String(option.value)"
-      class="btn"
-      type="checkbox"
-      name="bond-options"
-      :aria-label="String(getOptionLabel(option.label))"
-      :checked="isSelected(option.value as OptionValue)"
-      @change="toggleOption(option.value as OptionValue)"
-    />
-    <input
-      class="btn btn-square"
-      type="reset"
-      value="×"
-      aria-label="Сбросить"
-      @click="emit('update:modelValue', [])"
-    />
+  <div class="space-y-1">
+    <label v-if="label" class="label-text block text-sm font-medium text-base-content">
+      {{ label }}
+    </label>
+    <form class="filter gap-1" @submit.prevent>
+      <input
+        v-for="option in options"
+        :key="String(option.value)"
+        :class="['btn', size]"
+        type="checkbox"
+        :name="groupName"
+        :aria-label="String(getOptionLabel(option.label))"
+        :checked="isSelected(option.value as OptionValue)"
+        @change="toggleOption(option.value as OptionValue)"
+      />
+      <input
+        :class="['btn', 'btn-square', size]"
+        type="reset"
+        value="×"
+        aria-label="Сбросить"
+        @click="emit('update:modelValue', [])"
+      />
+    </form>
   </div>
 </template>
 
@@ -31,10 +36,15 @@ type OptionItem = {
 
 const props = withDefaults(
   defineProps<{
+    label?: string
+    groupName?: string
+    size?: string
     options?: OptionItem[]
     modelValue?: OptionValue[]
   }>(),
   {
+    label: '',
+    groupName: 'bond-options',
     options: () => []
   }
 )
