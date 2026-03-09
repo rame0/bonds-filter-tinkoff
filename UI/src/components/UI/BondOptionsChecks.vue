@@ -1,24 +1,22 @@
 <template>
-  <div class="flex flex-wrap gap-1">
-    <button
-      type="button"
-      class="btn btn-square btn-xs"
-      aria-label="Сбросить"
-      @click="emit('update:modelValue', [])"
-    >
-      ×
-    </button>
-    <button
+  <div>
+    <input
       v-for="option in options"
       :key="String(option.value)"
-      type="button"
-      class="btn btn-xs"
-      :class="isSelected(option.value as OptionValue) ? 'btn-primary' : 'btn-ghost'"
-      :aria-pressed="isSelected(option.value as OptionValue)"
-      @click="toggleOption(option.value as OptionValue)"
-    >
-      {{ getOptionLabel(option.label) }}
-    </button>
+      class="btn"
+      type="checkbox"
+      name="bond-options"
+      :aria-label="String(getOptionLabel(option.label))"
+      :checked="isSelected(option.value as OptionValue)"
+      @change="toggleOption(option.value as OptionValue)"
+    />
+    <input
+      class="btn btn-square"
+      type="reset"
+      value="×"
+      aria-label="Сбросить"
+      @click="emit('update:modelValue', [])"
+    />
   </div>
 </template>
 
