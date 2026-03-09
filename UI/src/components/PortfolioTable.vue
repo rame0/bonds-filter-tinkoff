@@ -1,13 +1,13 @@
 <template>
-	<div class="flex h-full flex-col rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-950">
+	<div class="flex h-full flex-col rounded-box border border-base-300 bg-base-100 shadow-sm">
 		<div class="relative flex-1 overflow-auto">
-			<table class="min-w-[1300px] w-full table-auto text-left text-sm">
-				<thead class="sticky top-0 z-10 bg-slate-50 dark:bg-slate-900">
-					<tr class="border-b border-slate-200 dark:border-slate-800">
+			<table class="table table-zebra min-w-[1300px] table-auto text-left text-sm">
+				<thead class="sticky top-0 z-10 bg-base-200">
+					<tr>
 						<th v-if="showAddButton" class="px-3 py-3 text-center">
 							<button
 								type="button"
-								class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-rose-300 text-lg font-bold text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-950/40"
+								class="btn btn-circle btn-sm btn-outline btn-error"
 								:disabled="store.isEmpty"
 								title="Удалить все"
 								@click="store.dropAllBonds()"
@@ -15,31 +15,31 @@
 								×
 							</button>
 						</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Название</th>
-						<th v-if="showAddButton" class="px-3 py-3 text-center text-slate-700 dark:text-slate-200">+</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Тикер</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Погашение</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Номинал</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Цена</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Доходность</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">∑ Купон за год</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">НКД</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Уровень риска</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Сектор</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Форма выпуска</th>
-						<th class="px-3 py-3 font-semibold text-slate-700 dark:text-slate-200">Ликвидность</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Название</th>
+						<th v-if="showAddButton" class="px-3 py-3 text-center text-base-content">+</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Тикер</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Погашение</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Номинал</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Цена</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Доходность</th>
+						<th class="px-3 py-3 font-semibold text-base-content">∑ Купон за год</th>
+						<th class="px-3 py-3 font-semibold text-base-content">НКД</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Уровень риска</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Сектор</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Форма выпуска</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Ликвидность</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr
 						v-for="row in modelValue"
 						:key="row.uid"
-						class="border-b border-slate-100 align-top last:border-b-0 dark:border-slate-900"
+						class="align-top"
 					>
 						<td v-if="showAddButton" class="px-3 py-3 text-center">
 							<button
 								type="button"
-								class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-rose-300 text-lg font-bold text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-950/40"
+								class="btn btn-circle btn-sm btn-outline btn-error"
 								:disabled="store.getBondQty(row.uid) < 1"
 								@click="store.decreaseQty(row.uid)"
 							>
@@ -48,8 +48,8 @@
 						</td>
 						<td class="px-3 py-3">
 							<div class="flex flex-wrap items-center gap-2">
-								<span class="font-medium text-slate-900 dark:text-slate-100">{{ row.name }}</span>
-								<span class="rounded-full bg-emerald-600 px-2 py-0.5 text-xs font-semibold text-white">
+								<span class="font-medium text-base-content">{{ row.name }}</span>
+								<span class="badge badge-primary">
 									{{ row.qty > 99 ? "99+" : row.qty }}
 								</span>
 							</div>
@@ -57,28 +57,28 @@
 						<td v-if="showAddButton" class="px-3 py-3 text-center">
 							<button
 								type="button"
-								class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-emerald-300 text-lg font-bold text-emerald-600 transition hover:bg-emerald-50 dark:border-emerald-800 dark:text-emerald-300 dark:hover:bg-emerald-950/40"
+								class="btn btn-circle btn-sm btn-outline btn-primary"
 								@click="store.increaseQty(row)"
 							>
 								+
 							</button>
 						</td>
 						<td class="px-3 py-3"><links-to-exchange :ticker="row.ticker" :exchange="row.realExchange" /></td>
-						<td class="px-3 py-3 text-slate-700 dark:text-slate-200">{{ row.duration ?? "—" }} мес.</td>
-						<td class="px-3 py-3 text-slate-700 dark:text-slate-200">
+						<td class="px-3 py-3 text-base-content/80">{{ row.duration ?? "—" }} мес.</td>
+						<td class="px-3 py-3 text-base-content/80">
 							{{ formatOptionalNumber(row.nominal) }} {{ CurrencyCollation.getLabel(row.currency) }}
 						</td>
-						<td class="px-3 py-3 text-slate-700 dark:text-slate-200">{{ formatOptionalNumber(row.price) }} %</td>
-						<td class="px-3 py-3 text-slate-700 dark:text-slate-200">{{ formatOptionalNumber(row.bondYield, 2) }}%</td>
-						<td class="px-3 py-3 text-slate-700 dark:text-slate-200">
+						<td class="px-3 py-3 text-base-content/80">{{ formatOptionalNumber(row.price) }} %</td>
+						<td class="px-3 py-3 text-base-content/80">{{ formatOptionalNumber(row.bondYield, 2) }}%</td>
+						<td class="px-3 py-3 text-base-content/80">
 							{{ formatOptionalNumber(row.couponsYield) }} {{ CurrencyCollation.getLabel(row.currency) }}
 						</td>
-						<td class="px-3 py-3 text-slate-700 dark:text-slate-200">
+						<td class="px-3 py-3 text-base-content/80">
 							{{ formatOptionalNumber(row.aciValue, 2) }} {{ CurrencyCollation.getLabel(row.currency) }}
 						</td>
 						<td class="px-3 py-3"><risk-stars :level="row.riskLevel" /></td>
-						<td class="px-3 py-3 text-slate-700 dark:text-slate-200">{{ SectorsCollation.getLabel(row.sector) }}</td>
-						<td class="px-3 py-3 text-slate-700 dark:text-slate-200">{{ IssueKindCollations.getLabel(row.issueKind) }}</td>
+						<td class="px-3 py-3 text-base-content/80">{{ SectorsCollation.getLabel(row.sector) }}</td>
+						<td class="px-3 py-3 text-base-content/80">{{ IssueKindCollations.getLabel(row.issueKind) }}</td>
 						<td class="px-3 py-3"><liquidity-arrow :level="row.liquidity ?? 0" /></td>
 					</tr>
 				</tbody>

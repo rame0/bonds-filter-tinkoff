@@ -1,15 +1,15 @@
 <template>
-	<table class="w-full border-collapse text-sm">
+	<table class="table table-zebra w-full text-sm">
 		<tbody>
-			<tr class="border-b border-slate-200/60">
+			<tr>
 				<td class="py-3 pr-4 font-medium">Всего бумаг:</td>
 				<td class="py-3 text-right">{{ totalBonds }}</td>
 			</tr>
-			<tr class="border-b border-slate-200/60">
+			<tr>
 				<td class="py-3 pr-4 font-medium">Всего купонов:</td>
 				<td class="py-3 text-right">{{ totalCoupons }}</td>
 			</tr>
-			<tr class="border-b border-slate-200/60">
+			<tr>
 				<td class="py-3 pr-4 font-medium">Профит от купонов:</td>
 				<td class="py-3 text-right">{{ totalProfit }}</td>
 			</tr>
@@ -82,4 +82,3 @@ export default {
 	}
 }
 </script>
-

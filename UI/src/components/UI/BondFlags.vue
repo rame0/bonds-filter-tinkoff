@@ -29,19 +29,18 @@ export default {
 
   setup() {
     const getTagClass = (value: boolean | undefined, inverse: boolean = false) => {
-      const baseClasses =
-        "inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold"
+      const baseClasses = 'badge badge-sm'
 
       if (value === undefined) {
-        return `${baseClasses} bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-100`
+        return `${baseClasses} badge-ghost`
       } else if (value) {
         return !inverse
-          ? `${baseClasses} bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200`
-          : `${baseClasses} bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-200`
+          ? `${baseClasses} badge-success`
+          : `${baseClasses} badge-error`
       } else {
         return !inverse
-          ? `${baseClasses} bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-200`
-          : `${baseClasses} bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200`
+          ? `${baseClasses} badge-error`
+          : `${baseClasses} badge-success`
       }
     }
     return {

@@ -15,9 +15,9 @@ export default {
 
   setup() {
     const colorByLiquidity: Record<string, string> = {
-      success: 'font-semibold text-emerald-600 dark:text-emerald-300',
-      danger: 'font-semibold text-rose-600 dark:text-rose-300',
-      primary: 'font-semibold text-slate-600 dark:text-slate-300'
+      success: 'font-semibold text-success',
+      danger: 'font-semibold text-error',
+      primary: 'font-semibold text-base-content/70'
     }
 
     return {
