@@ -9,7 +9,7 @@ export default {
   },
   plugins: [daisyui],
   daisyui: {
-    themes: ['night', 'light'],
-    darkTheme: 'night'
+    themes: ['dracula', 'light'],
+    darkTheme: 'dracula'
   }
 }
