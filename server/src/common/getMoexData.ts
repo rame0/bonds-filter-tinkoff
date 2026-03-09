@@ -2,6 +2,7 @@ import axios from "axios"
 import moment from "moment"
 import Cache from "file-system-cache"
 import { sleep } from "./utils/sleep"
+import { roundTo } from "./utils/round"
 import { LiquidityType, MoexCoupon, MoexResults, MoexTrade } from "./interfaces/Moex"
 
 export function getMoexData(isins: string[]): Promise<MoexResults> {
@@ -67,7 +68,7 @@ export async function buildDataFromMoex(marketData, isins: string[]) {
       CouponPeriod: marketRow[4],
       BondVolume: -1,
       BondYield: +rowData[1],
-      BondDuration: Math.floor((rowData[2] / 30) * 100) / 100,
+      BondDuration: roundTo(rowData[2] / 30, 2, "floor") ?? 0,
       MonthsOfPaymentsDates: null,
       liquidity: LiquidityType.high,
     }

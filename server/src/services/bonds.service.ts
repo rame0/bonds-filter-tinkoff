@@ -5,6 +5,7 @@ import moment from "moment"
 import { CombinedBondsResponse } from "../common/interfaces/CombinedBondsResponse"
 import { api } from "../common/api"
 import { Helpers } from "@psqq/tinkoff-invest-api"
+import { roundTo } from "../common/utils/round"
 
 export default {
 	name: "bonds",
@@ -42,7 +43,7 @@ export default {
 					coupons = coupons
 						.filter((coupon) => moment(coupon.couponDate).isAfter(now))
 						.map((coupon) => {
-							coupon["payout"] = Helpers.toNumber(coupon.payOneBond)
+							coupon["payout"] = roundTo(Helpers.toNumber(coupon.payOneBond))
 							return coupon
 						})
 					return coupons.slice(0, limit)

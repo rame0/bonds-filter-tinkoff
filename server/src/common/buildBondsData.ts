@@ -6,6 +6,7 @@ import moment from "moment/moment"
 import { getMoexData } from "./getMoexData"
 import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
 import { api } from "./api"
+import { roundTo } from "./utils/round"
 
 export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
   const bonds = await api.instruments.bonds({
@@ -39,15 +40,21 @@ export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
       }
     })
     const lastPrice = prices.lastPrices.find(t2 => t2.figi === t1.figi)
-    instrument.price = Helpers.toNumber(lastPrice?.price)
-    instrument.couponsYield = moexBonds[t1.ticker]?.couponsYield
-    instrument.bondYield = moexBonds[t1.ticker]?.BondYield
-    instrument.duration = moexBonds[t1.ticker]?.BondDuration
+    instrument.price = roundTo(Helpers.toNumber(lastPrice?.price))
+    instrument.couponsYield = moexBonds[t1.ticker]?.couponsYield !== undefined
+      ? roundTo(moexBonds[t1.ticker].couponsYield)
+      : undefined
+    instrument.bondYield = moexBonds[t1.ticker]?.BondYield !== undefined
+      ? roundTo(moexBonds[t1.ticker].BondYield)
+      : undefined
+    instrument.duration = moexBonds[t1.ticker]?.BondDuration !== undefined
+      ? roundTo(moexBonds[t1.ticker].BondDuration)
+      : undefined
     if (instrument.duration === undefined || instrument.duration <= 0) {
       const dateStr = instrument.buyBackDate ? instrument.buyBackDate : instrument.maturityDate || ""
       const date = moment(dateStr)
 
-      instrument.duration = Math.round((date.diff(now, "days") / 30) * 100) / 100 || 0
+      instrument.duration = roundTo(date.diff(now, "days") / 30) || 0
     }
     instrument.liquidity = moexBonds[t1.ticker]?.liquidity
 
