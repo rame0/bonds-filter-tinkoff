@@ -3,7 +3,7 @@
     <label v-if="label" class="label-text block text-sm font-medium text-base-content">
       {{ label }}
     </label>
-    <form class="filter gap-1" @submit.prevent>
+    <form class="gap-1" @submit.prevent>
       <input
         v-for="option in options"
         :key="String(option.value)"
