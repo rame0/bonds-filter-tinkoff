@@ -1,6 +1,6 @@
 <template>
 	<div class="flex h-full flex-col rounded-box border border-base-300 bg-base-100">
-		<div class="relative flex-1 overflow-auto">
+		<div class="relative flex-1 overflow-auto h-fit">
 			<table class="table min-w-[2200px] table-auto text-left text-sm">
 				<thead class="sticky top-0 z-10 bg-base-200/95 backdrop-blur">
 					<tr>

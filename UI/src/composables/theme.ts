@@ -1,7 +1,7 @@
 import { computed, watch } from "vue"
 import { useStorage } from "@vueuse/core"
 
-type AppTheme = "dracula" | "retro"
+type AppTheme = "dracula" | "autumn"
 
 const STORAGE_KEY = "ui-theme"
 
@@ -21,5 +21,5 @@ watch(
 )
 
 export const toggleTheme = () => {
-  theme.value = theme.value === "dracula" ? "retro" : "dracula"
+  theme.value = theme.value === "dracula" ? "autumn" : "dracula"
 }

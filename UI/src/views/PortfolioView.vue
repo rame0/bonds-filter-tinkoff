@@ -6,7 +6,7 @@
 			class="card card-border min-w-0 h-[calc(100vh-var(--header-height)-1px)] bg-base-100"
 			id="table-view"
 		>
-			<div class="card-body p-4">
+			<div class="card-body h-full">
 				<portfolio-table v-model="portfolioBonds" :loading="isFetching" />
 			</div>
 		</div>
@@ -16,7 +16,7 @@
 		<div
 			class="card card-border min-w-0 h-[calc(100vh-var(--header-height)-1px)] bg-base-100"
 		>
-			<div class="card-body p-4">
+			<div class="card-body h-full">
 				<portfolio-stats v-model="portfolioBonds" :loading="isFetching" />
 			</div>
 		</div>
