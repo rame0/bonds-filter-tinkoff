@@ -1,8 +1,8 @@
 <template>
-  <div class="join w-fit">
+  <div class="flex flex-wrap gap-1">
     <button
       type="button"
-      class="join-item btn btn-square btn-xs"
+      class="btn btn-square btn-xs"
       aria-label="Сбросить"
       @click="emit('update:modelValue', [])"
     >
@@ -12,8 +12,9 @@
       v-for="option in options"
       :key="String(option.value)"
       type="button"
-      class="join-item btn btn-xs"
-      :class="isSelected(option.value as OptionValue) ? 'btn-primary' : 'btn-ghost bg-base-200 hover:bg-base-300'"
+      class="btn btn-xs"
+      :class="isSelected(option.value as OptionValue) ? 'btn-primary' : 'btn-ghost'"
+      :aria-pressed="isSelected(option.value as OptionValue)"
       @click="toggleOption(option.value as OptionValue)"
     >
       {{ getOptionLabel(option.label) }}

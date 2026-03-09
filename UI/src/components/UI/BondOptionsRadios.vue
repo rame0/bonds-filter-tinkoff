@@ -1,24 +1,23 @@
 <template>
-  <div class="join w-fit">
-    <button
-      type="button"
-      class="join-item btn btn-square btn-xs"
+  <form class="filter gap-1" @submit.prevent>
+    <input
+      class="btn btn-square btn-xs"
+      type="reset"
+      value="×"
       aria-label="Сбросить"
-      @click="emit('update:modelValue', -1)"
-    >
-      ×
-    </button>
+      @click.prevent="emit('update:modelValue', -1)"
+    />
     <input
       v-for="option in renderedOptions"
       :key="String(option.value)"
       type="radio"
-      class="join-item btn btn-xs"
+      class="btn btn-xs"
       :name="groupName"
       :aria-label="getOptionLabel(option.label)"
       :checked="isSelected(option.value as OptionValue)"
       @change="emit('update:modelValue', option.value as OptionValue)"
     />
-  </div>
+  </form>
 </template>
 
 <script lang="ts" setup>

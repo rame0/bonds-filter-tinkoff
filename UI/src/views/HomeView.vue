@@ -1,32 +1,36 @@
 <template>
-	<div class="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(22rem,1fr)]">
+	<div class="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(26rem,1fr)] 2xl:grid-cols-[minmax(0,2fr)_minmax(30rem,1fr)]">
 		<!-- table -->
 
 		<div
-			class="card min-w-0 h-[calc(100vh-var(--header-height)-1px)] border border-base-300 bg-base-100 p-5 shadow-sm"
+			class="card card-border min-w-0 h-[calc(100vh-var(--header-height)-1px)] bg-base-100"
 			id="table-view"
 		>
-			<bonds-table
-				v-model="bonds"
-				:pagination-data="paginationData"
-				:loading="isFetching"
-				:sort-state="sortState"
-				@update:sort-state="sortChanged"
-				@update:page="pageChanged"
-				@update:page-size="pageSizeChanged"
-			/>
+			<div class="card-body p-4">
+				<bonds-table
+					v-model="bonds"
+					:pagination-data="paginationData"
+					:loading="isFetching"
+					:sort-state="sortState"
+					@update:sort-state="sortChanged"
+					@update:page="pageChanged"
+					@update:page-size="pageSizeChanged"
+				/>
+			</div>
 		</div>
 
 		<!-- filter -->
 
 		<div
-			class="card min-w-0 h-[calc(100vh-var(--header-height)-1px)] border border-base-300 bg-base-100 p-5 shadow-sm"
+			class="card card-border min-w-0 h-[calc(100vh-var(--header-height)-1px)] bg-base-100"
 		>
-			<bonds-filter
-				v-model="filterSelections"
-				:filter-options="filterOptions"
-				@change="filterChanged"
-			/>
+			<div class="card-body p-4">
+				<bonds-filter
+					v-model="filterSelections"
+					:filter-options="filterOptions"
+					@change="filterChanged"
+				/>
+			</div>
 		</div>
 	</div>
 </template>

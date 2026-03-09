@@ -1,13 +1,13 @@
 <template>
-	<div class="flex h-full flex-col rounded-box border border-base-300 bg-base-100 shadow-sm">
+	<div class="flex h-full flex-col rounded-box border border-base-300 bg-base-100">
 		<div class="relative flex-1 overflow-auto">
-			<table class="table table-zebra min-w-[1300px] table-auto text-left text-sm">
-				<thead class="sticky top-0 z-10 bg-base-200">
+			<table class="table min-w-[1300px] table-auto text-left text-sm">
+				<thead class="sticky top-0 z-10 bg-base-200/95 backdrop-blur">
 					<tr>
 						<th v-if="showAddButton" class="px-3 py-3 text-center">
 							<button
 								type="button"
-								class="btn btn-circle btn-sm btn-outline btn-error"
+								class="btn btn-circle btn-sm border-base-300 bg-base-200 text-error hover:bg-base-300"
 								:disabled="store.isEmpty"
 								title="Удалить все"
 								@click="store.dropAllBonds()"
@@ -39,7 +39,7 @@
 						<td v-if="showAddButton" class="px-3 py-3 text-center">
 							<button
 								type="button"
-								class="btn btn-circle btn-sm btn-outline btn-error"
+								class="btn btn-circle btn-sm border-base-300 bg-base-200 text-base-content/70 hover:bg-base-300"
 								:disabled="store.getBondQty(row.uid) < 1"
 								@click="store.decreaseQty(row.uid)"
 							>
@@ -49,7 +49,7 @@
 						<td class="px-3 py-3">
 							<div class="flex flex-wrap items-center gap-2">
 								<span class="font-medium text-base-content">{{ row.name }}</span>
-								<span class="badge badge-primary">
+								<span class="badge badge-neutral">
 									{{ row.qty > 99 ? "99+" : row.qty }}
 								</span>
 							</div>
@@ -57,7 +57,7 @@
 						<td v-if="showAddButton" class="px-3 py-3 text-center">
 							<button
 								type="button"
-								class="btn btn-circle btn-sm btn-outline btn-primary"
+								class="btn btn-circle btn-sm border-base-300 bg-base-200 text-base-content hover:bg-base-300"
 								@click="store.increaseQty(row)"
 							>
 								+

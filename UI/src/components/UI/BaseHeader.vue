@@ -13,17 +13,20 @@
 				<span>Подобранный портфель</span>
 				<span
 					v-if="store.bondsQty > 0"
-					class="badge badge-primary badge-sm"
+					class="badge badge-neutral badge-sm"
 				>
 					{{ store.bondsQty > 99 ? "99+" : store.bondsQty }}
 				</span>
 			</RouterLink>
 			<button
 				type="button"
-				class="btn btn-outline btn-sm"
-				disabled
+				class="btn btn-ghost btn-square btn-sm"
+				:aria-label="isDarkTheme ? 'Включить светлую тему' : 'Включить тёмную тему'"
+				:title="isDarkTheme ? 'Светлая тема' : 'Тёмная тема'"
+				@click="toggleTheme()"
 			>
-				Переключение темы (скоро)
+				<span v-if="isDarkTheme" aria-hidden="true">☀</span>
+				<span v-else aria-hidden="true">☾</span>
 			</button>
 		</nav>
 	</header>
@@ -32,6 +35,7 @@
 <script setup lang="ts">
 import { RouterLink, useRoute } from "vue-router"
 import { portfolioStore } from "@/data/portfolioStore"
+import { isDarkTheme, toggleTheme } from "@/composables"
 
 const route = useRoute()
 const store = portfolioStore()
@@ -39,10 +43,10 @@ const store = portfolioStore()
 const navLinkClass = (path: string) => {
 	const isActive = route.path === path
 	return [
-		"btn btn-sm",
+		"btn btn-sm border border-transparent",
 		isActive
-			? "btn-primary"
-			: "btn-ghost"
+			? "btn-ghost border-base-300 bg-base-200 text-base-content"
+			: "btn-ghost text-base-content/80 hover:text-base-content"
 	]
 }
 </script>
