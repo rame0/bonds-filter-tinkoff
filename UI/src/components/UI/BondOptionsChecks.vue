@@ -1,10 +1,19 @@
 <template>
-  <div class="flex flex-wrap gap-2">
+  <div class="join w-fit">
+    <button
+      type="button"
+      class="join-item btn btn-square btn-xs"
+      aria-label="Сбросить"
+      @click="emit('update:modelValue', [])"
+    >
+      ×
+    </button>
     <button
       v-for="option in options"
       :key="String(option.value)"
       type="button"
-      :class="buttonClass(isSelected(option.value as OptionValue))"
+      class="join-item btn btn-xs"
+      :class="isSelected(option.value as OptionValue) ? 'btn-primary' : 'btn-ghost bg-base-200 hover:bg-base-300'"
       @click="toggleOption(option.value as OptionValue)"
     >
       {{ getOptionLabel(option.label) }}
@@ -56,12 +65,4 @@ const toggleOption = (value: OptionValue) => {
 
   emit('update:modelValue', nextValue)
 }
-
-const buttonClass = (selected: boolean) =>
-  [
-    'btn btn-sm',
-    selected
-      ? 'btn-primary'
-      : 'btn-outline'
-  ]
 </script>

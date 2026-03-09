@@ -1,13 +1,13 @@
 <template>
   <div class="space-y-2" ref="rootRef">
-    <label v-if="label" class="label-text text-sm font-medium text-base-content">
+    <label v-if="label" class="label-text block text-sm font-medium text-base-content">
       {{ label }}
     </label>
     <div class="relative">
       <button
         type="button"
-        class="btn btn-outline btn-sm min-h-8 h-auto w-full justify-between text-left normal-case"
-        :class="{ 'btn-primary': isOpen }"
+        class="btn btn-sm min-h-8 h-auto w-full justify-between border-base-300 bg-base-100 text-left normal-case hover:bg-base-200"
+        :class="{ 'border-primary bg-primary/10 text-primary': isOpen }"
         @click="isOpen = !isOpen"
         aria-haspopup="listbox"
         :aria-expanded="isOpen"
