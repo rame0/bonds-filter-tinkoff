@@ -1,23 +1,28 @@
 <template>
-  <form class="filter gap-1" @submit.prevent>
-    <input
-      class="btn btn-square btn-xs"
-      type="reset"
-      value="×"
-      aria-label="Сбросить"
-      @click.prevent="emit('update:modelValue', -1)"
-    />
-    <input
-      v-for="option in renderedOptions"
-      :key="String(option.value)"
-      type="radio"
-      class="btn btn-xs"
-      :name="groupName"
-      :aria-label="getOptionLabel(option.label)"
-      :checked="isSelected(option.value as OptionValue)"
-      @change="emit('update:modelValue', option.value as OptionValue)"
-    />
-  </form>
+  <div class="space-y-1">
+    <label v-if="label" class="label-text block text-sm font-medium text-base-content">
+      {{ label }}
+    </label>
+    <form class="filter gap-1" @submit.prevent>
+      <input
+        :class="['btn', 'btn-square', size]"
+        type="reset"
+        value="×"
+        aria-label="Сбросить"
+        @click.prevent="emit('update:modelValue', -1)"
+      />
+      <input
+        v-for="option in renderedOptions"
+        :key="String(option.value)"
+        type="radio"
+        :class="['btn', size]"
+        :name="groupName"
+        :aria-label="getOptionLabel(option.label)"
+        :checked="isSelected(option.value as OptionValue)"
+        @change="emit('update:modelValue', option.value as OptionValue)"
+      />
+    </form>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -32,10 +37,15 @@ type OptionItem = {
 
 const props = withDefaults(
   defineProps<{
+    label?: string
+    groupName?: string
+    size?: string
     options?: OptionItem[]
     modelValue?: OptionValue
   }>(),
   {
+    label: '',
+    groupName: 'bond-options-radios',
     options: () => [
       { label: 'Не важно', value: -1 },
       { label: 'Да', value: true },
@@ -58,6 +68,4 @@ const isSelected = (value: OptionValue) =>
 const renderedOptions = computed(() =>
   (props.options ?? []).filter((option) => String(option.value) !== '-1')
 )
-
-const groupName = `bond-options-radios-${Math.random().toString(36).slice(2, 9)}`
 </script>

@@ -137,7 +137,11 @@
     </section>
 
     <section class="grid grid-cols-1 gap-3 xl:grid-cols-2 2xl:grid-cols-3">
-      <bond-options-select v-model="value.currency" :options="filterOptions.currency" label="Валюта" />
+      <bond-options-select
+        v-model="value.currency"
+        :options="filterOptions.currency"
+        label="Валюта"
+      />
       <bond-options-select
         v-model="value.couponQuantityPerYear"
         :options="filterOptions.couponQuantityPerYear"
@@ -151,46 +155,70 @@
     </section>
 
     <section class="grid grid-cols-1 gap-3 xl:grid-cols-2 2xl:grid-cols-3">
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Доступна для ИИС</label>
-        <bond-options-radios v-model="value.forIisFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Для квалов</label>
-        <bond-options-radios v-model="value.forQualInvestorFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Индексация номинала</label>
-        <bond-options-radios v-model="value.indexedNominalFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Есть обеспечение</label>
-        <bond-options-radios v-model="value.collateralFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Купоны не облаг. налогом</label>
-        <bond-options-radios v-model="value.taxFreeFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Плавающий купон</label>
-        <bond-options-radios v-model="value.floatingCouponFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">С амортизацией</label>
-        <bond-options-radios v-model="value.amortizationFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Уровень риска</label>
-        <bond-options-checks v-model="value.riskLevel" :options="filterOptions.riskLevel" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Ликвидность</label>
-        <bond-options-checks v-model="value.liquidity" :options="filterOptions.liquidity" />
-      </div>
+      <bond-options-radios
+        v-model="value.forIisFlag"
+        label="Доступна для ИИС"
+        group-name="forIisFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.forQualInvestorFlag"
+        label="Для квалов"
+        group-name="forQualInvestorFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.indexedNominalFlag"
+        label="Индексация номинала"
+        group-name="indexedNominalFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.collateralFlag"
+        label="Есть обеспечение"
+        group-name="collateralFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.taxFreeFlag"
+        label="Купоны не облаг. налогом"
+        group-name="taxFreeFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.floatingCouponFlag"
+        label="Плавающий купон"
+        group-name="floatingCouponFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.amortizationFlag"
+        label="С амортизацией"
+        group-name="amortizationFlag"
+        size="btn-sm"
+      />
+      <bond-options-checks
+        v-model="value.riskLevel"
+        :options="filterOptions.riskLevel"
+        label="Уровень риска"
+        group-name="riskLevel"
+        size="btn-sm"
+      />
+      <bond-options-checks
+        v-model="value.liquidity"
+        :options="filterOptions.liquidity"
+        label="Ликвидность"
+        group-name="liquidity"
+        size="btn-sm"
+      />
     </section>
 
     <section class="grid grid-cols-1 gap-3 xl:grid-cols-3">
-      <bond-options-select v-model="value.sector" :options="filterOptions.sector" label="Сектор" />
+      <bond-options-select
+        v-model="value.sector"
+        :options="filterOptions.sector"
+        label="Сектор"
+      />
       <bond-options-select
         v-model="value.issueKind"
         :options="filterOptions.issueKind"
@@ -204,42 +232,60 @@
     </section>
 
     <section class="grid grid-cols-1 gap-3 xl:grid-cols-3">
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Доступен шорт</label>
-        <bond-options-radios v-model="value.shortEnabledFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Внебиржевая</label>
-        <bond-options-radios v-model="value.otcFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Доступна для покупки</label>
-        <bond-options-radios v-model="value.buyAvailableFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Доступна для продажи</label>
-        <bond-options-radios v-model="value.sellAvailableFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Бессрочная</label>
-        <bond-options-radios v-model="value.perpetualFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Доступна торговля по API</label>
-        <bond-options-radios v-model="value.apiTradeAvailableFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Торговля по выходным</label>
-        <bond-options-radios v-model="value.weekendFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Блокировка ТКС</label>
-        <bond-options-radios v-model="value.blockedTcaFlag" />
-      </div>
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Субординированная</label>
-        <bond-options-radios v-model="value.subordinatedFlag" />
-      </div>
+      <bond-options-radios
+        v-model="value.shortEnabledFlag"
+        label="Доступен шорт"
+        group-name="shortEnabledFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.otcFlag"
+        label="Внебиржевая"
+        group-name="otcFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.buyAvailableFlag"
+        label="Доступна для покупки"
+        group-name="buyAvailableFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.sellAvailableFlag"
+        label="Доступна для продажи"
+        group-name="sellAvailableFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.perpetualFlag"
+        label="Бессрочная"
+        group-name="perpetualFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.apiTradeAvailableFlag"
+        label="Доступна торговля по API"
+        group-name="apiTradeAvailableFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.weekendFlag"
+        label="Торговля по выходным"
+        group-name="weekendFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.blockedTcaFlag"
+        label="Блокировка ТКС"
+        group-name="blockedTcaFlag"
+        size="btn-sm"
+      />
+      <bond-options-radios
+        v-model="value.subordinatedFlag"
+        label="Субординированная"
+        group-name="subordinatedFlag"
+        size="btn-sm"
+      />
     </section>
   </div>
 </template>
