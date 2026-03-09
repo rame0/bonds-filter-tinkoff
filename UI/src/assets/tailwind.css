@@ -45,6 +45,7 @@
   --border: 1px;
   --depth: 0;
   --noise: 0;
+  --card-p: 1rem;
 }
 
 @plugin "daisyui/theme" {
@@ -80,4 +81,5 @@
   --border: 1px;
   --depth: 0;
   --noise: 0;
+  --card-p: 1rem;
 }

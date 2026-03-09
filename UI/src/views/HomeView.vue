@@ -6,7 +6,7 @@
 			class="card card-border min-w-0 h-[calc(100vh-var(--header-height)-1px)] bg-base-100"
 			id="table-view"
 		>
-			<div class="card-body p-4">
+			<div class="card-body h-full">
 				<bonds-table
 					v-model="bonds"
 					:pagination-data="paginationData"
@@ -24,7 +24,7 @@
 		<div
 			class="card card-border min-w-0 h-[calc(100vh-var(--header-height)-1px)] bg-base-100"
 		>
-			<div class="card-body p-4">
+			<div class="card-body h-full">
 				<bonds-filter
 					v-model="filterSelections"
 					:filter-options="filterOptions"
