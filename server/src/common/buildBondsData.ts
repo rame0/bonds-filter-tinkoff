@@ -22,25 +22,27 @@ export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
   })
 
   const moexBonds = await getMoexData(tickers)
+  const lastPriceByFigi = new Map(prices.lastPrices.map(item => [item.figi, item.price]))
 
-  const isMoney = (value: any): value is MoneyValue => value.hasOwnProperty("units") && value.hasOwnProperty("nano")
-  const isQuote = (value: any): value is Quotation => value.hasOwnProperty("units") && value.hasOwnProperty("nano")
+  const isMoneyLike = (value: unknown): value is MoneyValue | Quotation => {
+    return typeof value === "object" && value !== null && "units" in value && "nano" in value
+  }
 
   const response: CombinedBondsResponse[] = []
   const now = moment()
   for (const t1 of bonds.instruments) {
     const instrument: CombinedBondsResponse = {} as CombinedBondsResponse
-    Object.keys(t1).map(key => {
+    for (const key of Object.keys(t1)) {
       if (t1[key] === undefined) {
         instrument[key] = undefined
-      } else if (isMoney(t1[key]) || isQuote(t1[key])) {
+      } else if (isMoneyLike(t1[key])) {
         instrument[key] = Helpers.toNumber(t1[key])
       } else {
         instrument[key] = t1[key]
       }
-    })
-    const lastPrice = prices.lastPrices.find(t2 => t2.figi === t1.figi)
-    instrument.price = roundTo(Helpers.toNumber(lastPrice?.price))
+    }
+    const lastPrice = lastPriceByFigi.get(t1.figi)
+    instrument.price = roundTo(Helpers.toNumber(lastPrice))
     instrument.couponsYield = moexBonds[t1.ticker]?.couponsYield !== undefined
       ? roundTo(moexBonds[t1.ticker].couponsYield)
       : undefined
