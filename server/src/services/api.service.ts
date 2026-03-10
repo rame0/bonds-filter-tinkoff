@@ -6,12 +6,12 @@ export default {
 	mixins: [ApiGateway],
 	settings: {
 		port: process.env.PORT || 3000,
-		routes: [
-			{
-				path: "/api",
-				whitelist: ["**"],
-			},
-		],
+			routes: [
+				{
+					path: "/api",
+					whitelist: ["bonds.*"],
+				},
+			],
 		assets: {
 			folder: "public",
 		},
