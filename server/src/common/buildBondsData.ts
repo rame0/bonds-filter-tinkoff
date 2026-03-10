@@ -14,7 +14,6 @@ export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
   })
 
   const instrumentIDs: string[] = bonds.instruments.map(instrument => instrument.uid)
-  const isins = bonds.instruments.map(instrument => instrument.isin)
   const tickers = bonds.instruments.map(instrument => instrument.ticker)
   const prices: GetLastPricesResponse = await api.marketdata.getLastPrices({
     figi: [],
