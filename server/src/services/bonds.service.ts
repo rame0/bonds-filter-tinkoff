@@ -6,6 +6,7 @@ import { CombinedBondsResponse } from "../common/interfaces/CombinedBondsRespons
 import { api } from "../common/api"
 import { Helpers } from "@psqq/tinkoff-invest-api"
 import { roundTo } from "../common/utils/round"
+import { buildBondsData } from "../common/buildBondsData"
 
 export default {
 	name: "bonds",
@@ -19,8 +20,19 @@ export default {
 			cache: true,
 			async handler(ctx): Promise<CombinedBondsResponse[]> {
 				const cache = Cache({ ttl: 60 * 60 * 4 })
+				const cached = await cache.get("bonds")
+				if (Array.isArray(cached) && cached.length > 0) {
+					return cached
+				}
 
-				return await cache.get("bonds", [])
+				try {
+					const built = await buildBondsData()
+					await cache.set("bonds", built)
+					return built
+				} catch (err) {
+					ctx.meta.$statusCode = 503
+					throw new Error(`Failed to build bonds data: ${err?.message ?? err}`)
+				}
 			},
 		},
 		coupons: {
