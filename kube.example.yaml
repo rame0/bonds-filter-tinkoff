@@ -1,12 +1,21 @@
 ---
 apiVersion: v1
+kind: Secret
+metadata:
+  name: bonds-filter-tinkoff-secrets
+  labels:
+    project: bonds-filter-tinkoff
+type: Opaque
+stringData:
+  TINKOFF_API_TOKEN: "<YOUR_API_KEY>"
+---
+apiVersion: v1
 kind: ConfigMap
 metadata:
   name: bonds-filter-tinkoff-env
   labels:
     project: bonds-filter-tinkoff
 data:
-  TINKOFF_API_TOKEN: "<YOUR_API_KEY>"
   # ID боевого счете
   REAL_ACCOUNT_ID: ""
 
@@ -53,6 +62,8 @@ spec:
           image: ghcr.io/rame0/bonds-filter-tinkoff-server:latest
           imagePullPolicy: Always
           envFrom:
+            - secretRef:
+                name: bonds-filter-tinkoff-secrets
             - configMapRef:
                 name: bonds-filter-tinkoff-env
           ports:
