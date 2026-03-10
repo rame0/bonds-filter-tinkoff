@@ -1,8 +1,8 @@
 import { TinkoffInvestApi } from "@psqq/tinkoff-invest-api"
 
-const token = process.env.TINKOFF_API_TOKEN
+const token = process.env.TINKOFF_API_TOKEN?.trim()
 if (!token) {
-	console.warn("[api] TINKOFF_API_TOKEN is not set; Tinkoff API calls will fail.")
+	throw new Error("[api] TINKOFF_API_TOKEN is not set")
 }
 
 export const api = new TinkoffInvestApi({

@@ -19,7 +19,7 @@ const brokerConfig: BrokerOptions = {
 			autoPadding: false,
 		},
 	},
-	logLevel: "debug",
+	logLevel: process.env.LOGLEVEL ?? "info",
 	transporter: null,
 	// transporter: "NATS",
 	// cacher: { type: "Memory", options: { tl: 1500, prefix: "BF" } },
