@@ -6,6 +6,32 @@ import { roundTo } from "./utils/round"
 import { LiquidityType, MoexCoupon, MoexResults, MoexTrade } from "./interfaces/Moex"
 
 const MOEX_REQUEST_DELAY_MS = 100
+const MOEX_REQUEST_TIMEOUT_MS = 10_000
+const MOEX_MAX_RETRIES = 3
+const MOEX_RETRY_BASE_DELAY_MS = 300
+
+function getRetryDelayMs(attempt: number) {
+  return MOEX_RETRY_BASE_DELAY_MS * 2 ** (attempt - 1)
+}
+
+async function moexGet(url: string) {
+  let lastError: unknown
+
+  for (let attempt = 1; attempt <= MOEX_MAX_RETRIES; attempt++) {
+    try {
+      return await axios.get(url, {
+        timeout: MOEX_REQUEST_TIMEOUT_MS,
+      })
+    } catch (error) {
+      lastError = error
+      if (attempt < MOEX_MAX_RETRIES) {
+        await sleep(getRetryDelayMs(attempt))
+      }
+    }
+  }
+
+  throw lastError
+}
 
 export function getMoexData(tickers: string[]): Promise<MoexResults> {
   return new Promise((resolve, reject) => {
@@ -22,19 +48,16 @@ export function getMoexData(tickers: string[]): Promise<MoexResults> {
 
       let marketData: MoexResults = {}
 
-      axios
-        .all([axios.get(url1), axios.get(url2), axios.get(url3)])
-        .then(
-          axios.spread(async (firstResponse, secondResponse, thirdResponse) => {
-            const md1 = await buildDataFromMoex(firstResponse.data, tickers)
-            const md2 = await buildDataFromMoex(secondResponse.data, tickers)
-            const md3 = await buildDataFromMoex(thirdResponse.data, tickers)
-            marketData = { ...md1, ...md2, ...md3 }
+      Promise.all([moexGet(url1), moexGet(url2), moexGet(url3)])
+        .then(async ([firstResponse, secondResponse, thirdResponse]) => {
+          const md1 = await buildDataFromMoex(firstResponse.data, tickers)
+          const md2 = await buildDataFromMoex(secondResponse.data, tickers)
+          const md3 = await buildDataFromMoex(thirdResponse.data, tickers)
+          marketData = { ...md1, ...md2, ...md3 }
 
-            await cache.set("moexData", marketData)
-            resolve(marketData)
-          })
-        )
+          await cache.set("moexData", marketData)
+          resolve(marketData)
+        })
         .catch((error) => {
           console.error("[getMoexData] MOEX request failed:", error?.message ?? error)
           reject(error)
@@ -85,7 +108,7 @@ export async function buildDataFromMoex(marketData, tickers: string[]) {
       } else {
         await sleep(MOEX_REQUEST_DELAY_MS)
         result[secId].coupons = []
-        const responseCoupons = await axios.get(
+        const responseCoupons = await moexGet(
           `https://iss.moex.com/iss/statistics/engines/stock/markets/bonds/bondization/${secId}.json?iss.meta=off&iss.only=coupons&coupons.columns=coupondate,faceunit,value,valueprc,value_rub`
         )
         responseCoupons.data?.coupons?.data.forEach(resp => {
@@ -114,7 +137,7 @@ export async function buildDataFromMoex(marketData, tickers: string[]) {
       } else {
         result[secId].trades = []
         await sleep(MOEX_REQUEST_DELAY_MS)
-        const responseTrades = await axios.get(
+        const responseTrades = await moexGet(
           `https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/${result[secId].BOARDID}/securities/${secId}.json?iss.meta=off&iss.only=history&history.columns=TRADEDATE,VOLUME,NUMTRADES&limit=20&from=${DateRequestPrevious}`
         )
 
