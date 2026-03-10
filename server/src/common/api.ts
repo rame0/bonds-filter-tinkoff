@@ -7,5 +7,5 @@ if (!token) {
 
 export const api = new TinkoffInvestApi({
 	token,
-	appName: "rame0/bonds-filter-tinkoff"
+	appName: "rame0/bonds-filter-tinkoff",
 })

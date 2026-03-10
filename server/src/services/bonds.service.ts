@@ -45,10 +45,11 @@ export default {
 					})
 					const now = moment.now()
 					coupons = coupons
-						.filter((coupon) => moment(coupon.couponDate).isAfter(now))
-						.map((coupon) => {
-							coupon["payout"] = roundTo(Helpers.toNumber(coupon.payOneBond))
-							return coupon
+						.filter(coupon => moment(coupon.couponDate).isAfter(now))
+						.map(coupon => {
+							const couponWithPayout = coupon as Coupon & { payout?: number }
+							couponWithPayout.payout = roundTo(Helpers.toNumber(coupon.payOneBond))
+							return couponWithPayout
 						})
 					return coupons.slice(0, limit)
 				} catch (err) {
