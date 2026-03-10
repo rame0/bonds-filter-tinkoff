@@ -23,9 +23,7 @@ export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
   const moexBonds = await getMoexData(tickers)
   const lastPriceByFigi = new Map(prices.lastPrices.map(item => [item.figi, item.price]))
 
-  const isMoneyLike = (value: unknown): value is MoneyValue | Quotation => {
-    return typeof value === "object" && value !== null && "units" in value && "nano" in value
-  }
+  const isMoneyLike = (value: unknown): value is MoneyValue | Quotation => typeof value === "object" && value !== null && "units" in value && "nano" in value
 
   const response: CombinedBondsResponse[] = []
   const now = moment()

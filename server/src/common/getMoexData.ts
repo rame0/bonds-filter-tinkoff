@@ -58,7 +58,7 @@ export function getMoexData(tickers: string[]): Promise<MoexResults> {
           await cache.set("moexData", marketData)
           resolve(marketData)
         })
-        .catch((error) => {
+        .catch(error => {
           console.error("[getMoexData] MOEX request failed:", error?.message ?? error)
           reject(error)
         })
