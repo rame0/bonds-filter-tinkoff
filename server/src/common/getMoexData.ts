@@ -7,7 +7,7 @@ import { LiquidityType, MoexCoupon, MoexResults, MoexTrade } from "./interfaces/
 
 const MOEX_REQUEST_DELAY_MS = 100
 
-export function getMoexData(isins: string[]): Promise<MoexResults> {
+export function getMoexData(tickers: string[]): Promise<MoexResults> {
   return new Promise((resolve, reject) => {
     const cache = Cache({ ttl: 60 * 60 * 4 })
 
@@ -26,9 +26,9 @@ export function getMoexData(isins: string[]): Promise<MoexResults> {
         .all([axios.get(url1), axios.get(url2), axios.get(url3)])
         .then(
           axios.spread(async (firstResponse, secondResponse, thirdResponse) => {
-            const md1 = await buildDataFromMoex(firstResponse.data, isins)
-            const md2 = await buildDataFromMoex(secondResponse.data, isins)
-            const md3 = await buildDataFromMoex(thirdResponse.data, isins)
+            const md1 = await buildDataFromMoex(firstResponse.data, tickers)
+            const md2 = await buildDataFromMoex(secondResponse.data, tickers)
+            const md3 = await buildDataFromMoex(thirdResponse.data, tickers)
             marketData = { ...md1, ...md2, ...md3 }
 
             await cache.set("moexData", marketData)
@@ -43,7 +43,7 @@ export function getMoexData(isins: string[]): Promise<MoexResults> {
   })
 }
 
-export async function buildDataFromMoex(marketData, isins: string[]) {
+export async function buildDataFromMoex(marketData, tickers: string[]) {
   const cache = Cache({ ttl: 60 * 60 * 6 })
   const DateRequestPrevious = moment().subtract(15, "days").format("YYYY-MM-DD")
 
@@ -55,7 +55,7 @@ export async function buildDataFromMoex(marketData, isins: string[]) {
     const rowData = marketData.marketdata.data[i]
 
     const secId: string = marketRow[0]
-    if (!isins.includes(secId)) {
+    if (!tickers.includes(secId)) {
       // console.log("skipped", ++skipped)
       continue
     }
@@ -79,9 +79,8 @@ export async function buildDataFromMoex(marketData, isins: string[]) {
       result[secId].coupons = await cache.get(`moexData.${secId}.coupons`)
 
       if (result[secId].coupons && result[secId].coupons.length > 0) {
-        result[secId].coupons.map(coupon => {
+        result[secId].coupons.forEach(coupon => {
           coupon.date = moment(coupon.date)
-          return coupon
         })
       } else {
         await sleep(MOEX_REQUEST_DELAY_MS)
