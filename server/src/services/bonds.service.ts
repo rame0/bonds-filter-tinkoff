@@ -1,12 +1,11 @@
 "use strict"
-import Cache from "file-system-cache"
+import { Helpers } from "@psqq/tinkoff-invest-api"
 import { Coupon } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
 import moment from "moment"
 import { CombinedBondsResponse } from "../common/interfaces/CombinedBondsResponse"
 import { api } from "../common/api"
-import { Helpers } from "@psqq/tinkoff-invest-api"
 import { roundTo } from "../common/utils/round"
-import { buildBondsData } from "../common/buildBondsData"
+import { getOrBuildBondsData } from "../common/getOrBuildBondsData"
 
 export default {
 	name: "bonds",
@@ -19,19 +18,12 @@ export default {
 			params: {},
 			cache: true,
 			async handler(ctx): Promise<CombinedBondsResponse[]> {
-				const cache = Cache({ ttl: 60 * 60 * 4 })
-				const cached = await cache.get("bonds")
-				if (Array.isArray(cached) && cached.length > 0) {
-					return cached
-				}
-
 				try {
-					const built = await buildBondsData()
-					await cache.set("bonds", built)
-					return built
+					return await getOrBuildBondsData()
 				} catch (err) {
 					ctx.meta.$statusCode = 503
-					throw new Error(`Failed to build bonds data: ${err?.message ?? err}`)
+					console.error("[bonds.instruments] Failed to build bonds data:", err)
+					throw new Error("Failed to build bonds data")
 				}
 			},
 		},
@@ -61,9 +53,8 @@ export default {
 					return coupons.slice(0, limit)
 				} catch (err) {
 					ctx.meta.$statusCode = 502
-					throw new Error(
-						`Failed to fetch coupons for ${ctx.params.id}: ${err?.message ?? err}`
-					)
+					console.error(`[bonds.coupons] Failed to fetch coupons for ${ctx.params.id}:`, err)
+					throw new Error(`Failed to fetch coupons for ${ctx.params.id}`)
 				}
 			},
 		},
