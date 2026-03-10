@@ -1,8 +1,5 @@
 import Cron from "moleculer-cron"
-import Cache from "file-system-cache"
-import { buildBondsData } from "../common/buildBondsData"
-
-const cache = Cache({ ttl: 60 * 60 * 4 })
+import { getCachedBondsData, getOrBuildBondsData } from "../common/getOrBuildBondsData"
 let isDataGrabberRunning = false
 
 async function runDataGrabber(reason: "tick" | "init") {
@@ -13,8 +10,7 @@ async function runDataGrabber(reason: "tick" | "init") {
 
   isDataGrabberRunning = true
   try {
-    const data = await buildBondsData()
-    await cache.set("bonds", data)
+    await getOrBuildBondsData(true)
   } finally {
     isDataGrabberRunning = false
   }
@@ -37,7 +33,7 @@ export default {
         }
       },
       runOnInit: async () => {
-        const data = await cache.get("bonds")
+        const data = await getCachedBondsData()
         if (!data) {
           try {
             await runDataGrabber("init")
