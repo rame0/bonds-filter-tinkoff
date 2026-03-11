@@ -6,12 +6,12 @@
 version: 2
 updates:
   # Server
-  - package-ecosystem: "npm"
+  - package-ecosystem: "bun"
     directory: "/server"
     schedule:
       interval: "weekly"
   # UI
-  - package-ecosystem: "npm"
+  - package-ecosystem: "bun"
     directory: "/UI"
     schedule:
       interval: "weekly"
