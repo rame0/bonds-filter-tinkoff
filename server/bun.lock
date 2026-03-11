@@ -13,7 +13,7 @@
         "file-system-cache": "^2.4.4",
         "ioredis": "^5.3.2",
         "moleculer": "^0.14.28",
-        "moleculer-cron": "^0.0.2",
+        "moleculer-cron": "^0.0.7",
         "moleculer-db": "^0.8.24",
         "moleculer-web": "^0.10.5",
         "moment": "^2.29.4",
@@ -137,6 +137,8 @@
     "@types/keyv": ["@types/keyv@3.1.4", "", { "dependencies": { "@types/node": "*" } }, "sha512-BQ5aZNSCpj7D6K2ksrRCTmKRLEpnPvWDiLPfoGyhZ++8YtiK9d/3DBKPJgry359X/P1PfruyYwvnvwFjuEiEIg=="],
 
     "@types/long": ["@types/long@4.0.2", "", {}, "sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA=="],
+
+    "@types/luxon": ["@types/luxon@3.4.2", "", {}, "sha512-TifLZlFudklWlMBfhubvgqTXRzLDI5pCbGa4P8a3wPyUQSW+1xQ5eDsreP9DWHX3tjq1ke96uYG/nwundroWcA=="],
 
     "@types/minipass": ["@types/minipass@3.3.5", "", { "dependencies": { "minipass": "*" } }, "sha512-M2BLHQdEmDmH671h0GIlOQQJrgezd1vNqq7PVj1VOsHZ2uQQb4iPiQIl0SlMdhxZPUsLIfEklmeEHXg8DJRewA=="],
 
@@ -312,7 +314,7 @@
 
     "core-util-is": ["core-util-is@1.0.2", "", {}, "sha512-3lqz5YjWTYnW6dlDa5TLaTCcShfar1e40rmcJVwCBJC6mWlFuj0eCHIElmG1g5kyuJ/GD+8Wn4FFCcz4gJPfaQ=="],
 
-    "cron": ["cron@1.8.3", "", { "dependencies": { "luxon": "^1.23.x" } }, "sha512-JYR/QZFklJCIPndBLfd/2nU1nSlCMrUdtQ2mGLXSVM/qqqEK7DOrFR0gsEiyeqs0PdWrs0ve1ggH4V7XksDwXg=="],
+    "cron": ["cron@3.5.0", "", { "dependencies": { "@types/luxon": "~3.4.0", "luxon": "~3.5.0" } }, "sha512-0eYZqCnapmxYcV06uktql93wNWdlTmmBFP2iYz+JPVcQqlyFYcn1lFuIk4R54pkOmE7mcldTAPZv6X5XA4Q46A=="],
 
     "cross-spawn": ["cross-spawn@7.0.6", "", { "dependencies": { "path-key": "^3.1.0", "shebang-command": "^2.0.0", "which": "^2.0.1" } }, "sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA=="],
 
@@ -720,7 +722,7 @@
 
     "lru-queue": ["lru-queue@0.1.0", "", { "dependencies": { "es5-ext": "~0.10.2" } }, "sha512-BpdYkt9EvGl8OfWHDQPISVpcl5xZthb+XPsbELj5AQXxIC8IriDZIQYjBJPEm5rS420sjZ0TLEzRcq5KdBhYrQ=="],
 
-    "luxon": ["luxon@1.28.1", "", {}, "sha512-gYHAa180mKrNIUJCbwpmD0aTu9kV0dREDrwNnuyFAsO1Wt0EVYSZelPnJlbj9HplzXX/YWXHFTL45kvZ53M0pw=="],
+    "luxon": ["luxon@3.5.0", "", {}, "sha512-rh+Zjr6DNfUYR3bPwJEnuwDdqMbxZW7LOQfUN4B54+Cl+0o5zaU9RJ6bcidfDtC1cWCZXQ+nvX8bf6bAji37QQ=="],
 
     "make-error": ["make-error@1.3.6", "", {}, "sha512-s8UhlNe7vPKomQhC1qFelMokr/Sc3AgNbso3n74mVPA5LTZwkB9NlXf4XPamLxJE8h0gh73rM94xvwRT2CVInw=="],
 
@@ -758,7 +760,7 @@
 
     "moleculer": ["moleculer@0.14.35", "", { "dependencies": { "args": "^5.0.3", "eventemitter2": "^6.4.9", "fastest-validator": "^1.19.0", "glob": "^7.2.0", "ipaddr.js": "^2.2.0", "kleur": "^4.1.5", "lodash": "^4.17.21", "lru-cache": "^6.0.0", "node-fetch": "^2.6.7", "recursive-watch": "^1.1.4" }, "peerDependencies": { "amqplib": "^0.7.0 || ^0.8.0 || ^0.9.0 || ^0.10.0", "avsc": "^5.0.0", "bunyan": "^1.0.0", "cbor-x": "^0.8.3 || ^0.9.0 || ^1.2.0", "dd-trace": "^0.33.0 || ^0.34.0 || ^0.35.0 || ^0.36.0 || >=1.0.0 <1.6.0", "debug": "^4.0.0", "etcd3": "^1.0.0", "ioredis": "^4.0.0 || ^5.0.0", "jaeger-client": "^3.0.0", "kafka-node": "^5.0.0", "log4js": "^6.0.0", "mqtt": "^4.0.0 || ^5.0.0", "msgpack5": "^5.0.0 || ^6.0.0", "nats": "^1.0.0 || ^2.0.0", "node-nats-streaming": "^0.0.51 || ^0.2.0 || ^0.3.0", "notepack.io": "^2.0.0 || ^3.0.0", "pino": "^6.0.0 || ^7.0.0 || ^8.0.0 || ^9.0.0", "protobufjs": "^6.0.0 || ^7.0.0", "redlock": "^4.0.0", "rhea-promise": "^1.0.0 || ^2.0.0", "thrift": "^0.12.0 || ^0.16.0", "winston": "^3.0.0" }, "optionalPeers": ["amqplib", "avsc", "bunyan", "cbor-x", "dd-trace", "debug", "etcd3", "ioredis", "jaeger-client", "kafka-node", "log4js", "mqtt", "msgpack5", "nats", "node-nats-streaming", "notepack.io", "pino", "protobufjs", "redlock", "rhea-promise", "thrift", "winston"], "bin": { "moleculer-runner": "bin/moleculer-runner.js", "moleculer-runner-esm": "bin/moleculer-runner.mjs" } }, "sha512-KB4qs0zNTjE9z7Bl27FFLPaWkAsUFJajF2njozJeor1phFCAYP5S1JsWOSrnUBTtsH7SX4gTw8tGRdcgh1eyVQ=="],
 
-    "moleculer-cron": ["moleculer-cron@0.0.2", "", { "dependencies": { "cron": "^1.3.0" }, "peerDependencies": { "moleculer": "^0.11.0" } }, "sha512-PChQ1Sw+AIK85dIsKWxuG8M3YMG8qwLWcCV5vSBWhfGOBZ8VBnxAaISAdd4NxkCyaInK2IpoQOXzRNL0JwL3+w=="],
+    "moleculer-cron": ["moleculer-cron@0.0.7", "", { "dependencies": { "cron": "^3.1.6" }, "peerDependencies": { "moleculer": "^0.14.32" } }, "sha512-g7nbdUUYouxebuxI7iALhQ97XXKsPrGwryzH3hFaeIVw5eFv8pTP5RUwD7Po+vceH9cBF/9f61NCFqmGqBCw9w=="],
 
     "moleculer-db": ["moleculer-db@0.8.29", "", { "dependencies": { "@seald-io/nedb": "^3.0.0", "lodash": "^4.17.21" }, "peerDependencies": { "moleculer": "^0.12.0 || ^0.13.0 || ^0.14.0 || ^0.15.0" } }, "sha512-0e94ia5gkI9Ls2MJ+kAuZsafC0dCFqbaN7FIuoftTizaG+Vixafpj8ezXhGrIPQ1PmOKASSdn0IhkSjzyuc9Gg=="],
 
