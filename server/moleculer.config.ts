@@ -1,5 +1,5 @@
 "use strict"
-import { BrokerOptions, Errors, MetricRegistry } from "moleculer"
+import { BrokerOptions, Errors, LogLevels, MetricRegistry } from "moleculer"
 import { config } from "dotenv"
 
 process.env.TZ = "UTC"
@@ -19,7 +19,7 @@ const brokerConfig: BrokerOptions = {
 			autoPadding: false,
 		},
 	},
-	logLevel: process.env.LOGLEVEL ?? "info",
+	logLevel: (process.env.LOGLEVEL ?? "info") as LogLevels,
 	transporter: null,
 	// transporter: "NATS",
 	// cacher: { type: "Memory", options: { tl: 1500, prefix: "BF" } },
