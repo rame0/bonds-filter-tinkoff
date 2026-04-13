@@ -33,6 +33,22 @@ async function moexGet(url: string) {
   throw lastError
 }
 
+export function calculateCouponsYieldForYear(coupons: MoexCoupon[], nowDate = moment()) {
+  const oneYearLater = nowDate.clone().add(1, "year")
+
+  return coupons.reduce<number>((acc, coupon) => {
+    const couponDate = coupon?.date
+
+    if (!couponDate?.isValid()) {
+      return acc
+    }
+
+    return couponDate.isAfter(nowDate) && couponDate.isSameOrBefore(oneYearLater)
+      ? acc + coupon.value
+      : acc
+  }, 0)
+}
+
 export function getMoexData(tickers: string[]): Promise<MoexResults> {
   return new Promise((resolve, reject) => {
     const cache = Cache({ ttl: 60 * 60 * 4 })
@@ -125,7 +141,7 @@ export async function buildDataFromMoex(marketData, tickers: string[]) {
       }
 
       const nowDate = moment()
-      result[secId].couponsYield = result[secId].coupons.reduce<number>((acc, coupon) => (coupon?.date?.isAfter(nowDate) ? acc + coupon?.value : acc), 0)
+      result[secId].couponsYield = calculateCouponsYieldForYear(result[secId].coupons, nowDate)
 
       result[secId].trades = await cache.get(`moexData.${secId}.trades`)
 
