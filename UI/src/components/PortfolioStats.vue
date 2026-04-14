@@ -23,7 +23,7 @@
 
 <script lang="tsx">
 import type { PropType } from "vue"
-import type { CombinedBondsResponse } from "@/external/interfaces/CombinedBondsResponse"
+import type { CombinedBondsResponse } from "@/data/Interfaces/CombinedBondsResponse"
 import { portfolioStore } from "@/data/portfolioStore"
 
 export default {

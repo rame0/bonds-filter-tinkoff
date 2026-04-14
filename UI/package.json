@@ -16,7 +16,6 @@
   },
   "engineStrict": true,
   "dependencies": {
-    "@psqq/tinkoff-invest-api": "github:psqq/tinkoff-invest-api",
     "@vueuse/core": "^10.6.1",
     "axios": "^1.6.2",
     "moment": "^2.29.4",

@@ -44,8 +44,7 @@ import CurrencyCollation from "@/data/collations/CurrencyCollation"
 import CountryCollation from "@/data/collations/CountryCollation"
 import type { FilterOptions, FilterValues, FromTo } from "@/data/Types/FilterOptions"
 import { DefaultFilterSelections, defaultFilterValues } from "@/data/Types/FilterOptions"
-//@ts-ignore
-import { type CombinedBondsResponse } from "@/external/interfaces/CombinedBondsResponse"
+import type { CombinedBondsResponse } from "@/data/Interfaces/CombinedBondsResponse"
 import type { sortState } from "@/data/Types/SortState"
 
 export default {
