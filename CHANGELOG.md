@@ -1,4 +1,11 @@
 ## Changelog
+### [0.2.5](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.2.4...v0.2.5) (2026-04-14)
+
+
+### Bug Fixes
+
+* **ui:** отвязать типы интерфейса от SDK ([0e77d2f](https://github.com/rame0/bonds-filter-tinkoff/commit/0e77d2f3fab7a510c99a75ea07cff8a62c80ec5d))
+
 ### [0.2.4](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.2.3...v0.2.4) (2026-04-14)
 
 
