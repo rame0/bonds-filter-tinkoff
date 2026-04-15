@@ -1,6 +1,6 @@
 {
   "name": "bonds-filter-tinkoff-server",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "scripts": {
     "build": "tsc --build tsconfig.build.json",
     "dev": "bun ./node_modules/moleculer/bin/moleculer-runner.js --hot --config moleculer.config.ts src/services/{**,**/**,**/**/**}/*.service.ts",

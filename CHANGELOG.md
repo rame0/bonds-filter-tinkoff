@@ -1,4 +1,11 @@
 ## Changelog
+### [0.2.6](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.2.5...v0.2.6) (2026-04-15)
+
+
+### Bug Fixes
+
+* **ui:** исключить external интерфейсы из type-check ([7a5f609](https://github.com/rame0/bonds-filter-tinkoff/commit/7a5f609bf0d5bbefd83a738a928de9f5fab19b30))
+
 ### [0.2.5](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.2.4...v0.2.5) (2026-04-14)
 
 
