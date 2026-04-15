@@ -1,29 +1,23 @@
 import moment from "moment/moment"
 import { getMoexData } from "./getMoexData"
 import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
-import { InstrumentStatus, type LastPricesResponse } from "./interfaces/InvestApi"
-import { api } from "./api"
+import { listBonds, getLastPrices } from "./investApiFacade"
 import { isMoneyLike, toNumber } from "./utils/money"
 import { roundTo } from "./utils/round"
 
 export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
-  const bonds = await api.instruments.bonds({
-    instrumentStatus: InstrumentStatus.INSTRUMENT_STATUS_BASE,
-  })
+  const bonds = await listBonds()
 
-  const instrumentIDs: string[] = bonds.instruments.map(instrument => instrument.uid)
-  const tickers = bonds.instruments.map(instrument => instrument.ticker)
-  const prices: LastPricesResponse = await api.marketdata.getLastPrices({
-    figi: [],
-    instrumentId: instrumentIDs,
-  })
+  const instrumentIDs: string[] = bonds.map(instrument => instrument.uid)
+  const tickers = bonds.map(instrument => instrument.ticker)
+  const prices = await getLastPrices(instrumentIDs)
 
   const moexBonds = await getMoexData(tickers)
-  const lastPriceByFigi = new Map(prices.lastPrices.map(item => [item.figi, item.price]))
+  const lastPriceByFigi = new Map(prices.map(item => [item.figi, item.price]))
 
   const response: CombinedBondsResponse[] = []
   const now = moment()
-  for (const t1 of bonds.instruments) {
+  for (const t1 of bonds) {
     const instrument: CombinedBondsResponse = {} as CombinedBondsResponse
     for (const key of Object.keys(t1)) {
       if (t1[key] === undefined) {

@@ -2,7 +2,7 @@
 import moment from "moment"
 import { CombinedBondsResponse } from "../common/interfaces/CombinedBondsResponse"
 import { type ApiCoupon } from "../common/interfaces/InvestApi"
-import { api } from "../common/api"
+import { getBondCoupons } from "../common/investApiFacade"
 import { toNumber } from "../common/utils/money"
 import { roundTo } from "../common/utils/round"
 import { getOrBuildBondsData } from "../common/getOrBuildBondsData"
@@ -36,8 +36,7 @@ export default {
 			async handler(ctx) {
 				const limit = ctx.params.limit ?? 12
 				try {
-					let coupons: ApiCoupon[] =
-						(await api.instruments.getBondCoupons({ figi: ctx.params.id })).events || []
+					let coupons: ApiCoupon[] = await getBondCoupons(ctx.params.id)
 					coupons = coupons.sort((a, b) => {
 						if (a.couponNumber > b.couponNumber) return 1
 						if (a.couponNumber < b.couponNumber) return -1
