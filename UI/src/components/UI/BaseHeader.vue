@@ -9,6 +9,7 @@
 			</RouterLink>
 			<div class="grow" />
 			<RouterLink :class="navLinkClass('/')" to="/">Подбор облигаций</RouterLink>
+			<RouterLink :class="navLinkClass('/primary')" to="/primary">Первичка без торгов</RouterLink>
 			<RouterLink :class="navLinkClass('/portfolio')" to="/portfolio">
 				<span>Подобранный портфель</span>
 				<span
