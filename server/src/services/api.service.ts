@@ -9,7 +9,7 @@ export default {
 			routes: [
 				{
 					path: "/api",
-					whitelist: ["bonds.*"],
+					whitelist: ["bonds.*", "primary.*"],
 				},
 			],
 		assets: {

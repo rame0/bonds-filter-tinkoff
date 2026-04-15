@@ -14,6 +14,14 @@ export async function listBonds(): Promise<ApiBond[]> {
 	return instruments
 }
 
+export async function listBondsByStatus(instrumentStatus: InstrumentStatus): Promise<ApiBond[]> {
+	const { instruments } = await api.instruments.bonds({
+		instrumentStatus,
+	})
+
+	return instruments
+}
+
 export async function getLastPrices(instrumentIds: string[]): Promise<LastPrice[]> {
 	const { lastPrices } = await api.marketdata.getLastPrices({
 		figi: [],

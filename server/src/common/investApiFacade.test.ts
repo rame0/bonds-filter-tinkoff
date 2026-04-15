@@ -40,6 +40,20 @@ describe("investApiFacade", () => {
 		expect(result[0].ticker).toBe("B1")
 	})
 
+	test("listBondsByStatus requests explicit instrument status", async () => {
+		bondsMock.mockResolvedValue({
+			instruments: [{ uid: "uid-2", figi: "figi-2", ticker: "B2", name: "Bond 2", currency: "rub" }],
+		})
+
+		const result = await facade.listBondsByStatus(InstrumentStatus.INSTRUMENT_STATUS_ALL)
+
+		expect(bondsMock).toHaveBeenCalledWith({
+			instrumentStatus: InstrumentStatus.INSTRUMENT_STATUS_ALL,
+		})
+		expect(result).toHaveLength(1)
+		expect(result[0].ticker).toBe("B2")
+	})
+
 	test("getLastPrices unwraps market data response", async () => {
 		getLastPricesMock.mockResolvedValue({
 			lastPrices: [{ figi: "figi-1", price: { units: 101, nano: 0 } }],
