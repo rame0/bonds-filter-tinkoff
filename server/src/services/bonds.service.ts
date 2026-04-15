@@ -2,10 +2,11 @@
 import moment from "moment"
 import { CombinedBondsResponse } from "../common/interfaces/CombinedBondsResponse"
 import { type ApiCoupon } from "../common/interfaces/InvestApi"
+import { type BondsDataStatus } from "../common/interfaces/BondsDataStatus"
 import { getBondCoupons } from "../common/investApiFacade"
 import { toNumber } from "../common/utils/money"
 import { roundTo } from "../common/utils/round"
-import { getOrBuildBondsData } from "../common/getOrBuildBondsData"
+import { ensureBondsDataBuild, getBondsDataStatus, getOrBuildBondsData } from "../common/getOrBuildBondsData"
 
 export default {
 	name: "bonds",
@@ -14,6 +15,14 @@ export default {
 	settings: {},
 
 	actions: {
+		status: {
+			params: {},
+			cache: false,
+			async handler(): Promise<BondsDataStatus> {
+				await ensureBondsDataBuild()
+				return getBondsDataStatus()
+			},
+		},
 		instruments: {
 			params: {},
 			cache: true,

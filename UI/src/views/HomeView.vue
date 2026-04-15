@@ -1,5 +1,35 @@
 <template>
-	<div class="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(26rem,1fr)] 2xl:grid-cols-[minmax(0,2fr)_minmax(30rem,1fr)]">
+	<div
+		v-if="showUpdateNotice"
+		class="card card-border min-h-[calc(100vh-var(--header-height)-1px)] bg-base-100"
+	>
+		<div class="card-body items-center justify-center text-center gap-6 px-6 py-10">
+			<div class="flex h-20 w-20 items-center justify-center rounded-full bg-primary/10 text-primary">
+				<span class="loading loading-spinner loading-lg"></span>
+			</div>
+			<div class="max-w-2xl space-y-3">
+				<h1 class="text-2xl font-semibold text-base-content">Идёт обновление данных</h1>
+				<p class="text-base text-base-content/80">
+					{{ updateMessage }}
+				</p>
+				<p class="text-sm text-base-content/60">
+					Страница проверяет готовность автоматически каждые 10 секунд.
+				</p>
+			</div>
+			<div class="stats stats-vertical border border-base-300 shadow-sm sm:stats-horizontal">
+				<div class="stat">
+					<div class="stat-title">Статус</div>
+					<div class="stat-value text-lg text-primary">{{ isPolling ? 'Обновляется' : 'Ожидание' }}</div>
+				</div>
+				<div class="stat" v-if="lastBuildCompletedAtLabel">
+					<div class="stat-title">Последнее обновление</div>
+					<div class="stat-value text-lg text-base-content">{{ lastBuildCompletedAtLabel }}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div v-else class="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(26rem,1fr)] 2xl:grid-cols-[minmax(0,2fr)_minmax(30rem,1fr)]">
 		<!-- table -->
 
 		<div
@@ -37,7 +67,7 @@
 
 <script lang="ts">
 import BondsRepository from "@/data/BondsRepository"
-import { ref } from "vue"
+import { computed, onBeforeUnmount, ref } from "vue"
 import { useStorage } from "@vueuse/core"
 
 import CurrencyCollation from "@/data/collations/CurrencyCollation"
@@ -45,7 +75,10 @@ import CountryCollation from "@/data/collations/CountryCollation"
 import type { FilterOptions, FilterValues, FromTo } from "@/data/Types/FilterOptions"
 import { DefaultFilterSelections, defaultFilterValues } from "@/data/Types/FilterOptions"
 import type { CombinedBondsResponse } from "@/data/Interfaces/CombinedBondsResponse"
+import type { BondsDataStatus } from "@/data/Interfaces/BondsDataStatus"
 import type { sortState } from "@/data/Types/SortState"
+
+const STATUS_POLL_INTERVAL_MS = 10_000
 
 export default {
 	name: "HomeView",
@@ -67,6 +100,9 @@ export default {
 
 		const response = ref<CombinedBondsResponse[]>([])
 		const isFetching = ref(false)
+		const status = ref<BondsDataStatus | null>(null)
+		const isPolling = ref(false)
+		let statusPollTimer: ReturnType<typeof setTimeout> | undefined
 
 		const bonds = ref<CombinedBondsResponse[]>([])
 
@@ -77,16 +113,73 @@ export default {
 			currentPage: 1
 		})
 
-		const fetchBonds = async () => {
-			isFetching.value = true
-			response.value = await bondsRepository.list()
-
-			if (response.value) {
-				updateFilters()
-				updateTable()
+		const showUpdateNotice = computed(() => {
+			if (isFetching.value) {
+				return false
 			}
 
-			isFetching.value = false
+			if (!status.value) {
+				return true
+			}
+
+			return status.value.isBuilding || !status.value.hasCachedData
+		})
+
+		const updateMessage = computed(() => status.value?.message ?? "Идёт обновление данных, пожалуйста, подождите. Обычно это занимает не более 10 минут.")
+		const lastBuildCompletedAtLabel = computed(() => {
+			if (!status.value?.lastBuildCompletedAt) {
+				return ""
+			}
+
+			return new Date(status.value.lastBuildCompletedAt).toLocaleString("ru-RU")
+		})
+
+		const clearStatusPoll = () => {
+			if (statusPollTimer) {
+				clearTimeout(statusPollTimer)
+				statusPollTimer = undefined
+			}
+		}
+
+		const scheduleStatusPoll = () => {
+			clearStatusPoll()
+			statusPollTimer = setTimeout(() => {
+				void ensureDataReady()
+			}, STATUS_POLL_INTERVAL_MS)
+		}
+
+		const ensureDataReady = async () => {
+			isPolling.value = true
+			try {
+				status.value = await bondsRepository.status()
+				if (status.value.isBuilding || !status.value.hasCachedData) {
+					scheduleStatusPoll()
+					return
+				}
+
+				clearStatusPoll()
+				await fetchBonds()
+			} finally {
+				isPolling.value = false
+			}
+		}
+
+		onBeforeUnmount(() => {
+			clearStatusPoll()
+		})
+
+		const fetchBonds = async () => {
+			isFetching.value = true
+			try {
+				response.value = await bondsRepository.list()
+
+				if (response.value) {
+					updateFilters()
+					updateTable()
+				}
+			} finally {
+				isFetching.value = false
+			}
 		}
 
 		const isRange = (
@@ -244,6 +337,10 @@ export default {
 		return {
 			bonds,
 			isFetching,
+			isPolling,
+			showUpdateNotice,
+			updateMessage,
+			lastBuildCompletedAtLabel,
 			filterOptions,
 			filterSelections,
 			paginationData,
@@ -254,7 +351,8 @@ export default {
 			sortChanged,
 			filterChanged,
 			pageChanged,
-			pageSizeChanged
+			pageSizeChanged,
+			ensureDataReady
 		}
 	},
 	//
@@ -265,7 +363,7 @@ export default {
 	// },
 
 	mounted() {
-		this.fetchBonds()
+		this.ensureDataReady()
 	}
 }
 </script>

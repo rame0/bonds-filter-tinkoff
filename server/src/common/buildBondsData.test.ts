@@ -6,6 +6,16 @@ const bondsMock = mock(async () => ({ instruments: [] as any[] }))
 const getLastPricesMock = mock(async () => ({ lastPrices: [] as any[] }))
 const getMoexDataMock = mock(async () => ({}))
 const getBondCouponsMock = mock(async () => ({ events: [] as any[] }))
+let cacheStore = new Map<string, unknown>()
+
+mock.module("file-system-cache", () => ({
+	default: () => ({
+		get: async (key: string) => cacheStore.get(key),
+		set: async (key: string, value: unknown) => {
+			cacheStore.set(key, value)
+		},
+	}),
+}))
 
 mock.module("./api", () => ({
 	api: {
@@ -32,6 +42,7 @@ const { buildBondsData } = await import("./buildBondsData")
 
 describe("buildBondsData", () => {
 	beforeEach(() => {
+		cacheStore = new Map<string, unknown>()
 		bondsMock.mockReset()
 		getLastPricesMock.mockReset()
 		getMoexDataMock.mockReset()

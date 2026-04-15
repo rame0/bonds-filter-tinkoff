@@ -12,6 +12,8 @@ mock.module("../common/api", () => ({
 
 mock.module("../common/getOrBuildBondsData", () => ({
 	getOrBuildBondsData: mock(async () => []),
+	getBondsDataStatus: mock(async () => ({ isBuilding: false, hasCachedData: true })),
+	ensureBondsDataBuild: mock(async () => undefined),
 }))
 
 const { default: bondsService } = await import("./bonds.service")
