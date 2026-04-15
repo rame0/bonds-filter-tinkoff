@@ -1,11 +1,12 @@
-import { Bond } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
 import { type CombinedCoupon } from "./CombinedCoupon"
+import type { ApiBond } from "./InvestApi"
 import { LiquidityType } from "./Moex"
 
-export interface CombinedBondsResponse extends Omit<Bond, "klong" | "kshort" | "dlong"
+export interface CombinedBondsResponse extends Omit<ApiBond, "klong" | "kshort" | "dlong"
 	| "dshort" | "dlongMin" | "dshortMin" | "minPriceIncrement"
 	| "nominal" | "initialNominal" | "placementPrice" | "aciValue"
 	| "price" | "qty"> {
+	[key: string]: unknown,
 	klong?: number,
 	kshort?: number,
 	dlong?: number,

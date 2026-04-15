@@ -1,7 +1,6 @@
-import { Coupon } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
-import { MoneyValue, Quotation } from "@psqq/tinkoff-invest-api/src/generated/common"
+import type { ApiCoupon } from "./InvestApi"
 
-export interface CombinedCoupon extends Omit<Coupon, "payout"> {
+export interface CombinedCoupon extends Omit<ApiCoupon, "payout"> {
 	payout?: number,
 	isPaid?: boolean,
 }

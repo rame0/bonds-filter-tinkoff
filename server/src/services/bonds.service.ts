@@ -1,9 +1,9 @@
 "use strict"
-import { Helpers } from "@psqq/tinkoff-invest-api"
-import { Coupon } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
 import moment from "moment"
 import { CombinedBondsResponse } from "../common/interfaces/CombinedBondsResponse"
+import { type ApiCoupon } from "../common/interfaces/InvestApi"
 import { api } from "../common/api"
+import { toNumber } from "../common/utils/money"
 import { roundTo } from "../common/utils/round"
 import { getOrBuildBondsData } from "../common/getOrBuildBondsData"
 
@@ -36,7 +36,7 @@ export default {
 			async handler(ctx) {
 				const limit = ctx.params.limit ?? 12
 				try {
-					let coupons: Coupon[] =
+					let coupons: ApiCoupon[] =
 						(await api.instruments.getBondCoupons({ figi: ctx.params.id })).events || []
 					coupons = coupons.sort((a, b) => {
 						if (a.couponNumber > b.couponNumber) return 1
@@ -47,8 +47,8 @@ export default {
 					coupons = coupons
 						.filter(coupon => moment(coupon.couponDate).isAfter(now))
 						.map(coupon => {
-							const couponWithPayout = coupon as Coupon & { payout?: number }
-							couponWithPayout.payout = roundTo(Helpers.toNumber(coupon.payOneBond))
+							const couponWithPayout = coupon as ApiCoupon & { payout?: number }
+							couponWithPayout.payout = roundTo(toNumber(coupon.payOneBond))
 							return couponWithPayout
 						})
 					return coupons.slice(0, limit)
