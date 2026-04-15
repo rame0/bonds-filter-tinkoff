@@ -175,6 +175,94 @@ describe("buildBondsData", () => {
 		expect(result[0].coupons).toHaveLength(2)
 		expect(result[0].coupons?.[0].payout).toBe(20)
 	})
+
+	test("replaces zero MOEX coupon sum with T-Bank coupon data", async () => {
+		bondsMock.mockResolvedValue({
+			instruments: [
+				{
+					uid: "uid-5",
+					figi: "figi-5",
+					ticker: "BOND5",
+					name: "Bond 5",
+					currency: "rub",
+					nominal: { units: 1000, nano: 0 },
+					aciValue: { units: 5, nano: 0 },
+				},
+			],
+		})
+
+		getLastPricesMock.mockResolvedValue({
+			lastPrices: [{ figi: "figi-5", price: { units: 98, nano: 0 } }],
+		})
+
+		getMoexDataMock.mockResolvedValue({
+			BOND5: {
+				couponsYield: 0,
+				BondYield: 12.34,
+			},
+		})
+		getBondCouponsMock.mockResolvedValue({
+			events: [
+				{ couponNumber: 1, couponDate: futureDate(30), payOneBond: { units: 10, nano: 0 } },
+				{ couponNumber: 2, couponDate: futureDate(60), payOneBond: { units: 11, nano: 500000000 } },
+			],
+		})
+
+		const result = await buildBondsData()
+
+		expect(result[0]).toMatchObject({
+			couponsYield: 21.5,
+			bondYield: 12.34,
+			leftCouponCount: 2,
+			leftToPay: 21.5,
+		})
+	})
+
+	test("uses last known payout for floating coupons with zero future values", async () => {
+		bondsMock.mockResolvedValue({
+			instruments: [
+				{
+					uid: "uid-6",
+					figi: "figi-6",
+					ticker: "BOND6",
+					name: "Bond 6",
+					currency: "rub",
+					nominal: { units: 1000, nano: 0 },
+					aciValue: { units: 2, nano: 0 },
+					floatingCouponFlag: true,
+				},
+			],
+		})
+
+		getLastPricesMock.mockResolvedValue({
+			lastPrices: [{ figi: "figi-6", price: { units: 90, nano: 0 } }],
+		})
+
+		getMoexDataMock.mockResolvedValue({
+			BOND6: {
+				couponsYield: 0,
+				BondYield: 9.99,
+			},
+		})
+		getBondCouponsMock.mockResolvedValue({
+			events: [
+				{ couponNumber: 4, couponDate: futureDate(270), payOneBond: { units: 0, nano: 0 } },
+				{ couponNumber: 3, couponDate: futureDate(180), payOneBond: { units: 0, nano: 0 } },
+				{ couponNumber: 2, couponDate: futureDate(90), payOneBond: { units: 0, nano: 0 } },
+				{ couponNumber: 1, couponDate: pastDate(5), payOneBond: { units: 12, nano: 500000000 } },
+			],
+		})
+
+		const result = await buildBondsData()
+
+		expect(result[0]).toMatchObject({
+			couponsYield: 37.5,
+			bondYield: 9.99,
+			leftCouponCount: 3,
+			leftToPay: 37.5,
+		})
+		expect(result[0].coupons?.every(coupon => coupon.payout === 12.5)).toBe(true)
+	})
 })
 
 function roundMonthsUntil(date: string) {
@@ -183,4 +271,8 @@ function roundMonthsUntil(date: string) {
 
 function futureDate(offsetDays: number) {
 	return moment().add(offsetDays, "days").toISOString()
+}
+
+function pastDate(offsetDays: number) {
+	return moment().subtract(offsetDays, "days").toISOString()
 }
