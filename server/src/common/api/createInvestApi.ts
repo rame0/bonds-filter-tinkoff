@@ -16,7 +16,7 @@ export function getRequiredToken(env: NodeJS.ProcessEnv = process.env) {
 }
 
 export function getApiDriver(env: NodeJS.ProcessEnv = process.env): ApiDriver {
-	return env.TINKOFF_API_DRIVER === "invest-js" ? "invest-js" : "legacy"
+	return env.TINKOFF_API_DRIVER === "legacy" ? "legacy" : "invest-js"
 }
 
 export function createLegacyApi(token: string): InvestApi {

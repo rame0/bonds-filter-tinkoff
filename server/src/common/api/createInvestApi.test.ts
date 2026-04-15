@@ -28,28 +28,11 @@ mock.module("@tinkoff/invest-js", () => ({
 const createApi = await import("./createInvestApi")
 
 describe("createInvestApi", () => {
-	test("defaults to legacy driver", () => {
+	test("defaults to invest-js driver", () => {
 		legacyCtor.mockReset()
 		investJsCtor.mockReset()
 
 		const api = createApi.createInvestApi({ TINKOFF_API_TOKEN: "token" }) as any
-
-		expect(api.kind).toBe("legacy")
-		expect(legacyCtor).toHaveBeenCalledWith({
-			token: "token",
-			appName: createApi.APP_NAME,
-		})
-		expect(investJsCtor).not.toHaveBeenCalled()
-	})
-
-	test("can switch to invest-js driver", () => {
-		legacyCtor.mockReset()
-		investJsCtor.mockReset()
-
-		const api = createApi.createInvestApi({
-			TINKOFF_API_TOKEN: "token",
-			TINKOFF_API_DRIVER: "invest-js",
-		}) as any
 
 		expect(api.kind).toBe("invest-js")
 		expect(investJsCtor).toHaveBeenCalledWith({
@@ -59,6 +42,23 @@ describe("createInvestApi", () => {
 			},
 		})
 		expect(legacyCtor).not.toHaveBeenCalled()
+	})
+
+	test("can switch back to legacy driver", () => {
+		legacyCtor.mockReset()
+		investJsCtor.mockReset()
+
+		const api = createApi.createInvestApi({
+			TINKOFF_API_TOKEN: "token",
+			TINKOFF_API_DRIVER: "legacy",
+		}) as any
+
+		expect(api.kind).toBe("legacy")
+		expect(legacyCtor).toHaveBeenCalledWith({
+			token: "token",
+			appName: createApi.APP_NAME,
+		})
+		expect(investJsCtor).not.toHaveBeenCalled()
 	})
 
 	test("throws when token is missing", () => {
