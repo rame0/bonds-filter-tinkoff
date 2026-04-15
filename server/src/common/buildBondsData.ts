@@ -1,9 +1,12 @@
 import moment from "moment/moment"
 import { getMoexData } from "./getMoexData"
+import { mapWithConcurrency } from "./getMoexData"
 import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
-import { listBonds, getLastPrices } from "./investApiFacade"
+import { listBonds, getLastPrices, getBondCoupons } from "./investApiFacade"
 import { isMoneyLike, toNumber } from "./utils/money"
 import { roundTo } from "./utils/round"
+
+const COUPON_FALLBACK_CONCURRENCY = 8
 
 export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
   const bonds = await listBonds()
@@ -49,6 +52,51 @@ export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
 
     response.push(instrument)
   }
+
+  const bondsMissingMoexData = response.filter(instrument => instrument.couponsYield === undefined || instrument.bondYield === undefined)
+
+  await mapWithConcurrency(bondsMissingMoexData, COUPON_FALLBACK_CONCURRENCY, async instrument => {
+    try {
+      const coupons = await getBondCoupons(String(instrument.figi))
+      const futureCoupons = coupons
+        .filter(coupon => moment(coupon.couponDate).isAfter(now))
+        .sort((a, b) => moment(a.couponDate).valueOf() - moment(b.couponDate).valueOf())
+
+      if (futureCoupons.length < 1) {
+        return
+      }
+
+      const normalizedCoupons = futureCoupons.map(coupon => ({
+        ...coupon,
+        payout: roundTo(toNumber(coupon.payOneBond)),
+      }))
+      const oneYearLater = now.clone().add(1, "year")
+      const annualCouponSum = roundTo(normalizedCoupons.reduce((sum, coupon) => {
+        return moment(coupon.couponDate).isSameOrBefore(oneYearLater)
+          ? sum + (coupon.payout ?? 0)
+          : sum
+      }, 0))
+      const leftToPay = roundTo(normalizedCoupons.reduce((sum, coupon) => sum + (coupon.payout ?? 0), 0))
+      const nominal = roundTo(instrument.nominal)
+      const aciValue = roundTo(instrument.aciValue) ?? 0
+      const realPrice = nominal !== undefined && instrument.price !== undefined
+        ? roundTo((nominal * instrument.price) / 100 + aciValue)
+        : undefined
+
+      instrument.coupons = normalizedCoupons
+      instrument.leftCouponCount = normalizedCoupons.length
+      instrument.leftToPay = leftToPay
+      instrument.realPrice = realPrice
+      instrument.couponsYield ??= annualCouponSum
+
+      if (instrument.bondYield === undefined && realPrice !== undefined && realPrice > 0 && annualCouponSum !== undefined) {
+        // MOEX yield is missing for some bonds. Fall back to current annual coupon yield.
+        instrument.bondYield = roundTo((annualCouponSum / realPrice) * 100)
+      }
+    } catch (error) {
+      console.error(`[buildBondsData] Failed to backfill coupon data for ${instrument.figi}:`, error?.message ?? error)
+    }
+  })
 
   return response
 }

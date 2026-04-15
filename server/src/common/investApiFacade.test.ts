@@ -54,12 +54,12 @@ describe("investApiFacade", () => {
 		expect(result).toEqual([{ figi: "figi-1", price: { units: 101, nano: 0 } }])
 	})
 
-	test("getBondCoupons returns empty array when events are missing", async () => {
-		getBondCouponsMock.mockResolvedValue({})
+		test("getBondCoupons returns empty array when events are missing", async () => {
+			getBondCouponsMock.mockResolvedValue({})
 
-		const result = await facade.getBondCoupons("figi-2")
+			const result = await facade.getBondCoupons("figi-2")
 
-		expect(getBondCouponsMock).toHaveBeenCalledWith({ figi: "figi-2" })
-		expect(result).toEqual([])
-	})
+			expect(getBondCouponsMock).toHaveBeenCalledWith({ figi: "figi-2", instrumentId: "figi-2" })
+			expect(result).toEqual([])
+		})
 })

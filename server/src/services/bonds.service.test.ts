@@ -47,7 +47,7 @@ describe("bonds.service coupons action", () => {
 			meta: {},
 		})
 
-		expect(getBondCouponsMock).toHaveBeenCalledWith({ figi: "figi-1" })
+		expect(getBondCouponsMock).toHaveBeenCalledWith({ figi: "figi-1", instrumentId: "figi-1" })
 		expect(result).toHaveLength(2)
 		expect(result.map((coupon: any) => coupon.couponNumber)).toEqual([2, 3])
 		expect(result.map((coupon: any) => coupon.payout)).toEqual([5.5, 7.25])

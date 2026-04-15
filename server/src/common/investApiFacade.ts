@@ -24,6 +24,9 @@ export async function getLastPrices(instrumentIds: string[]): Promise<LastPrice[
 }
 
 export async function getBondCoupons(figi: string): Promise<ApiCoupon[]> {
-	const { events } = await api.instruments.getBondCoupons({ figi })
-  return events || []
+	const { events } = await api.instruments.getBondCoupons({
+		figi,
+		instrumentId: figi,
+	})
+	return events || []
 }

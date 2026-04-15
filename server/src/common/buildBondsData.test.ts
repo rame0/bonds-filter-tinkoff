@@ -5,11 +5,13 @@ import { LiquidityType } from "./interfaces/Moex"
 const bondsMock = mock(async () => ({ instruments: [] as any[] }))
 const getLastPricesMock = mock(async () => ({ lastPrices: [] as any[] }))
 const getMoexDataMock = mock(async () => ({}))
+const getBondCouponsMock = mock(async () => ({ events: [] as any[] }))
 
 mock.module("./api", () => ({
 	api: {
 		instruments: {
 			bonds: bondsMock,
+			getBondCoupons: getBondCouponsMock,
 		},
 		marketdata: {
 			getLastPrices: getLastPricesMock,
@@ -19,6 +21,11 @@ mock.module("./api", () => ({
 
 mock.module("./getMoexData", () => ({
 	getMoexData: getMoexDataMock,
+	mapWithConcurrency: async (items: unknown[], _concurrency: number, worker: (item: unknown, index: number) => Promise<void>) => {
+		for (let i = 0; i < items.length; i++) {
+			await worker(items[i], i)
+		}
+	},
 }))
 
 const { buildBondsData } = await import("./buildBondsData")
@@ -28,6 +35,7 @@ describe("buildBondsData", () => {
 		bondsMock.mockReset()
 		getLastPricesMock.mockReset()
 		getMoexDataMock.mockReset()
+		getBondCouponsMock.mockReset()
 	})
 
 	test("converts money-like fields and merges market plus MOEX data", async () => {
@@ -60,6 +68,7 @@ describe("buildBondsData", () => {
 				liquidity: LiquidityType.high,
 			},
 		})
+		getBondCouponsMock.mockResolvedValue({ events: [] })
 
 		const result = await buildBondsData()
 
@@ -113,6 +122,7 @@ describe("buildBondsData", () => {
 			BOND2: {},
 			BOND3: { BondDuration: 0 },
 		})
+		getBondCouponsMock.mockResolvedValue({ events: [] })
 
 		const result = await buildBondsData()
 		const buyBackMonths = roundMonthsUntil(buyBackDate)
@@ -124,8 +134,53 @@ describe("buildBondsData", () => {
 		expect(result[1].duration).toBeGreaterThanOrEqual(maturityMonths - 0.05)
 		expect(result[1].duration).toBeLessThanOrEqual(maturityMonths + 0.05)
 	})
+
+	test("backfills coupon metrics when MOEX data is missing", async () => {
+		bondsMock.mockResolvedValue({
+			instruments: [
+				{
+					uid: "uid-4",
+					figi: "figi-4",
+					ticker: "BOND4",
+					name: "Bond 4",
+					currency: "usd",
+					nominal: { units: 1000, nano: 0 },
+					aciValue: { units: 10, nano: 0 },
+				},
+			],
+		})
+
+		getLastPricesMock.mockResolvedValue({
+			lastPrices: [{ figi: "figi-4", price: { units: 95, nano: 0 } }],
+		})
+
+		getMoexDataMock.mockResolvedValue({ BOND4: {} })
+		getBondCouponsMock.mockResolvedValue({
+			events: [
+				{ couponNumber: 1, couponDate: futureDate(30), payOneBond: { units: 20, nano: 0 } },
+				{ couponNumber: 2, couponDate: futureDate(180), payOneBond: { units: 21, nano: 500000000 } },
+			],
+		})
+
+		const result = await buildBondsData()
+
+		expect(getBondCouponsMock).toHaveBeenCalledWith({ figi: "figi-4", instrumentId: "figi-4" })
+		expect(result[0]).toMatchObject({
+			couponsYield: 41.5,
+			leftCouponCount: 2,
+			leftToPay: 41.5,
+			realPrice: 960,
+			bondYield: 4.32,
+		})
+		expect(result[0].coupons).toHaveLength(2)
+		expect(result[0].coupons?.[0].payout).toBe(20)
+	})
 })
 
 function roundMonthsUntil(date: string) {
 	return Math.round((moment(date).diff(moment(), "days") / 30) * 100) / 100 || 0
+}
+
+function futureDate(offsetDays: number) {
+	return moment().add(offsetDays, "days").toISOString()
 }
