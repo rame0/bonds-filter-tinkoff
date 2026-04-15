@@ -9,8 +9,6 @@ services:
     #    environment:
     #      SERVICES: api
     #      PORT: 3000
-    volumes:
-      - ./server/.cache:/app/.cache
     labels:
       - traefik.enable=true
       - traefik.docker.network=traefik_net

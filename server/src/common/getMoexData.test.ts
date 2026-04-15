@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test"
 import moment from "moment"
-import { calculateCouponsYieldForYear } from "./getMoexData"
+import { calculateCouponsYieldForYear, mapWithConcurrency } from "./getMoexData"
 
 test("calculateCouponsYieldForYear sums only coupons within the next 12 months", () => {
 	const nowDate = moment("2026-04-14")
@@ -13,4 +13,15 @@ test("calculateCouponsYieldForYear sums only coupons within the next 12 months",
 	] as const
 
 	expect(calculateCouponsYieldForYear([...coupons], nowDate)).toBe(35)
+})
+
+test("mapWithConcurrency processes all items", async () => {
+	const items = [1, 2, 3, 4, 5]
+	const seen = new Set<number>()
+
+	await mapWithConcurrency(items, 2, async item => {
+		seen.add(item)
+	})
+
+	expect([...seen].sort((a, b) => a - b)).toEqual(items)
 })

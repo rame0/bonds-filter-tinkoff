@@ -1,11 +1,12 @@
 "use strict"
-import { Helpers } from "@psqq/tinkoff-invest-api"
-import { Coupon } from "@psqq/tinkoff-invest-api/cjs/generated/instruments"
 import moment from "moment"
 import { CombinedBondsResponse } from "../common/interfaces/CombinedBondsResponse"
-import { api } from "../common/api"
+import { type ApiCoupon } from "../common/interfaces/InvestApi"
+import { type BondsDataStatus } from "../common/interfaces/BondsDataStatus"
+import { getBondCoupons } from "../common/investApiFacade"
+import { toNumber } from "../common/utils/money"
 import { roundTo } from "../common/utils/round"
-import { getOrBuildBondsData } from "../common/getOrBuildBondsData"
+import { ensureBondsDataBuild, getBondsDataStatus, getOrBuildBondsData } from "../common/getOrBuildBondsData"
 
 export default {
 	name: "bonds",
@@ -14,6 +15,14 @@ export default {
 	settings: {},
 
 	actions: {
+		status: {
+			params: {},
+			cache: false,
+			async handler(): Promise<BondsDataStatus> {
+				await ensureBondsDataBuild()
+				return getBondsDataStatus()
+			},
+		},
 		instruments: {
 			params: {},
 			cache: true,
@@ -36,8 +45,7 @@ export default {
 			async handler(ctx) {
 				const limit = ctx.params.limit ?? 12
 				try {
-					let coupons: Coupon[] =
-						(await api.instruments.getBondCoupons({ figi: ctx.params.id })).events || []
+					let coupons: ApiCoupon[] = await getBondCoupons(ctx.params.id)
 					coupons = coupons.sort((a, b) => {
 						if (a.couponNumber > b.couponNumber) return 1
 						if (a.couponNumber < b.couponNumber) return -1
@@ -47,8 +55,8 @@ export default {
 					coupons = coupons
 						.filter(coupon => moment(coupon.couponDate).isAfter(now))
 						.map(coupon => {
-							const couponWithPayout = coupon as Coupon & { payout?: number }
-							couponWithPayout.payout = roundTo(Helpers.toNumber(coupon.payOneBond))
+							const couponWithPayout = coupon as ApiCoupon & { payout?: number }
+							couponWithPayout.payout = roundTo(toNumber(coupon.payOneBond))
 							return couponWithPayout
 						})
 					return coupons.slice(0, limit)

@@ -9,6 +9,7 @@ const MOEX_REQUEST_DELAY_MS = 100
 const MOEX_REQUEST_TIMEOUT_MS = 10_000
 const MOEX_MAX_RETRIES = 3
 const MOEX_RETRY_BASE_DELAY_MS = 300
+const MOEX_BUILD_CONCURRENCY = 8
 
 function getRetryDelayMs(attempt: number) {
   return MOEX_RETRY_BASE_DELAY_MS * 2 ** (attempt - 1)
@@ -49,6 +50,31 @@ export function calculateCouponsYieldForYear(coupons: MoexCoupon[], nowDate = mo
   }, 0)
 }
 
+export async function mapWithConcurrency<T>(
+	items: T[],
+	concurrency: number,
+	worker: (item: T, index: number) => Promise<void>
+) {
+	let nextIndex = 0
+
+	async function runWorker() {
+		while (true) {
+			const currentIndex = nextIndex
+			nextIndex += 1
+
+			if (currentIndex >= items.length) {
+				return
+			}
+
+			await worker(items[currentIndex], currentIndex)
+		}
+	}
+
+	await Promise.all(
+		Array.from({ length: Math.min(concurrency, items.length) }, () => runWorker())
+	)
+}
+
 export function getMoexData(tickers: string[]): Promise<MoexResults> {
   return new Promise((resolve, reject) => {
     const cache = Cache({ ttl: 60 * 60 * 4 })
@@ -87,17 +113,18 @@ export async function buildDataFromMoex(marketData, tickers: string[]) {
   const DateRequestPrevious = moment().subtract(15, "days").format("YYYY-MM-DD")
 
   const result: MoexResults = {}
-  // let skipped = 0
 
-  for (let i = 0; i < marketData?.securities?.data?.length; i++) {
-    const marketRow = marketData.securities.data[i]
-    const rowData = marketData.marketdata.data[i]
-
+  const relevantRows = (marketData?.securities?.data || []).flatMap((marketRow, i) => {
     const secId: string = marketRow[0]
     if (!tickers.includes(secId)) {
-      // console.log("skipped", ++skipped)
-      continue
+      return []
     }
+
+    return [{ marketRow, rowData: marketData.marketdata.data[i] }]
+  })
+
+  await mapWithConcurrency(relevantRows, MOEX_BUILD_CONCURRENCY, async ({ marketRow, rowData }) => {
+    const secId: string = marketRow[0]
 
     try {
       result[secId] = {
@@ -178,7 +205,7 @@ export async function buildDataFromMoex(marketData, tickers: string[]) {
         result[secId].BondVolume = 0
         result[secId].liquidity = LiquidityType.low
         result[secId].tradeDays = 0
-        continue
+        return
       }
 
       let volumeSum = 0
@@ -188,13 +215,11 @@ export async function buildDataFromMoex(marketData, tickers: string[]) {
         const volume = histItem.volume
         volumeSum += volume
         if (1 > volume) {
-          // если оборот в конкретный день меньше
           lowLiquidity = true
         }
       }
       result[secId].tradeDays = result[secId].trades.length
       if (result[secId].tradeDays < 6) {
-        // если всего дней в апи на этом периоде очень мало
         lowLiquidity = true
       }
 
@@ -207,9 +232,8 @@ export async function buildDataFromMoex(marketData, tickers: string[]) {
         result[secId].liquidity = LiquidityType.low
         result[secId].tradeDays = 0
       }
-      continue
     }
-  }
+  })
 
   return result
 }
