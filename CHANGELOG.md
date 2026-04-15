@@ -1,4 +1,23 @@
 ## Changelog
+## [0.3.0](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.2.6...v0.3.0) (2026-04-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* **server:** removed legacy sdk adapter and TINKOFF_API_DRIVER fallback.
+
+* fix(server): восстановить метрики облигаций и ускорить холодный прогрев
+
+* chore(server): удалить roadmap миграции
+
+* fix(server): исправить нулевую сумму купонов для облигаций
+
+* feat(ui): показать ожидание во время обновления данных
+
+### Features
+
+* **server:** мигрировать на @tinkoff/invest-js ([#106](https://github.com/rame0/bonds-filter-tinkoff/issues/106)) ([5862de1](https://github.com/rame0/bonds-filter-tinkoff/commit/5862de1602251ad9d8db34c1c00a1a90e358f20e))
+
 ### [0.2.6](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.2.5...v0.2.6) (2026-04-15)
 
 
