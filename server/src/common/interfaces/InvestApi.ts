@@ -5,6 +5,7 @@ export interface MoneyLike {
 }
 
 export interface ApiBond {
+	[key: string]: unknown
 	uid: string
 	figi: string
 	ticker: string
@@ -12,14 +13,13 @@ export interface ApiBond {
 	currency: string
 	buyBackDate?: Date | string
 	maturityDate?: Date | string
-	[key: string]: unknown
 }
 
 export interface ApiCoupon {
+	[key: string]: unknown
 	couponNumber: number
 	couponDate: Date | string
 	payOneBond?: MoneyLike
-	[key: string]: unknown
 }
 
 export interface LastPrice {
