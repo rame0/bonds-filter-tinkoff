@@ -5,7 +5,12 @@ services:
       context: .
       dockerfile: server.Dockerfile
     image: bonds-filter-tinkoff-api
+    user: "1000:1000"
     env_file: ./server/.env
+    volumes:
+      - type: bind
+        source: /srv/cache-storage/
+        target: /app/.cache/
     #    environment:
     #      SERVICES: api
     #      PORT: 3000

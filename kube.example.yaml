@@ -31,6 +31,11 @@ metadata:
     project: bonds-filter-tinkoff
     app: server
 spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
   selector:
     matchLabels:
       project: bonds-filter-tinkoff

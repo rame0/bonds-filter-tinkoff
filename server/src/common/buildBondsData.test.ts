@@ -31,6 +31,20 @@ mock.module("./api", () => ({
 
 mock.module("./getMoexData", () => ({
 	getMoexData: getMoexDataMock,
+	calculateCouponsYieldForYear: (coupons: Array<{ date?: moment.Moment, value: number }>, nowDate = moment()) => {
+		const oneYearLater = nowDate.clone().add(1, "year")
+
+		return coupons.reduce<number>((acc, coupon) => {
+			const couponDate = coupon?.date
+			if (!couponDate?.isValid()) {
+				return acc
+			}
+
+			return couponDate.isAfter(nowDate) && couponDate.isSameOrBefore(oneYearLater)
+				? acc + coupon.value
+				: acc
+		}, 0)
+	},
 	mapWithConcurrency: async (items: unknown[], _concurrency: number, worker: (item: unknown, index: number) => Promise<void>) => {
 		for (let i = 0; i < items.length; i++) {
 			await worker(items[i], i)

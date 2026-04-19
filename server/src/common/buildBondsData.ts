@@ -1,5 +1,5 @@
 import moment from "moment/moment"
-import Cache from "file-system-cache"
+import { createCache } from "./cache"
 import { getMoexData } from "./getMoexData"
 import { mapWithConcurrency } from "./getMoexData"
 import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
@@ -14,14 +14,14 @@ const COUPON_FALLBACK_MAX_RETRIES = 4
 const COUPON_FALLBACK_CACHE_TTL_SECONDS = 60 * 60 * 24
 
 interface CachedCouponSummary {
-	coupons: Array<{ couponDate?: string | Date, payout?: number, couponNumber?: number }>
+	coupons: { couponDate?: string | Date, payout?: number, couponNumber?: number }[]
 	annualCouponSum?: number
 	leftToPay?: number
 	leftCouponCount: number
 }
 
 export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
-  const couponCache = Cache({ ttl: COUPON_FALLBACK_CACHE_TTL_SECONDS })
+  const couponCache = createCache({ ttl: COUPON_FALLBACK_CACHE_TTL_SECONDS })
   const bonds = await listBonds()
 
   const instrumentIDs: string[] = bonds.map(instrument => instrument.uid)
@@ -128,11 +128,11 @@ async function getCouponSummary(figi: string, isFloatingCoupon: boolean, couponC
 		payout: getCouponPayout(coupon, isFloatingCoupon, lastKnownPayout),
 	}))
 	const oneYearLater = now.clone().add(1, "year")
-	const annualCouponSum = roundTo(normalizedCoupons.reduce((sum, coupon) => {
-		return moment(coupon.couponDate).isSameOrBefore(oneYearLater)
+	const annualCouponSum = roundTo(normalizedCoupons.reduce((sum, coupon) =>
+		moment(coupon.couponDate).isSameOrBefore(oneYearLater)
 			? sum + (coupon.payout ?? 0)
 			: sum
-	}, 0))
+	, 0))
 	const leftToPay = roundTo(normalizedCoupons.reduce((sum, coupon) => sum + (coupon.payout ?? 0), 0))
 	const couponSummary: CachedCouponSummary = {
 		coupons: normalizedCoupons,
@@ -167,7 +167,7 @@ async function getBondCouponsWithRetry(figi: string) {
 	throw lastError
 }
 
-function findLastKnownPayout(coupons: Array<{ payOneBond?: { units: number, nano: number } }>) {
+function findLastKnownPayout(coupons: { payOneBond?: { units: number, nano: number } }[]) {
 	for (const coupon of coupons) {
 		const payout = roundTo(toNumber(coupon.payOneBond))
 		if (payout !== undefined && payout > 0) {
