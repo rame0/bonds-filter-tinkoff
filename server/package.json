@@ -29,7 +29,7 @@
     "@bufbuild/protobuf": "^2.11.0",
     "@kubernetes/client-node": "^0.16.3",
     "@tinkoff/invest-js": "^1.27.1-RC4",
-    "axios": "^1.4.0",
+    "axios": "^1.15.0",
     "cbor-x": "^1.5.3",
     "dotenv": "^16.3.1",
     "file-system-cache": "^2.4.4",
