@@ -181,7 +181,7 @@ function findLastKnownPayout(coupons: { payOneBond?: { units: number, nano: numb
 function getCouponPayout(
 	coupon: { payOneBond?: { units: number, nano: number } },
 	isFloatingCoupon: boolean,
-	lastKnownPayout?: number
+	lastKnownPayout?: number,
 ) {
 	const payout = roundTo(toNumber(coupon.payOneBond))
 	if (payout !== undefined && payout > 0) {
