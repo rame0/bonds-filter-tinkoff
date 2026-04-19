@@ -33,7 +33,7 @@
     "cbor-x": "^1.5.3",
     "dotenv": "^16.3.1",
     "file-system-cache": "^2.4.4",
-    "ioredis": "^5.3.2",
+    "ioredis": "^5.10.1",
     "moleculer": "^0.14.28",
     "moleculer-cron": "^0.0.2",
     "moleculer-db": "^0.8.24",
