@@ -53,7 +53,7 @@ export function calculateCouponsYieldForYear(coupons: MoexCoupon[], nowDate = mo
 export async function mapWithConcurrency<T>(
 	items: T[],
 	concurrency: number,
-	worker: (item: T, index: number) => Promise<void>
+	worker: (item: T, index: number) => Promise<void>,
 ) {
 	let nextIndex = 0
 
@@ -71,7 +71,7 @@ export async function mapWithConcurrency<T>(
 	}
 
 	await Promise.all(
-		Array.from({ length: Math.min(concurrency, items.length) }, () => runWorker())
+		Array.from({ length: Math.min(concurrency, items.length) }, () => runWorker()),
 	)
 }
 
@@ -151,9 +151,9 @@ export async function buildDataFromMoex(marketData, tickers: string[]) {
       } else {
         await sleep(MOEX_REQUEST_DELAY_MS)
         result[secId].coupons = []
-        const responseCoupons = await moexGet(
-          `https://iss.moex.com/iss/statistics/engines/stock/markets/bonds/bondization/${secId}.json?iss.meta=off&iss.only=coupons&coupons.columns=coupondate,faceunit,value,valueprc,value_rub`
-        )
+		const responseCoupons = await moexGet(
+		  `https://iss.moex.com/iss/statistics/engines/stock/markets/bonds/bondization/${secId}.json?iss.meta=off&iss.only=coupons&coupons.columns=coupondate,faceunit,value,valueprc,value_rub`,
+		)
         responseCoupons.data?.coupons?.data.forEach(resp => {
           const coupon: MoexCoupon = {} as MoexCoupon
           coupon.date = moment(resp[0])
@@ -180,9 +180,9 @@ export async function buildDataFromMoex(marketData, tickers: string[]) {
       } else {
         result[secId].trades = []
         await sleep(MOEX_REQUEST_DELAY_MS)
-        const responseTrades = await moexGet(
-          `https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/${result[secId].BOARDID}/securities/${secId}.json?iss.meta=off&iss.only=history&history.columns=TRADEDATE,VOLUME,NUMTRADES&limit=20&from=${DateRequestPrevious}`
-        )
+		const responseTrades = await moexGet(
+		  `https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/${result[secId].BOARDID}/securities/${secId}.json?iss.meta=off&iss.only=history&history.columns=TRADEDATE,VOLUME,NUMTRADES&limit=20&from=${DateRequestPrevious}`,
+		)
 
         if (!responseTrades.data?.history) {
           result[secId].BondVolume = 0

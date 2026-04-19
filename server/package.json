@@ -9,13 +9,13 @@
     "ci": "bun test --watch",
     "test": "bun test src/common/api/createInvestApi.test.ts && bun test src/common/buildBondsData.test.ts && bun test src/common/fetchGate.test.ts && bun test src/common/getMoexData.test.ts && bun test src/common/getOrBuildBondsData.test.ts && bun test src/common/investApiFacade.test.ts && bun test src/common/utils/sleep.test.ts && bun test src/services/bonds.service.test.ts",
     "coverage": "bun test --coverage",
-    "lint": "eslint --ext .js,.ts .",
+    "lint": "eslint --ext .js,.ts src scripts moleculer.config.ts",
     "typeorm": "bun run scripts/typeorm-run.ts",
     "migration:generate": "bun run scripts/typeorm-run.ts migration:generate -p"
   },
   "devDependencies": {
     "@types/node": "^20.5.0",
-    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/eslint-plugin": "^8.58.2",
     "@typescript-eslint/parser": "^8.58.2",
     "eslint": "^10.2.1",
     "eslint-plugin-import": "^2.28.0",
