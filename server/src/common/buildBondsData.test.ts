@@ -5,7 +5,7 @@ import { LiquidityType } from "./interfaces/Moex"
 const bondsMock = mock(async () => ({ instruments: [] as any[] }))
 const getLastPricesMock = mock(async () => ({ lastPrices: [] as any[] }))
 const getMoexDataMock = mock(async () => ({}))
-const getBondCouponsMock = mock(async () => ({ events: [] as any[] }))
+const getBondCouponsMock = mock(async () => [] as any[])
 let cacheStore = new Map<string, unknown>()
 
 mock.module("file-system-cache", () => ({
@@ -17,16 +17,16 @@ mock.module("file-system-cache", () => ({
 	}),
 }))
 
-mock.module("./api", () => ({
-	api: {
-		instruments: {
-			bonds: bondsMock,
-			getBondCoupons: getBondCouponsMock,
-		},
-		marketdata: {
-			getLastPrices: getLastPricesMock,
-		},
+mock.module("./investApiFacade", () => ({
+	listBonds: async () => {
+		const { instruments } = await bondsMock()
+		return instruments
 	},
+	getLastPrices: async (instrumentIds: string[]) => {
+		const { lastPrices } = await getLastPricesMock(instrumentIds)
+		return lastPrices
+	},
+	getBondCoupons: getBondCouponsMock,
 }))
 
 mock.module("./getMoexData", () => ({
@@ -93,7 +93,7 @@ describe("buildBondsData", () => {
 				liquidity: LiquidityType.high,
 			},
 		})
-		getBondCouponsMock.mockResolvedValue({ events: [] })
+		getBondCouponsMock.mockResolvedValue([])
 
 		const result = await buildBondsData()
 
@@ -147,7 +147,7 @@ describe("buildBondsData", () => {
 			BOND2: {},
 			BOND3: { BondDuration: 0 },
 		})
-		getBondCouponsMock.mockResolvedValue({ events: [] })
+		getBondCouponsMock.mockResolvedValue([])
 
 		const result = await buildBondsData()
 		const buyBackMonths = roundMonthsUntil(buyBackDate)
@@ -180,16 +180,14 @@ describe("buildBondsData", () => {
 		})
 
 		getMoexDataMock.mockResolvedValue({ BOND4: {} })
-		getBondCouponsMock.mockResolvedValue({
-			events: [
+		getBondCouponsMock.mockResolvedValue([
 				{ couponNumber: 1, couponDate: futureDate(30), payOneBond: { units: 20, nano: 0 } },
 				{ couponNumber: 2, couponDate: futureDate(180), payOneBond: { units: 21, nano: 500000000 } },
-			],
-		})
+		])
 
 		const result = await buildBondsData()
 
-		expect(getBondCouponsMock).toHaveBeenCalledWith({ figi: "figi-4", instrumentId: "figi-4" })
+		expect(getBondCouponsMock).toHaveBeenCalledWith("figi-4")
 		expect(result[0]).toMatchObject({
 			couponsYield: 41.5,
 			leftCouponCount: 2,
@@ -226,12 +224,10 @@ describe("buildBondsData", () => {
 				BondYield: 12.34,
 			},
 		})
-		getBondCouponsMock.mockResolvedValue({
-			events: [
+		getBondCouponsMock.mockResolvedValue([
 				{ couponNumber: 1, couponDate: futureDate(30), payOneBond: { units: 10, nano: 0 } },
 				{ couponNumber: 2, couponDate: futureDate(60), payOneBond: { units: 11, nano: 500000000 } },
-			],
-		})
+		])
 
 		const result = await buildBondsData()
 
@@ -269,14 +265,12 @@ describe("buildBondsData", () => {
 				BondYield: 9.99,
 			},
 		})
-		getBondCouponsMock.mockResolvedValue({
-			events: [
+		getBondCouponsMock.mockResolvedValue([
 				{ couponNumber: 4, couponDate: futureDate(270), payOneBond: { units: 0, nano: 0 } },
 				{ couponNumber: 3, couponDate: futureDate(180), payOneBond: { units: 0, nano: 0 } },
 				{ couponNumber: 2, couponDate: futureDate(90), payOneBond: { units: 0, nano: 0 } },
 				{ couponNumber: 1, couponDate: pastDate(5), payOneBond: { units: 12, nano: 500000000 } },
-			],
-		})
+		])
 
 		const result = await buildBondsData()
 
