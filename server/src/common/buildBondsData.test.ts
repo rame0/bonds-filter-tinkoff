@@ -31,7 +31,7 @@ mock.module("./api", () => ({
 
 mock.module("./getMoexData", () => ({
 	getMoexData: getMoexDataMock,
-	calculateCouponsYieldForYear: (coupons: Array<{ date?: moment.Moment, value: number }>, nowDate = moment()) => {
+	calculateCouponsYieldForYear: (coupons: { date?: moment.Moment, value: number }[], nowDate = moment()) => {
 		const oneYearLater = nowDate.clone().add(1, "year")
 
 		return coupons.reduce<number>((acc, coupon) => {
