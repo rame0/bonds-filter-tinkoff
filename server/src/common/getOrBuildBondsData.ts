@@ -1,9 +1,10 @@
-import Cache from "file-system-cache"
 import { buildBondsData } from "./buildBondsData"
+import { createCache } from "./cache"
+import { clearFetchMarker, markFetchStarted, shouldStartFetch } from "./fetchGate"
 import { BondsDataStatus } from "./interfaces/BondsDataStatus"
 import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
 
-const cache = Cache({ ttl: 60 * 60 * 4 })
+const cache = createCache({ ttl: 60 * 60 * 4 })
 let inFlightBuild: Promise<CombinedBondsResponse[]> | null = null
 let lastBuildStartedAt: string | undefined
 let lastBuildCompletedAt: string | undefined
@@ -30,29 +31,39 @@ export async function getBondsDataStatus(): Promise<BondsDataStatus> {
 
 export async function ensureBondsDataBuild() {
 	const cached = await getCachedBondsData()
-	if (!cached && !inFlightBuild) {
+	if (!cached && !inFlightBuild && await shouldStartFetch()) {
 		void getOrBuildBondsData(true)
 	}
 }
 
 export async function getOrBuildBondsData(forceRebuild = false) {
-  if (!forceRebuild) {
-    const cached = await getCachedBondsData()
-    if (cached) {
-      return cached
-    }
+  const cached = await getCachedBondsData()
+  if (!forceRebuild && cached) {
+    return cached
   }
 
   if (inFlightBuild) {
     return inFlightBuild
   }
 
+  const shouldFetch = await shouldStartFetch()
+  if (!shouldFetch) {
+	  return cached ?? []
+  }
+
+  await markFetchStarted()
+
   inFlightBuild = (async () => {
 	  lastBuildStartedAt = new Date().toISOString()
-    const built = await buildBondsData()
-    await cache.set("bonds", built)
-	  lastBuildCompletedAt = new Date().toISOString()
-    return built
+	  try {
+		  const built = await buildBondsData()
+		  await cache.set("bonds", built)
+		  lastBuildCompletedAt = new Date().toISOString()
+		  return built
+	  } catch (error) {
+		  await clearFetchMarker()
+		  throw error
+	  }
   })()
 
   try {

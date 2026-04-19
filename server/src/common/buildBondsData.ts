@@ -1,5 +1,5 @@
 import moment from "moment/moment"
-import Cache from "file-system-cache"
+import { createCache } from "./cache"
 import { getMoexData } from "./getMoexData"
 import { mapWithConcurrency } from "./getMoexData"
 import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
@@ -21,7 +21,7 @@ interface CachedCouponSummary {
 }
 
 export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
-  const couponCache = Cache({ ttl: COUPON_FALLBACK_CACHE_TTL_SECONDS })
+  const couponCache = createCache({ ttl: COUPON_FALLBACK_CACHE_TTL_SECONDS })
   const bonds = await listBonds()
 
   const instrumentIDs: string[] = bonds.map(instrument => instrument.uid)

@@ -1,6 +1,6 @@
 import axios from "axios"
 import moment from "moment"
-import Cache from "file-system-cache"
+import { createCache } from "./cache"
 import { sleep } from "./utils/sleep"
 import { roundTo } from "./utils/round"
 import { LiquidityType, MoexCoupon, MoexResults, MoexTrade } from "./interfaces/Moex"
@@ -77,7 +77,7 @@ export async function mapWithConcurrency<T>(
 
 export function getMoexData(tickers: string[]): Promise<MoexResults> {
   return new Promise((resolve, reject) => {
-    const cache = Cache({ ttl: 60 * 60 * 4 })
+    const cache = createCache({ ttl: 60 * 60 * 4 })
 
     const moexData = cache.getSync("moexData")
     if (moexData) {
@@ -109,7 +109,7 @@ export function getMoexData(tickers: string[]): Promise<MoexResults> {
 }
 
 export async function buildDataFromMoex(marketData, tickers: string[]) {
-  const cache = Cache({ ttl: 60 * 60 * 6 })
+  const cache = createCache({ ttl: 60 * 60 * 6 })
   const DateRequestPrevious = moment().subtract(15, "days").format("YYYY-MM-DD")
 
   const result: MoexResults = {}
