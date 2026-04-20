@@ -7,7 +7,7 @@
     "start": "bun ./node_modules/.bin/moleculer-runner --config dist/moleculer.config.js dist/src/services/{**,**/**,**/**/**}/*.service.js",
     "cli": "moleculer connect NATS",
     "ci": "bun test --watch",
-    "test": "bun test src/common/api/createInvestApi.test.ts && bun test src/common/buildBondsData.test.ts && bun test src/common/fetchGate.test.ts && bun test src/common/getCurrencyRates.test.ts && bun test src/common/getMoexData.test.ts && bun test src/common/getOrBuildBondsData.test.ts && bun test src/common/investApiFacade.test.ts && bun test src/common/utils/sleep.test.ts && bun test src/services/bonds.service.test.ts && bun test src/services/scheduler.service.test.ts",
+    "test": "bun test src/common/api/createInvestApi.test.ts && bun test src/common/buildBondsData.test.ts && bun test src/common/fetchGate.test.ts && bun test src/common/getCurrencyRates.test.ts && bun test src/common/getMoexData.test.ts && bun test src/common/getOrBuildBondsData.test.ts && bun test src/common/getPortfolioMetrics.test.ts && bun test src/common/investApiFacade.test.ts && bun test src/common/utils/sleep.test.ts && bun test src/services/bonds.service.test.ts && bun test src/services/scheduler.service.test.ts",
     "coverage": "bun test --coverage",
     "lint": "eslint --ext .js,.ts src scripts moleculer.config.ts",
     "typeorm": "bun run scripts/typeorm-run.ts",

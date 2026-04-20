@@ -3,6 +3,9 @@ import moment from "moment"
 import { CombinedBondsResponse } from "../common/interfaces/CombinedBondsResponse"
 import { type ApiCoupon } from "../common/interfaces/InvestApi"
 import { type BondsDataStatus } from "../common/interfaces/BondsDataStatus"
+import { type PortfolioPositionInput } from "../common/interfaces/PortfolioMetrics"
+import { getOrRefreshCurrencyRates } from "../common/getCurrencyRates"
+import { getPortfolioMetrics } from "../common/getPortfolioMetrics"
 import { getBondCoupons } from "../common/investApiFacade"
 import { toNumber } from "../common/utils/money"
 import { roundTo } from "../common/utils/round"
@@ -65,6 +68,25 @@ export default {
 					console.error(`[bonds.coupons] Failed to fetch coupons for ${ctx.params.id}:`, err)
 					throw new Error(`Failed to fetch coupons for ${ctx.params.id}`)
 				}
+			},
+		},
+		portfolioMetrics: {
+			params: {
+				positions: {
+					type: "array",
+					items: "object",
+				},
+			},
+			cache: false,
+			async handler(ctx) {
+				const positions = ctx.params.positions as PortfolioPositionInput[]
+				const [bonds, bondsStatus, rates] = await Promise.all([
+					getOrBuildBondsData(),
+					getBondsDataStatus(),
+					getOrRefreshCurrencyRates(),
+				])
+
+				return getPortfolioMetrics(positions, bonds, rates, bondsStatus, moment())
 			},
 		},
 	},
