@@ -7,6 +7,7 @@
   ],
   "exclude": [
     "src/**/__tests__/*",
+    "src/**/*.test.ts",
     "src/external",
     "src/external/**/*"
   ],

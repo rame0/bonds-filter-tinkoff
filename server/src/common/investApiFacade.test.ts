@@ -59,7 +59,12 @@ describe("investApiFacade", () => {
 
 			const result = await facade.getBondCoupons("figi-2")
 
-			expect(getBondCouponsMock).toHaveBeenCalledWith({ figi: "figi-2", instrumentId: "figi-2" })
+			expect(getBondCouponsMock).toHaveBeenCalledWith({
+				figi: "figi-2",
+				from: new Date("2000-01-01T00:00:00.000Z"),
+				to: new Date("2100-01-01T00:00:00.000Z"),
+				instrumentId: "figi-2",
+			})
 			expect(result).toEqual([])
 		})
 })

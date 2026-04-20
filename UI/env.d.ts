@@ -2,7 +2,7 @@
 
 interface YandexMetrikaFunction {
 	(id: string, action: string, options?: Record<string, unknown>): void
-	a?: IArguments[]
+	a?: unknown[][]
 	l?: number
 }
 

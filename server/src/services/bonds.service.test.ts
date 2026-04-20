@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, mock, test } from "bun:test"
 
 const getBondCouponsMock = mock(async () => ({ events: [] as any[] }))
+const getOrBuildBondsDataMock = mock(async () => [])
+const getBondsDataStatusMock = mock(async () => ({ isBuilding: false, hasCachedData: true }))
+const ensureBondsDataBuildMock = mock(async () => undefined)
+const getOrRefreshCurrencyRatesMock = mock(async () => ({ baseCurrency: "RUB", rateDate: "20.04.2026", updatedAt: "2026-04-20T04:00:00.000Z", rates: {} }))
+const getPortfolioMetricsMock = mock(async () => ({ baseCurrency: "RUB" }))
 
 mock.module("../common/api", () => ({
 	api: {
@@ -11,9 +16,17 @@ mock.module("../common/api", () => ({
 }))
 
 mock.module("../common/getOrBuildBondsData", () => ({
-	getOrBuildBondsData: mock(async () => []),
-	getBondsDataStatus: mock(async () => ({ isBuilding: false, hasCachedData: true })),
-	ensureBondsDataBuild: mock(async () => undefined),
+	getOrBuildBondsData: getOrBuildBondsDataMock,
+	getBondsDataStatus: getBondsDataStatusMock,
+	ensureBondsDataBuild: ensureBondsDataBuildMock,
+}))
+
+mock.module("../common/getCurrencyRates", () => ({
+	getOrRefreshCurrencyRates: getOrRefreshCurrencyRatesMock,
+}))
+
+mock.module("../common/getPortfolioMetrics", () => ({
+	getPortfolioMetrics: getPortfolioMetricsMock,
 }))
 
 const { default: bondsService } = await import("./bonds.service")
@@ -21,6 +34,16 @@ const { default: bondsService } = await import("./bonds.service")
 describe("bonds.service coupons action", () => {
 	beforeEach(() => {
 		getBondCouponsMock.mockReset()
+		getOrBuildBondsDataMock.mockReset()
+		getBondsDataStatusMock.mockReset()
+		ensureBondsDataBuildMock.mockReset()
+		getOrRefreshCurrencyRatesMock.mockReset()
+		getPortfolioMetricsMock.mockReset()
+		getOrBuildBondsDataMock.mockResolvedValue([])
+		getBondsDataStatusMock.mockResolvedValue({ isBuilding: false, hasCachedData: true })
+		ensureBondsDataBuildMock.mockResolvedValue(undefined)
+		getOrRefreshCurrencyRatesMock.mockResolvedValue({ baseCurrency: "RUB", rateDate: "20.04.2026", updatedAt: "2026-04-20T04:00:00.000Z", rates: {} })
+		getPortfolioMetricsMock.mockResolvedValue({ baseCurrency: "RUB" })
 	})
 
 	test("sorts future coupons and maps payout from payOneBond", async () => {
@@ -49,7 +72,12 @@ describe("bonds.service coupons action", () => {
 			meta: {},
 		})
 
-		expect(getBondCouponsMock).toHaveBeenCalledWith({ figi: "figi-1", instrumentId: "figi-1" })
+		expect(getBondCouponsMock).toHaveBeenCalledWith({
+			figi: "figi-1",
+			from: new Date("2000-01-01T00:00:00.000Z"),
+			to: new Date("2100-01-01T00:00:00.000Z"),
+			instrumentId: "figi-1",
+		})
 		expect(result).toHaveLength(2)
 		expect(result.map((coupon: any) => coupon.couponNumber)).toEqual([2, 3])
 		expect(result.map((coupon: any) => coupon.payout)).toEqual([5.5, 7.25])
@@ -71,6 +99,28 @@ describe("bonds.service coupons action", () => {
 
 		expect(result).toHaveLength(2)
 		expect(result.map((coupon: any) => coupon.couponNumber)).toEqual([1, 2])
+	})
+
+	test("delegates portfolio metrics calculation to backend helper", async () => {
+		getOrBuildBondsDataMock.mockResolvedValueOnce([{ uid: "bond-1" }])
+		getBondsDataStatusMock.mockResolvedValueOnce({ isBuilding: false, hasCachedData: true, lastBuildCompletedAt: "2026-04-20T03:00:00.000Z" })
+
+		const result = await bondsService.actions.portfolioMetrics.handler({
+			params: { positions: [{ uid: "bond-1", qty: 2 }] },
+			meta: {},
+		})
+
+		expect(getOrBuildBondsDataMock).toHaveBeenCalledTimes(1)
+		expect(getBondsDataStatusMock).toHaveBeenCalledTimes(1)
+		expect(getOrRefreshCurrencyRatesMock).toHaveBeenCalledTimes(1)
+		expect(getPortfolioMetricsMock).toHaveBeenCalledWith(
+			[{ uid: "bond-1", qty: 2 }],
+			[{ uid: "bond-1" }],
+			{ baseCurrency: "RUB", rateDate: "20.04.2026", updatedAt: "2026-04-20T04:00:00.000Z", rates: {} },
+			{ isBuilding: false, hasCachedData: true, lastBuildCompletedAt: "2026-04-20T03:00:00.000Z" },
+			expect.any(Object),
+		)
+		expect(result).toEqual({ baseCurrency: "RUB" })
 	})
 })
 

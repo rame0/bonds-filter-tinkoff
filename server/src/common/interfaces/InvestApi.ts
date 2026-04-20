@@ -50,6 +50,8 @@ export interface GetLastPricesParams {
 
 export interface GetBondCouponsParams {
 	figi: string
+	from?: Date
+	to?: Date
 	instrumentId?: string
 }
 
