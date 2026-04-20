@@ -1,6 +1,9 @@
 import Cron from "moleculer-cron"
+import { getCachedCurrencyRates, refreshCurrencyRates } from "../common/getCurrencyRates"
 import { getCachedBondsData, getOrBuildBondsData } from "../common/getOrBuildBondsData"
+
 let isDataGrabberRunning = false
+let isCurrencyRatesRefreshRunning = false
 
 async function runDataGrabber(reason: "tick" | "init") {
   if (isDataGrabberRunning) {
@@ -13,6 +16,20 @@ async function runDataGrabber(reason: "tick" | "init") {
     await getOrBuildBondsData(true)
   } finally {
     isDataGrabberRunning = false
+  }
+}
+
+async function runCurrencyRatesRefresh(reason: "tick" | "init") {
+  if (isCurrencyRatesRefreshRunning) {
+    console.warn(`[CurrencyRates] skip ${reason}; previous job is still running`)
+    return
+  }
+
+  isCurrencyRatesRefreshRunning = true
+  try {
+    await refreshCurrencyRates()
+  } finally {
+    isCurrencyRatesRefreshRunning = false
   }
 }
 
@@ -43,6 +60,28 @@ export default {
         }
       },
       timeZone: "GMT",
+    },
+    {
+      name: "CurrencyRatesRefresh",
+      cronTime: "0 7,12,17 * * *",
+      onTick: async () => {
+        try {
+          await runCurrencyRatesRefresh("tick")
+        } catch (err) {
+          console.error("[CurrencyRates] onTick failed:", err?.message ?? err)
+        }
+      },
+      runOnInit: async () => {
+        const rates = await getCachedCurrencyRates()
+        if (!rates) {
+          try {
+            await runCurrencyRatesRefresh("init")
+          } catch (err) {
+            console.error("[CurrencyRates] runOnInit failed:", err?.message ?? err)
+          }
+        }
+      },
+      timeZone: "Europe/Moscow",
     },
   ],
 }
