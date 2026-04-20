@@ -179,7 +179,7 @@ import IssueKindCollations from "@/data/collations/IssueKindCollations"
 import ExchangeCollation from "@/data/collations/ExchangeCollation"
 import CurrencyCollation from "@/data/collations/CurrencyCollation"
 import { portfolioStore } from "@/data/portfolioStore"
-import type { sortState } from "@/data/Types/SortState"
+import type { sortState as SortState } from "@/data/Types/SortState"
 import type { CombinedBondsResponse } from "@/data/Interfaces/CombinedBondsResponse"
 import BondFlags from "@/components/UI/BondFlags.vue"
 import LiquidityArrow from "@/components/UI/LiquidityArrow.vue"
@@ -204,7 +204,7 @@ const props = defineProps({
 		required: true
 	},
 	sortState: {
-		type: Object as PropType<sortState>,
+		type: Object as PropType<SortState>,
 		required: true
 	},
 	showAddButton: {
@@ -214,7 +214,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits<{
-	(e: "update:sortState", value: sortState): void
+	(e: "update:sortState", value: SortState): void
 	(e: "update:page", value: number): void
 	(e: "update:page-size", value: number): void
 }>()

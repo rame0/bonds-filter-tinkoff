@@ -19,6 +19,8 @@ declare module 'vue' {
     LinksToExchange: typeof import('./components/UI/LinksToExchange.vue')['default']
     LiquidityArrow: typeof import('./components/UI/LiquidityArrow.vue')['default']
     LoadingOverlay: typeof import('./components/UI/LoadingOverlay.vue')['default']
+    PortfolioCouponChart: typeof import('./components/PortfolioCouponChart.vue')['default']
+    PortfolioSectorChart: typeof import('./components/PortfolioSectorChart.vue')['default']
     PortfolioStats: typeof import('./components/PortfolioStats.vue')['default']
     PortfolioTable: typeof import('./components/PortfolioTable.vue')['default']
     RiskStars: typeof import('./components/UI/RiskStars.vue')['default']

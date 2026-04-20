@@ -1,5 +1,5 @@
 <template>
-	<div class="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(20rem,1fr)]">
+	<div class="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,2fr)_minmax(24rem,1fr)] 2xl:grid-cols-[minmax(0,2fr)_minmax(28rem,1fr)]">
 		<!-- table -->
 
 		<div
@@ -16,8 +16,8 @@
 		<div
 			class="card card-border min-w-0 h-[calc(100vh-var(--header-height)-1px)] bg-base-100"
 		>
-			<div class="card-body h-full">
-				<portfolio-stats v-model="portfolioBonds" :loading="isFetching" />
+			<div class="card-body h-full overflow-hidden">
+				<portfolio-stats :metrics="portfolioMetrics" :loading="isFetching" />
 			</div>
 		</div>
 	</div>
@@ -25,37 +25,48 @@
 
 <script lang="ts">
 import { portfolioStore } from "@/data/portfolioStore"
-import { onMounted, ref, computed } from "vue"
+import { ref, computed, watch } from "vue"
 import BondsRepository from "@/data/BondsRepository"
+import type { PortfolioMetricsResponse, PortfolioPositionInput } from "@/data/Interfaces/PortfolioMetrics"
 
 export default {
 	name: "PortfolioView",
 	setup() {
-		const isFetching = ref(true)
+		const isFetching = ref(false)
 		const store = portfolioStore()
 		const portfolioBonds = computed(() => store.values)
+		const portfolioPositions = computed<PortfolioPositionInput[]>(() =>
+			store.values.map((bond) => ({ uid: bond.uid, qty: bond.qty }))
+		)
+		const portfolioMetrics = ref<PortfolioMetricsResponse | null>(null)
 		const bondsRepository = new BondsRepository()
 
-		onMounted(async () => {
-			const bonds = store.values
-			if (bonds.length === 0) {
+		const fetchPortfolioMetrics = async (positions: PortfolioPositionInput[]) => {
+			if (positions.length < 1) {
+				portfolioMetrics.value = null
 				isFetching.value = false
 				return
 			}
+
+			isFetching.value = true
 			try {
-				const results = await Promise.all(
-					bonds.map((bond) => bondsRepository.coupons(bond.figi))
-				)
-				results.forEach((coupons, i) => {
-					store.setBondCoupons(bonds[i].uid, coupons)
-				})
+				portfolioMetrics.value = await bondsRepository.portfolioMetrics(positions)
 			} finally {
 				isFetching.value = false
 			}
-		})
+		}
+
+		watch(
+			portfolioPositions,
+			(positions) => {
+				void fetchPortfolioMetrics(positions)
+			},
+			{ deep: true, immediate: true }
+		)
 
 		return {
 			portfolioBonds,
+			portfolioMetrics,
 			isFetching
 		}
 	}
