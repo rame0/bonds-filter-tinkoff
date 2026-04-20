@@ -25,7 +25,7 @@ export async function getPortfolioMetrics(
 	let totalCoupons = 0
 	let purchaseCostRub = 0
 	let couponProfitRub = 0
-	let maturityProfitRub = 0
+	let maturityValueRub = 0
 
 	for (const position of positions) {
 		const qty = Math.max(0, Math.trunc(position.qty))
@@ -45,14 +45,14 @@ export async function getPortfolioMetrics(
 		const cleanPrice = nominal > 0 && bond.price !== undefined ? (nominal * bond.price) / 100 : 0
 		const purchaseCostLocal = (cleanPrice + aciValue) * qty
 		const couponProfitLocal = (couponSummary?.leftToPay ?? 0) * qty
-		const maturityProfitLocal = (nominal + (couponSummary?.leftToPay ?? 0) - cleanPrice - aciValue) * qty
+		const maturityValueLocal = (nominal + (couponSummary?.leftToPay ?? 0)) * qty
 		const sectorAmountLocal = cleanPrice * qty
 
 		totalBonds += qty
 		totalCoupons += (couponSummary?.leftCouponCount ?? 0) * qty
 		purchaseCostRub += convertToRub(purchaseCostLocal, bondCurrency, rates) ?? 0
 		couponProfitRub += convertToRub(couponProfitLocal, bondCurrency, rates) ?? 0
-		maturityProfitRub += convertToRub(maturityProfitLocal, bondCurrency, rates) ?? 0
+		maturityValueRub += convertToRub(maturityValueLocal, bondCurrency, rates) ?? 0
 
 		const sectorAmountRub = convertToRub(sectorAmountLocal, bondCurrency, rates) ?? 0
 		const sectorKey = typeof bond.sector === "string" && bond.sector ? bond.sector : "other"
@@ -77,9 +77,9 @@ export async function getPortfolioMetrics(
 
 	const normalizedPurchaseCostRub = roundTo(purchaseCostRub) ?? 0
 	const normalizedCouponProfitRub = roundTo(couponProfitRub) ?? 0
-	const normalizedMaturityProfitRub = roundTo(maturityProfitRub) ?? 0
-	const maturityProfitPct = normalizedPurchaseCostRub > 0
-		? roundTo((normalizedMaturityProfitRub / normalizedPurchaseCostRub) * 100) ?? 0
+	const normalizedMaturityValueRub = roundTo(maturityValueRub) ?? 0
+	const maturityValuePct = normalizedPurchaseCostRub > 0
+		? roundTo((normalizedMaturityValueRub / normalizedPurchaseCostRub) * 100) ?? 0
 		: 0
 
 	return {
@@ -89,8 +89,8 @@ export async function getPortfolioMetrics(
 			totalCoupons,
 			purchaseCostRub: normalizedPurchaseCostRub,
 			couponProfitRub: normalizedCouponProfitRub,
-			maturityProfitRub: normalizedMaturityProfitRub,
-			maturityProfitPct,
+			maturityValueRub: normalizedMaturityValueRub,
+			maturityValuePct,
 		},
 		couponSchedule: buildCouponSchedule(scheduleByMonth, now),
 		sectorAllocation: buildSectorAllocation(sectorAmounts),

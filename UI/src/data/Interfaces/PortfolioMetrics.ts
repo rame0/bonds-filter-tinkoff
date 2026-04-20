@@ -8,8 +8,8 @@ export interface PortfolioTotals {
 	totalCoupons: number
 	purchaseCostRub: number
 	couponProfitRub: number
-	maturityProfitRub: number
-	maturityProfitPct: number
+	maturityValueRub: number
+	maturityValuePct: number
 }
 
 export interface PortfolioCouponScheduleItem {

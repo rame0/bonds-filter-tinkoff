@@ -29,12 +29,12 @@
 							<td class="py-3 text-right">{{ formatMoney(metrics.totals.purchaseCostRub) }}</td>
 						</tr>
 						<tr>
-							<td class="py-3 pr-4 font-medium">Профит при погашении:</td>
-							<td class="py-3 text-right">{{ formatMoney(metrics.totals.maturityProfitRub) }}</td>
+							<td class="py-3 pr-4 font-medium">Сумма при погашении:</td>
+							<td class="py-3 text-right">{{ formatMoney(metrics.totals.maturityValueRub) }}</td>
 						</tr>
 						<tr>
-							<td class="py-3 pr-4 font-medium">Профит при погашении, %:</td>
-							<td class="py-3 text-right">{{ formatPercent(metrics.totals.maturityProfitPct) }}</td>
+							<td class="py-3 pr-4 font-medium">Сумма при погашении, % к покупке:</td>
+							<td class="py-3 text-right">{{ formatPercent(metrics.totals.maturityValuePct) }}</td>
 						</tr>
 					</tbody>
 				</table>

@@ -70,8 +70,8 @@ describe("getPortfolioMetrics", () => {
 			totalCoupons: 8,
 			purchaseCostRub: 9820,
 			couponProfitRub: 1320,
-			maturityProfitRub: 1500,
-			maturityProfitPct: 15.27,
+			maturityValueRub: 11320,
+			maturityValuePct: 115.27,
 		})
 		expect(result.couponSchedule[0]).toEqual({ month: "2026-04", label: "апр. 2026 г.", amountRub: 0 })
 		expect(result.couponSchedule[1]).toEqual({ month: "2026-05", label: "май 2026 г.", amountRub: 840 })
