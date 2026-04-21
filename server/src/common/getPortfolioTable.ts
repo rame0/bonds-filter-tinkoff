@@ -125,11 +125,11 @@ function buildCouponTooltip(
 
 function buildCouponMonths(coupons: CombinedCoupon[], now: moment.Moment) {
 	const months = Array.from({ length: 12 }, () => false)
-	const oneYearLater = now.clone().add(1, "year")
+	const monthsHorizon = now.clone().add(14, "months")
 
 	for (const coupon of coupons) {
 		const date = moment(coupon.couponDate)
-		if (!date.isValid() || date.isAfter(oneYearLater)) {
+		if (!date.isValid() || date.isAfter(monthsHorizon)) {
 			continue
 		}
 

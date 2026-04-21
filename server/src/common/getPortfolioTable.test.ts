@@ -119,7 +119,7 @@ describe("getPortfolioTable", () => {
 		expect(result.rows[0]?.couponMonths).toEqual([false, true, false, false, false, false, false, true, false, false, false, false])
 	})
 
-	test("limits coupon months to the next year", async () => {
+	test("limits coupon months to the next fourteen months", async () => {
 		const result = await getPortfolioTable(
 			[{ uid: "bond-3", qty: 1 }],
 			[
