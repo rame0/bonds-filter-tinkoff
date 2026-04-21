@@ -16,7 +16,6 @@
 							</button>
 						</th>
 						<th class="px-3 py-3 font-semibold text-base-content">Бумага</th>
-						<th v-if="showAddButton" class="px-3 py-3 text-center text-base-content">+</th>
 						<th class="px-3 py-3 font-semibold text-base-content">Кол-во</th>
 						<th class="px-3 py-3 font-semibold text-base-content">Погашение / Оферта</th>
 						<th class="px-3 py-3 font-semibold text-base-content">Цена % / Полная цена</th>
@@ -34,11 +33,11 @@
 						<td v-if="showAddButton" class="px-3 py-3 text-center">
 							<button
 								type="button"
-								class="btn btn-circle btn-sm border-base-300 bg-base-200 text-base-content/70 hover:bg-base-300"
-								:disabled="store.getBondQty(row.uid) < 1"
-								@click="store.decreaseQty(row.uid)"
+								class="btn btn-circle btn-sm border-base-300 bg-base-200 text-error hover:bg-base-300"
+								title="Удалить бумагу"
+								@click="store.dropBond(row.uid)"
 							>
-								−
+								×
 							</button>
 						</td>
 						<td class="px-3 py-3">
@@ -47,16 +46,35 @@
 								<div class="text-xs uppercase tracking-wide text-base-content/60">{{ row.ticker }}</div>
 							</div>
 						</td>
-						<td v-if="showAddButton" class="px-3 py-3 text-center">
-							<button
-								type="button"
-								class="btn btn-circle btn-sm border-base-300 bg-base-200 text-base-content hover:bg-base-300"
-								@click="store.increaseQty(row.uid)"
-							>
-								+
-							</button>
+						<td class="px-3 py-3 text-base-content/80">
+							<div v-if="showAddButton" class="flex min-w-[10rem] items-center gap-2">
+								<button
+									type="button"
+									class="btn btn-circle btn-sm border-base-300 bg-base-200 text-base-content/70 hover:bg-base-300"
+									:disabled="store.getBondQty(row.uid) < 1"
+									@click="store.decreaseQty(row.uid)"
+								>
+									−
+								</button>
+								<input
+									class="input input-bordered input-sm w-20 text-center"
+									type="number"
+									min="0"
+									step="1"
+									inputmode="numeric"
+									:value="store.getBondQty(row.uid)"
+									@change="setRowQty(row.uid, $event)"
+								/>
+								<button
+									type="button"
+									class="btn btn-circle btn-sm border-base-300 bg-base-200 text-base-content hover:bg-base-300"
+									@click="store.increaseQty(row.uid)"
+								>
+									+
+								</button>
+							</div>
+							<span v-else>{{ row.qty }}</span>
 						</td>
-						<td class="px-3 py-3 text-base-content/80">{{ formatInteger(row.qty) }}</td>
 						<td class="px-3 py-3 text-base-content/80">{{ formatDate(row.displayDate) }}</td>
 						<td class="px-3 py-3"><portfolio-price-cell :row="row" /></td>
 						<td class="px-3 py-3 text-base-content/80">{{ formatMoney(row.positionCost, row.currency) }}</td>
@@ -85,7 +103,7 @@ import RiskStars from "@/components/UI/RiskStars.vue"
 import PortfolioCouponCell from "@/components/PortfolioCouponCell.vue"
 import PortfolioCouponMonths from "@/components/PortfolioCouponMonths.vue"
 import PortfolioPriceCell from "@/components/PortfolioPriceCell.vue"
-import { formatDate, formatInteger, formatMoney, formatPercent } from "@/utils/format"
+import { formatDate, formatMoney, formatPercent } from "@/utils/format"
 
 defineProps({
 	rows: {
@@ -100,4 +118,9 @@ defineProps({
 })
 
 const store = portfolioStore()
+
+function setRowQty(uid: string, event: Event) {
+	const target = event.target as HTMLInputElement | null
+	store.setQty(uid, Number(target?.value ?? 0))
+}
 </script>
