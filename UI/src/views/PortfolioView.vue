@@ -7,7 +7,7 @@
 			id="table-view"
 		>
 			<div class="card-body h-full">
-				<portfolio-table v-model="portfolioBonds" :loading="isFetching" />
+				<portfolio-table :rows="portfolioRows" :loading="isFetching" />
 			</div>
 		</div>
 
@@ -28,29 +28,35 @@ import { portfolioStore } from "@/data/portfolioStore"
 import { ref, computed, watch } from "vue"
 import BondsRepository from "@/data/BondsRepository"
 import type { PortfolioMetricsResponse, PortfolioPositionInput } from "@/data/Interfaces/PortfolioMetrics"
+import type { PortfolioTableRow } from "@/data/Interfaces/PortfolioTable"
 
 export default {
 	name: "PortfolioView",
 	setup() {
 		const isFetching = ref(false)
 		const store = portfolioStore()
-		const portfolioBonds = computed(() => store.values)
-		const portfolioPositions = computed<PortfolioPositionInput[]>(() =>
-			store.values.map((bond) => ({ uid: bond.uid, qty: bond.qty }))
-		)
+		const portfolioPositions = computed<PortfolioPositionInput[]>(() => store.positions)
 		const portfolioMetrics = ref<PortfolioMetricsResponse | null>(null)
+		const portfolioRows = ref<PortfolioTableRow[]>([])
 		const bondsRepository = new BondsRepository()
 
-		const fetchPortfolioMetrics = async (positions: PortfolioPositionInput[]) => {
+		const fetchPortfolioData = async (positions: PortfolioPositionInput[]) => {
 			if (positions.length < 1) {
 				portfolioMetrics.value = null
+				portfolioRows.value = []
 				isFetching.value = false
 				return
 			}
 
 			isFetching.value = true
 			try {
-				portfolioMetrics.value = await bondsRepository.portfolioMetrics(positions)
+				const [metrics, table] = await Promise.all([
+					bondsRepository.portfolioMetrics(positions),
+					bondsRepository.portfolioTable(positions)
+				])
+
+				portfolioMetrics.value = metrics
+				portfolioRows.value = table.rows
 			} finally {
 				isFetching.value = false
 			}
@@ -59,13 +65,13 @@ export default {
 		watch(
 			portfolioPositions,
 			(positions) => {
-				void fetchPortfolioMetrics(positions)
+				void fetchPortfolioData(positions)
 			},
 			{ deep: true, immediate: true }
 		)
 
 		return {
-			portfolioBonds,
+			portfolioRows,
 			portfolioMetrics,
 			isFetching
 		}

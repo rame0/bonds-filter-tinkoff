@@ -38,3 +38,11 @@ export function formatDateTime(value?: string) {
 
 	return new Date(value).toLocaleString("ru-RU")
 }
+
+export function formatDate(value?: string) {
+	if (!value) {
+		return "—"
+	}
+
+	return new Date(value).toLocaleDateString("ru-RU")
+}
