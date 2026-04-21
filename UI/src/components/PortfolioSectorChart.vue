@@ -9,43 +9,21 @@
 			Нет данных по секторам.
 		</div>
 
-		<div v-else class="grid gap-4 md:grid-cols-[12rem_minmax(0,1fr)] md:items-center">
-			<div class="mx-auto h-48 w-full max-w-48 overflow-hidden rounded-full bg-base-200">
-				<v-chart :option="chartOption" autoresize class="h-48 w-48" />
-			</div>
-
-			<div class="space-y-2">
-				<div
-					v-for="(item, index) in items"
-					:key="item.sector"
-					class="flex items-start justify-between gap-3 rounded-box bg-base-200 px-3 py-2 text-sm"
-				>
-					<div class="flex min-w-0 items-start gap-2">
-						<span class="mt-1 h-3 w-3 shrink-0 rounded-full" :style="{ backgroundColor: colors[index % colors.length] }"></span>
-						<span class="truncate">{{ SectorsCollation.getLabel(item.sector) }}</span>
-					</div>
-					<div class="shrink-0 text-right">
-						<div class="font-medium text-base-content">{{ formatMoney(item.amountRub) }}</div>
-						<div class="text-xs text-base-content/70">{{ formatPercent(item.sharePct) }}</div>
-					</div>
-				</div>
-			</div>
-		</div>
+		<div v-else ref="chartElement" class="h-80 w-full rounded-box bg-base-200"></div>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import { computed, type PropType } from "vue"
+import { computed, onBeforeUnmount, onMounted, ref, watch, type PropType } from "vue"
 import { PieChart } from "echarts/charts"
-import { TooltipComponent } from "echarts/components"
-import { use } from "echarts/core"
+import { GraphicComponent, TooltipComponent } from "echarts/components"
+import { init, use, type EChartsType } from "echarts/core"
 import { CanvasRenderer } from "echarts/renderers"
-import VChart from "vue-echarts"
 import SectorsCollation from "@/data/collations/SectorsCollation"
 import type { PortfolioSectorAllocationItem } from "@/data/Interfaces/PortfolioMetrics"
 import { formatMoney, formatPercent } from "@/utils/format"
 
-use([CanvasRenderer, PieChart, TooltipComponent])
+use([CanvasRenderer, PieChart, GraphicComponent, TooltipComponent])
 
 const colors = ["#2563eb", "#7c3aed", "#ea580c", "#059669", "#dc2626", "#ca8a04", "#0f766e", "#9333ea"]
 
@@ -56,65 +34,93 @@ const props = defineProps({
 	},
 })
 
+const chartElement = ref<HTMLDivElement | null>(null)
 const totalAmount = computed(() => props.items.reduce((sum, item) => sum + item.amountRub, 0))
 
-const chartOption = computed(() => ({
-	animation: false,
-	tooltip: {
-		trigger: "item",
-		backgroundColor: "rgba(15, 23, 42, 0.92)",
-		borderWidth: 0,
-		textStyle: {
-			color: "#f8fafc",
-		},
-		formatter: (params: { data: { amountRub: number; sharePct: number }; name: string }) => {
-			return [params.name, formatMoney(params.data.amountRub), formatPercent(params.data.sharePct)].join("<br/>")
-		},
-	},
-	graphic: [
-		{
-			type: "text",
-			left: "center",
-			top: "40%",
-			style: {
-				text: formatMoney(totalAmount.value),
-				textAlign: "center",
-				fill: "#0f172a",
-				fontSize: 15,
-				fontWeight: 600,
+let chart: EChartsType | undefined
+let resizeObserver: ResizeObserver | undefined
+
+const renderChart = () => {
+	if (!chartElement.value) {
+		return
+	}
+
+	if (!chart) {
+		chart = init(chartElement.value)
+	}
+
+	chart.setOption({
+		animation: false,
+		tooltip: {
+			trigger: "item",
+			backgroundColor: "rgba(15, 23, 42, 0.92)",
+			borderWidth: 0,
+			textStyle: { color: "#f8fafc" },
+			formatter: (params: { data: { amountRub: number; sharePct: number }; name: string }) => {
+				return [params.name, formatMoney(params.data.amountRub), formatPercent(params.data.sharePct)].join("<br/>")
 			},
 		},
-		{
-			type: "text",
-			left: "center",
-			top: "54%",
-			style: {
-				text: "Всего",
-				textAlign: "center",
-				fill: "rgba(15, 23, 42, 0.7)",
-				fontSize: 12,
+		graphic: [
+			{
+				type: "text",
+				left: "center",
+				top: "42%",
+				style: {
+					text: formatMoney(totalAmount.value),
+					textAlign: "center",
+					fill: "#0f172a",
+					fontSize: 15,
+					fontWeight: 600,
+				},
 			},
-		},
-	],
-	series: [
-		{
-			type: "pie",
-			radius: ["58%", "82%"],
-			avoidLabelOverlap: false,
-			label: { show: false },
-			labelLine: { show: false },
-			itemStyle: {
-				borderColor: "#ffffff",
-				borderWidth: 3,
+			{
+				type: "text",
+				left: "center",
+				top: "54%",
+				style: {
+					text: "Всего",
+					textAlign: "center",
+					fill: "rgba(15, 23, 42, 0.7)",
+					fontSize: 12,
+				},
 			},
-			data: props.items.map((item, index) => ({
-				value: item.amountRub,
-				name: SectorsCollation.getLabel(item.sector),
-				amountRub: item.amountRub,
-				sharePct: item.sharePct,
-				itemStyle: { color: colors[index % colors.length] },
-			})),
-		},
-	],
-}))
+		],
+		series: [
+			{
+				type: "pie",
+				radius: ["54%", "78%"],
+				center: ["50%", "50%"],
+				label: { show: false },
+				labelLine: { show: false },
+				itemStyle: {
+					borderColor: "#f8fafc",
+					borderWidth: 3,
+				},
+				data: props.items.map((item, index) => ({
+					value: item.amountRub,
+					name: SectorsCollation.getLabel(item.sector),
+					amountRub: item.amountRub,
+					sharePct: item.sharePct,
+					itemStyle: { color: colors[index % colors.length] },
+				})),
+			},
+		],
+	})
+}
+
+onMounted(() => {
+	renderChart()
+
+	if (chartElement.value) {
+		resizeObserver = new ResizeObserver(() => chart?.resize())
+		resizeObserver.observe(chartElement.value)
+	}
+})
+
+watch(() => props.items, renderChart, { deep: true })
+
+onBeforeUnmount(() => {
+	resizeObserver?.disconnect()
+	chart?.dispose()
+})
 </script>

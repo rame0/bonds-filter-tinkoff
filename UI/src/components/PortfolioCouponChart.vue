@@ -9,19 +9,16 @@
 			Нет данных по купонам.
 		</div>
 
-		<div v-else class="overflow-hidden rounded-box bg-base-200 p-2">
-			<v-chart :option="chartOption" autoresize class="h-80 w-full" />
-		</div>
+		<div v-else ref="chartElement" class="h-80 w-full rounded-box bg-base-200 p-2"></div>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import { computed, type PropType } from "vue"
-import { use } from "echarts/core"
+import { computed, onBeforeUnmount, onMounted, ref, watch, type PropType } from "vue"
 import { BarChart } from "echarts/charts"
 import { GridComponent, TooltipComponent } from "echarts/components"
+import { init, use, type EChartsType } from "echarts/core"
 import { CanvasRenderer } from "echarts/renderers"
-import VChart from "vue-echarts"
 import type { PortfolioCouponScheduleItem } from "@/data/Interfaces/PortfolioMetrics"
 import { formatMoney } from "@/utils/format"
 
@@ -38,82 +35,94 @@ const props = defineProps({
 	},
 })
 
+const chartElement = ref<HTMLDivElement | null>(null)
 const totalCouponsRub = computed(() => props.items.reduce((sum, item) => sum + item.amountRub, 0))
+
+let chart: EChartsType | undefined
+let resizeObserver: ResizeObserver | undefined
 
 const shortLabel = (label: string) => label.replace(/\s+\d{4}\s*г\.?$/u, "")
 
-const chartOption = computed(() => ({
-	animation: false,
-	grid: {
-		left: 8,
-		right: 8,
-		top: 12,
-		bottom: 8,
-		containLabel: true,
-	},
-	xAxis: {
-		type: "category",
-		data: props.items.map(item => shortLabel(item.label)),
-		axisTick: {
-			show: false,
-		},
-		axisLine: {
-			lineStyle: {
-				color: "rgba(148, 163, 184, 0.35)",
-			},
-		},
-		axisLabel: {
-			color: "rgba(15, 23, 42, 0.7)",
-			fontSize: 11,
-		},
-	},
-	yAxis: {
-		type: "value",
-		splitNumber: 4,
-		axisLabel: {
-			color: "rgba(15, 23, 42, 0.7)",
-			formatter: (value: number) => compactNumberFormatter.format(value),
-		},
-		splitLine: {
-			lineStyle: {
-				color: "rgba(148, 163, 184, 0.2)",
-			},
-		},
-	},
-	tooltip: {
-		trigger: "axis",
-		axisPointer: {
-			type: "shadow",
-		},
-		backgroundColor: "rgba(15, 23, 42, 0.92)",
-		borderWidth: 0,
-		textStyle: {
-			color: "#f8fafc",
-		},
-		formatter: (params: { dataIndex: number }[]) => {
-			const item = props.items[params[0]?.dataIndex ?? 0]
-			if (!item) {
-				return ""
-			}
+const renderChart = () => {
+	if (!chartElement.value) {
+		return
+	}
 
-			return item.label + "<br/>" + formatMoney(item.amountRub)
+	if (!chart) {
+		chart = init(chartElement.value)
+	}
+
+	chart.setOption({
+		animation: false,
+		grid: {
+			left: 8,
+			right: 8,
+			top: 12,
+			bottom: 8,
+			containLabel: true,
 		},
-	},
-	series: [
-		{
-			type: "bar",
-			data: props.items.map(item => item.amountRub),
-			barMaxWidth: 28,
-			itemStyle: {
-				color: "#2563eb",
-				borderRadius: [8, 8, 0, 0],
+		xAxis: {
+			type: "category",
+			data: props.items.map(item => shortLabel(item.label)),
+			axisTick: { show: false },
+			axisLine: { lineStyle: { color: "rgba(148, 163, 184, 0.35)" } },
+			axisLabel: {
+				color: "rgba(15, 23, 42, 0.7)",
+				fontSize: 11,
 			},
-			emphasis: {
+		},
+		yAxis: {
+			type: "value",
+			splitNumber: 4,
+			axisLabel: {
+				color: "rgba(15, 23, 42, 0.7)",
+				formatter: (value: number) => compactNumberFormatter.format(value),
+			},
+			splitLine: {
+				lineStyle: { color: "rgba(148, 163, 184, 0.2)" },
+			},
+		},
+		tooltip: {
+			trigger: "axis",
+			axisPointer: { type: "shadow" },
+			backgroundColor: "rgba(15, 23, 42, 0.92)",
+			borderWidth: 0,
+			textStyle: { color: "#f8fafc" },
+			formatter: (params: { dataIndex: number }[]) => {
+				const item = props.items[params[0]?.dataIndex ?? 0]
+				return item ? item.label + "<br/>" + formatMoney(item.amountRub) : ""
+			},
+		},
+		series: [
+			{
+				type: "bar",
+				data: props.items.map(item => item.amountRub),
+				barMaxWidth: 28,
 				itemStyle: {
-					color: "#1d4ed8",
+					color: "#2563eb",
+					borderRadius: [8, 8, 0, 0],
+				},
+				emphasis: {
+					itemStyle: { color: "#1d4ed8" },
 				},
 			},
-		},
-	],
-}))
+		],
+	})
+}
+
+onMounted(() => {
+	renderChart()
+
+	if (chartElement.value) {
+		resizeObserver = new ResizeObserver(() => chart?.resize())
+		resizeObserver.observe(chartElement.value)
+	}
+})
+
+watch(() => props.items, renderChart, { deep: true })
+
+onBeforeUnmount(() => {
+	resizeObserver?.disconnect()
+	chart?.dispose()
+})
 </script>
