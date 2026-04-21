@@ -1,4 +1,5 @@
 import { describe, expect, mock, test } from "bun:test"
+import moment from "moment"
 
 const getCouponSummaryMock = mock(async () => undefined)
 
@@ -9,8 +10,8 @@ mock.module("./getCouponSummary", () => ({
 const { getPortfolioTable } = await import("./getPortfolioTable")
 
 describe("getPortfolioTable", () => {
-	test("builds table rows from cached bond data", async () => {
-		const result = await getPortfolioTable(
+		test("builds table rows from cached bond data", async () => {
+			const result = await getPortfolioTable(
 			[
 				{ uid: "bond-1", qty: 3 },
 				{ uid: "bond-2", qty: 0 },
@@ -40,8 +41,9 @@ describe("getPortfolioTable", () => {
 					floatingCouponFlag: false,
 					amortizationFlag: true,
 				} as any,
-			],
-		)
+				],
+				moment("2025-12-01T00:00:00.000Z"),
+			)
 
 		expect(result.rows).toEqual([
 			{
@@ -85,8 +87,8 @@ describe("getPortfolioTable", () => {
 			],
 		})
 
-		const result = await getPortfolioTable(
-			[{ uid: "bond-2", qty: 2 }],
+			const result = await getPortfolioTable(
+				[{ uid: "bond-2", qty: 2 }],
 			[
 				{
 					uid: "bond-2",
@@ -103,8 +105,9 @@ describe("getPortfolioTable", () => {
 					riskLevel: 2,
 					floatingCouponFlag: true,
 				} as any,
-			],
-		)
+				],
+				moment("2026-01-01T00:00:00.000Z"),
+			)
 
 		expect(getCouponSummaryMock).toHaveBeenCalledWith("figi-2", true, expect.anything())
 		expect(result.rows[0]?.couponTooltip).toEqual({
@@ -114,5 +117,41 @@ describe("getPortfolioTable", () => {
 			isAmortizing: false,
 		})
 		expect(result.rows[0]?.couponMonths).toEqual([false, true, false, false, false, false, false, true, false, false, false, false])
+	})
+
+	test("limits coupon months to the next year", async () => {
+		const result = await getPortfolioTable(
+			[{ uid: "bond-3", qty: 1 }],
+			[
+				{
+					uid: "bond-3",
+					figi: "figi-3",
+					name: "Регион 34009",
+					ticker: "RU000A109RR3",
+					currency: "rub",
+					maturityDate: "2029-10-04T00:00:00.000Z",
+					price: 100,
+					nominal: 1000,
+					aciValue: 0,
+					bondYield: 12,
+					leftCouponCount: 8,
+					coupons: [
+						{ couponDate: "2026-05-09T00:00:00.000Z", payout: 56.1 },
+						{ couponDate: "2026-08-08T00:00:00.000Z", payout: 56.1 },
+						{ couponDate: "2026-11-07T00:00:00.000Z", payout: 56.1 },
+						{ couponDate: "2027-02-06T00:00:00.000Z", payout: 56.1 },
+						{ couponDate: "2029-04-15T00:00:00.000Z", payout: 21.88 },
+						{ couponDate: "2029-07-05T00:00:00.000Z", payout: 9.99 },
+						{ couponDate: "2029-10-04T00:00:00.000Z", payout: 11.22 },
+					],
+					sector: "municipal",
+					riskLevel: 1,
+					floatingCouponFlag: false,
+				} as any,
+			],
+			moment("2026-04-21T00:00:00.000Z"),
+		)
+
+		expect(result.rows[0]?.couponMonths).toEqual([false, true, false, false, true, false, false, true, false, false, true, false])
 	})
 })
