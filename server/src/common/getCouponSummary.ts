@@ -43,6 +43,7 @@ export async function getCouponSummary(
 	const normalizedCoupons = futureCoupons.map(coupon => ({
 		couponDate: coupon.couponDate,
 		couponNumber: coupon.couponNumber,
+		isEstimated: isEstimatedCouponPayout(coupon, isFloatingCoupon, lastKnownPayout),
 		payout: getCouponPayout(coupon, isFloatingCoupon, lastKnownPayout),
 	}))
 	const oneYearLater = now.clone().add(1, "year")
@@ -107,4 +108,17 @@ function getCouponPayout(
 	}
 
 	return isFloatingCoupon ? lastKnownPayout : payout
+}
+
+function isEstimatedCouponPayout(
+	coupon: { payOneBond?: { units: number, nano: number } },
+	isFloatingCoupon: boolean,
+	lastKnownPayout?: number,
+) {
+	const payout = roundTo(toNumber(coupon.payOneBond))
+	if (payout !== undefined && payout > 0) {
+		return false
+	}
+
+	return isFloatingCoupon && lastKnownPayout !== undefined
 }

@@ -1,10 +1,17 @@
 import { defineStore } from "pinia"
 import { useStorage } from "@vueuse/core"
 import type { CombinedBondsResponse } from "@/data/Interfaces/CombinedBondsResponse"
-import type { CombinedCoupon } from "@/data/Interfaces/CombinedCoupon"
+import type { PortfolioPositionInput } from "@/data/Interfaces/PortfolioMetrics"
+
+export interface PortfolioPositionStored {
+	uid: string
+	qty: number
+}
+
+type LegacyPortfolioPosition = CombinedBondsResponse | PortfolioPositionStored
 
 export interface PortfolioStore {
-	[key: string]: CombinedBondsResponse
+	[key: string]: LegacyPortfolioPosition
 }
 
 export const usePortfolioStore = defineStore("portfolio", {
@@ -15,14 +22,17 @@ export const usePortfolioStore = defineStore("portfolio", {
 		bondsQty(): number {
 			let qty = 0
 			for (const bondId in this.bonds) {
-				qty += this.bonds[bondId].qty
+				qty += normalizePortfolioPosition(this.bonds[bondId], bondId).qty
 			}
 			return qty
 		},
-		values(): CombinedBondsResponse[] {
-			const bonds: CombinedBondsResponse[] = []
+		positions(): PortfolioPositionInput[] {
+			const bonds: PortfolioPositionInput[] = []
 			for (const bondId in this.bonds) {
-				bonds.push(this.bonds[bondId])
+				const position = normalizePortfolioPosition(this.bonds[bondId], bondId)
+				if (position.qty > 0) {
+					bonds.push(position)
+				}
 			}
 			return bonds
 		},
@@ -31,29 +41,53 @@ export const usePortfolioStore = defineStore("portfolio", {
 		}
 	},
 	actions: {
-		increaseQty(bond: CombinedBondsResponse) {
-			if (this.bonds[bond.uid]) {
-				this.bonds[bond.uid].qty += 1
+		ensureMigrated() {
+			const normalized: Record<string, PortfolioPositionStored> = {}
+			for (const bondId in this.bonds) {
+				const position = normalizePortfolioPosition(this.bonds[bondId], bondId)
+				if (position.qty > 0) {
+					normalized[position.uid] = position
+				}
+			}
+
+			this.bonds = normalized
+		},
+		increaseQty(bond: Pick<CombinedBondsResponse, "uid"> | string) {
+			const uid = typeof bond === "string" ? bond : bond.uid
+			if (this.bonds[uid]) {
+				this.bonds[uid] = {
+					uid,
+					qty: normalizePortfolioPosition(this.bonds[uid], uid).qty + 1
+				}
 			} else {
-				this.bonds[bond.uid] = bond
-				this.bonds[bond.uid].qty = 1
+				this.bonds[uid] = { uid, qty: 1 }
 			}
 		},
 		decreaseQty(bondId: string) {
-			if (this.bonds[bondId]) {
-				this.bonds[bondId].qty -= 1
-				if (this.bonds[bondId].qty < 1) {
-					this.dropBond(bondId)
-				}
+			if (!this.bonds[bondId]) {
+				return
 			}
+
+			const nextQty = normalizePortfolioPosition(this.bonds[bondId], bondId).qty - 1
+			if (nextQty < 1) {
+				this.dropBond(bondId)
+				return
+			}
+
+			this.bonds[bondId] = { uid: bondId, qty: nextQty }
+		},
+		setQty(bondId: string, qty: number) {
+			const nextQty = Math.max(0, Math.trunc(Number(qty)))
+
+			if (nextQty < 1) {
+				this.dropBond(bondId)
+				return
+			}
+
+			this.bonds[bondId] = { uid: bondId, qty: nextQty }
 		},
 		getBondQty(bondId: string): number {
-			return this.bonds[bondId]?.qty || 0
-		},
-		setBondCoupons(bondId: string, coupons: CombinedCoupon[]) {
-			if (this.bonds[bondId]) {
-				this.bonds[bondId].coupons = coupons
-			}
+			return this.bonds[bondId] ? normalizePortfolioPosition(this.bonds[bondId], bondId).qty : 0
 		},
 		dropBond(bondId: string) {
 			delete this.bonds[bondId]
@@ -66,4 +100,15 @@ export const usePortfolioStore = defineStore("portfolio", {
 	}
 })
 
-export const portfolioStore = () => usePortfolioStore()
+function normalizePortfolioPosition(position: LegacyPortfolioPosition | undefined, bondId: string): PortfolioPositionStored {
+	const qty = Math.max(0, Math.trunc(Number(position?.qty ?? 0)))
+	const uid = typeof position?.uid === "string" && position.uid ? position.uid : bondId
+
+	return { uid, qty }
+}
+
+export const portfolioStore = () => {
+	const store = usePortfolioStore()
+	store.ensureMigrated()
+	return store
+}

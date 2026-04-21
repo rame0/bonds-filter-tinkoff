@@ -1,7 +1,7 @@
 <template>
 	<div class="flex h-full flex-col rounded-box border border-base-300 bg-base-100">
 		<div class="relative flex-1 overflow-auto">
-			<table class="table min-w-[1300px] table-auto text-left text-sm">
+			<table class="table min-w-[1700px] table-auto text-left text-sm">
 				<thead class="sticky top-0 z-10 bg-base-200/95 backdrop-blur">
 					<tr>
 						<th v-if="showAddButton" class="px-3 py-3 text-center">
@@ -15,70 +15,74 @@
 								×
 							</button>
 						</th>
-						<th class="px-3 py-3 font-semibold text-base-content">Название</th>
-						<th v-if="showAddButton" class="px-3 py-3 text-center text-base-content">+</th>
-						<th class="px-3 py-3 font-semibold text-base-content">Тикер</th>
-						<th class="px-3 py-3 font-semibold text-base-content">Погашение</th>
-						<th class="px-3 py-3 font-semibold text-base-content">Номинал</th>
-						<th class="px-3 py-3 font-semibold text-base-content">Цена</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Бумага</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Кол-во</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Погашение / Оферта</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Цена % / Полная цена</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Стоимость позиции</th>
 						<th class="px-3 py-3 font-semibold text-base-content">Доходность</th>
-						<th class="px-3 py-3 font-semibold text-base-content">∑ Купон за год</th>
-						<th class="px-3 py-3 font-semibold text-base-content">НКД</th>
-						<th class="px-3 py-3 font-semibold text-base-content">Уровень риска</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Купон</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Месяца выплаты купонов</th>
 						<th class="px-3 py-3 font-semibold text-base-content">Сектор</th>
-						<th class="px-3 py-3 font-semibold text-base-content">Форма выпуска</th>
+						<th class="px-3 py-3 font-semibold text-base-content">Риск</th>
 						<th class="px-3 py-3 font-semibold text-base-content">Ликвидность</th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr
-						v-for="row in modelValue"
-						:key="row.uid"
-						class="align-top"
-					>
+					<tr v-for="row in rows" :key="row.uid" class="align-top">
 						<td v-if="showAddButton" class="px-3 py-3 text-center">
 							<button
 								type="button"
-								class="btn btn-circle btn-sm border-base-300 bg-base-200 text-base-content/70 hover:bg-base-300"
-								:disabled="store.getBondQty(row.uid) < 1"
-								@click="store.decreaseQty(row.uid)"
+								class="btn btn-circle btn-sm border-base-300 bg-base-200 text-error hover:bg-base-300"
+								title="Удалить бумагу"
+								@click="store.dropBond(row.uid)"
 							>
-								−
+								×
 							</button>
 						</td>
 						<td class="px-3 py-3">
-							<div class="flex flex-wrap items-center gap-2">
-								<span class="font-medium text-base-content">{{ row.name }}</span>
-								<span class="badge badge-neutral">
-									{{ row.qty > 99 ? "99+" : row.qty }}
-								</span>
+							<div class="min-w-[16rem] space-y-1">
+								<div class="font-medium text-base-content">{{ row.name }}</div>
+								<div class="text-xs uppercase tracking-wide text-base-content/60">{{ row.ticker }}</div>
 							</div>
 						</td>
-						<td v-if="showAddButton" class="px-3 py-3 text-center">
-							<button
-								type="button"
-								class="btn btn-circle btn-sm border-base-300 bg-base-200 text-base-content hover:bg-base-300"
-								@click="store.increaseQty(row)"
-							>
-								+
-							</button>
-						</td>
-						<td class="px-3 py-3"><links-to-exchange :ticker="row.ticker" :exchange="row.realExchange" /></td>
-						<td class="px-3 py-3 text-base-content/80">{{ row.duration ?? "—" }} мес.</td>
 						<td class="px-3 py-3 text-base-content/80">
-							{{ formatOptionalNumber(row.nominal) }} {{ CurrencyCollation.getLabel(row.currency) }}
+							<div v-if="showAddButton" class="flex min-w-[10rem] items-center gap-2">
+								<button
+									type="button"
+									class="btn btn-circle btn-sm border-base-300 bg-base-200 text-base-content/70 hover:bg-base-300"
+									:disabled="store.getBondQty(row.uid) < 1"
+									@click="store.decreaseQty(row.uid)"
+								>
+									−
+								</button>
+								<input
+									class="input input-bordered input-sm w-20 text-center"
+									type="number"
+									min="0"
+									step="1"
+									inputmode="numeric"
+									:value="store.getBondQty(row.uid)"
+									@change="setRowQty(row.uid, $event)"
+								/>
+								<button
+									type="button"
+									class="btn btn-circle btn-sm border-base-300 bg-base-200 text-base-content hover:bg-base-300"
+									@click="store.increaseQty(row.uid)"
+								>
+									+
+								</button>
+							</div>
+							<span v-else>{{ row.qty }}</span>
 						</td>
-						<td class="px-3 py-3 text-base-content/80">{{ formatOptionalNumber(row.price) }} %</td>
-						<td class="px-3 py-3 text-base-content/80">{{ formatOptionalNumber(row.bondYield, 2) }}%</td>
-						<td class="px-3 py-3 text-base-content/80">
-							{{ formatOptionalNumber(row.couponsYield) }} {{ CurrencyCollation.getLabel(row.currency) }}
-						</td>
-						<td class="px-3 py-3 text-base-content/80">
-							{{ formatOptionalNumber(row.aciValue, 2) }} {{ CurrencyCollation.getLabel(row.currency) }}
-						</td>
-						<td class="px-3 py-3"><risk-stars :level="row.riskLevel" /></td>
+						<td class="px-3 py-3 text-base-content/80">{{ formatDate(row.displayDate) }}</td>
+						<td class="px-3 py-3"><portfolio-price-cell :row="row" /></td>
+						<td class="px-3 py-3 text-base-content/80">{{ formatMoney(row.positionCost, row.currency) }}</td>
+						<td class="px-3 py-3 text-base-content/80">{{ formatPercent(row.bondYield) }}</td>
+						<td class="px-3 py-3"><portfolio-coupon-cell :row="row" /></td>
+						<td class="px-3 py-3"><portfolio-coupon-months :active-months="row.couponMonths" /></td>
 						<td class="px-3 py-3 text-base-content/80">{{ SectorsCollation.getLabel(row.sector) }}</td>
-						<td class="px-3 py-3 text-base-content/80">{{ IssueKindCollations.getLabel(row.issueKind) }}</td>
+						<td class="px-3 py-3"><risk-stars :level="row.riskLevel" /></td>
 						<td class="px-3 py-3"><liquidity-arrow :level="row.liquidity ?? 0" /></td>
 					</tr>
 				</tbody>
@@ -91,18 +95,19 @@
 <script lang="ts" setup>
 import { type PropType } from "vue"
 import SectorsCollation from "@/data/collations/SectorsCollation"
-import IssueKindCollations from "@/data/collations/IssueKindCollations"
-import CurrencyCollation from "@/data/collations/CurrencyCollation"
 import { portfolioStore } from "@/data/portfolioStore"
-import type { CombinedBondsResponse } from "@/data/Interfaces/CombinedBondsResponse"
+import type { PortfolioTableRow } from "@/data/Interfaces/PortfolioTable"
 import LiquidityArrow from "@/components/UI/LiquidityArrow.vue"
-import LinksToExchange from "@/components/UI/LinksToExchange.vue"
 import LoadingOverlay from "@/components/UI/LoadingOverlay.vue"
 import RiskStars from "@/components/UI/RiskStars.vue"
+import PortfolioCouponCell from "@/components/PortfolioCouponCell.vue"
+import PortfolioCouponMonths from "@/components/PortfolioCouponMonths.vue"
+import PortfolioPriceCell from "@/components/PortfolioPriceCell.vue"
+import { formatDate, formatMoney, formatPercent } from "@/utils/format"
 
 defineProps({
-	modelValue: {
-		type: Array as PropType<CombinedBondsResponse[]>,
+	rows: {
+		type: Array as PropType<PortfolioTableRow[]>,
 		required: true
 	},
 	loading: Boolean,
@@ -114,11 +119,8 @@ defineProps({
 
 const store = portfolioStore()
 
-const formatOptionalNumber = (value?: number, digits?: number) => {
-	if (value === undefined || value === null || Number.isNaN(value)) {
-		return "—"
-	}
-
-	return digits === undefined ? value : value.toFixed(digits)
+function setRowQty(uid: string, event: Event) {
+	const target = event.target as HTMLInputElement | null
+	store.setQty(uid, Number(target?.value ?? 0))
 }
 </script>

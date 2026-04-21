@@ -6,6 +6,7 @@ const getBondsDataStatusMock = mock(async () => ({ isBuilding: false, hasCachedD
 const ensureBondsDataBuildMock = mock(async () => undefined)
 const getOrRefreshCurrencyRatesMock = mock(async () => ({ baseCurrency: "RUB", rateDate: "20.04.2026", updatedAt: "2026-04-20T04:00:00.000Z", rates: {} }))
 const getPortfolioMetricsMock = mock(async () => ({ baseCurrency: "RUB" }))
+const getPortfolioTableMock = mock(async () => ({ rows: [] }))
 
 mock.module("../common/api", () => ({
 	api: {
@@ -29,6 +30,10 @@ mock.module("../common/getPortfolioMetrics", () => ({
 	getPortfolioMetrics: getPortfolioMetricsMock,
 }))
 
+mock.module("../common/getPortfolioTable", () => ({
+	getPortfolioTable: getPortfolioTableMock,
+}))
+
 const { default: bondsService } = await import("./bonds.service")
 
 describe("bonds.service coupons action", () => {
@@ -44,6 +49,7 @@ describe("bonds.service coupons action", () => {
 		ensureBondsDataBuildMock.mockResolvedValue(undefined)
 		getOrRefreshCurrencyRatesMock.mockResolvedValue({ baseCurrency: "RUB", rateDate: "20.04.2026", updatedAt: "2026-04-20T04:00:00.000Z", rates: {} })
 		getPortfolioMetricsMock.mockResolvedValue({ baseCurrency: "RUB" })
+		getPortfolioTableMock.mockResolvedValue({ rows: [] })
 	})
 
 	test("sorts future coupons and maps payout from payOneBond", async () => {
@@ -121,6 +127,23 @@ describe("bonds.service coupons action", () => {
 			expect.any(Object),
 		)
 		expect(result).toEqual({ baseCurrency: "RUB" })
+	})
+
+	test("delegates portfolio table calculation to backend helper", async () => {
+		getOrBuildBondsDataMock.mockResolvedValueOnce([{ uid: "bond-1" }])
+		getPortfolioTableMock.mockResolvedValueOnce({ rows: [{ uid: "bond-1", qty: 2 }] })
+
+		const result = await bondsService.actions.portfolioTable.handler({
+			params: { positions: [{ uid: "bond-1", qty: 2 }] },
+			meta: {},
+		})
+
+		expect(getOrBuildBondsDataMock).toHaveBeenCalledTimes(1)
+		expect(getPortfolioTableMock).toHaveBeenCalledWith(
+			[{ uid: "bond-1", qty: 2 }],
+			[{ uid: "bond-1" }],
+		)
+		expect(result).toEqual({ rows: [{ uid: "bond-1", qty: 2 }] })
 	})
 })
 
