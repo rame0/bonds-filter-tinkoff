@@ -76,6 +76,16 @@ export const usePortfolioStore = defineStore("portfolio", {
 
 			this.bonds[bondId] = { uid: bondId, qty: nextQty }
 		},
+		setQty(bondId: string, qty: number) {
+			const nextQty = Math.max(0, Math.trunc(Number(qty)))
+
+			if (nextQty < 1) {
+				this.dropBond(bondId)
+				return
+			}
+
+			this.bonds[bondId] = { uid: bondId, qty: nextQty }
+		},
 		getBondQty(bondId: string): number {
 			return this.bonds[bondId] ? normalizePortfolioPosition(this.bonds[bondId], bondId).qty : 0
 		},
