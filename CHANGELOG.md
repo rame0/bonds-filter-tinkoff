@@ -1,4 +1,37 @@
 ## Changelog
+## [0.4.0](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.3.0...v0.4.0) (2026-04-21)
+
+
+### Features
+
+* **server:** добавить endpoint метрик портфеля ([123e89c](https://github.com/rame0/bonds-filter-tinkoff/commit/123e89c691d3142e5c605df965143f1c2fc25f6d))
+* **server:** добавить endpoint таблицы портфеля ([1d94ab1](https://github.com/rame0/bonds-filter-tinkoff/commit/1d94ab18761d2d81a4b46226dae74632d7ed6f14))
+* **server:** добавить кеш курсов валют ЦБ ([542c7ec](https://github.com/rame0/bonds-filter-tinkoff/commit/542c7ecd676bdaead77073681ab80789d53828c6))
+* **server:** обновить расчет метрик портфеля ([5bb603b](https://github.com/rame0/bonds-filter-tinkoff/commit/5bb603bfe774ba65d7bc1e93acf821ad4d9db764))
+* **ui:** добавить аналитику портфеля ([5c6fd1c](https://github.com/rame0/bonds-filter-tinkoff/commit/5c6fd1c9b2c4348756fd9e0fc33cd02aeb00c301))
+* **ui:** добавить риск-профиль в метрики портфеля ([137b110](https://github.com/rame0/bonds-filter-tinkoff/commit/137b110aa488e0f8ab329eeaaf39c616ed239048))
+* **ui:** добавить ручное редактирование количества в портфеле ([fe73a57](https://github.com/rame0/bonds-filter-tinkoff/commit/fe73a57955d5ee50025e495b3e4cd5da1f745a8e))
+* **ui:** обновить таблицу портфеля ([c20fe00](https://github.com/rame0/bonds-filter-tinkoff/commit/c20fe00c04163882bfda9891b4710c01998b491f))
+* **ui:** перевести график купонов на echarts ([bdd335b](https://github.com/rame0/bonds-filter-tinkoff/commit/bdd335b16b401fa40c450b608a39d9a897e6fe86))
+* **ui:** перевести секторный график на echarts ([457853d](https://github.com/rame0/bonds-filter-tinkoff/commit/457853dca3fd364175a451ac7576cae91e894a97))
+
+
+### Bug Fixes
+
+* **portfolio:** считать валовую сумму при погашении ([0e8ed9a](https://github.com/rame0/bonds-filter-tinkoff/commit/0e8ed9afe529bc565ab2dad01beb753b93e2011c))
+* **server:** align lint with updated typescript-eslint parser ([df045c0](https://github.com/rame0/bonds-filter-tinkoff/commit/df045c0be67e212511ebe955acf5965255bd20a4))
+* **server:** align tests with current lint rules ([0c047a7](https://github.com/rame0/bonds-filter-tinkoff/commit/0c047a7b158850c781ac857176e0704c8517e653))
+* **server:** isolate test module mocks ([8ebb35d](https://github.com/rame0/bonds-filter-tinkoff/commit/8ebb35d4a2a77f4a6cd46e4821a33ec42d1d1afa))
+* **server:** support eslint 10 linting ([350318f](https://github.com/rame0/bonds-filter-tinkoff/commit/350318f589f5a5be6a54dd1ee7ce966ab22b4776))
+* **server:** запрашивать полный график купонов ([abfa07a](https://github.com/rame0/bonds-filter-tinkoff/commit/abfa07af9d933c655b9787fed1698c858084181d))
+* **server:** нормализовать типы строк таблицы портфеля ([ddacc83](https://github.com/rame0/bonds-filter-tinkoff/commit/ddacc83c76b1b7d836a2907ee6fd5e18a361b1f6))
+* **server:** ограничить месяцы купонов ближайшим годом ([0e1359c](https://github.com/rame0/bonds-filter-tinkoff/commit/0e1359c304bdd8f04862f376b9fea19b9ab3192d))
+* **server:** пропускать повторный фетч при свежем кэше ([a9ba94d](https://github.com/rame0/bonds-filter-tinkoff/commit/a9ba94de2fb017232d7ea25dfc6bc16b5ff185b9))
+* **server:** считать месяцы купонов на 14 месяцев вперед ([80c0301](https://github.com/rame0/bonds-filter-tinkoff/commit/80c03011f52066c4a4a239cd7ff1aab9a0afc202))
+* **ui:** починить отображение графиков портфеля ([d803f8e](https://github.com/rame0/bonds-filter-tinkoff/commit/d803f8ef96225235302b78904bb554fc8616a8b4))
+* **ui:** учитывать тему в графиках портфеля ([d9990ad](https://github.com/rame0/bonds-filter-tinkoff/commit/d9990ad4f11b8cb66d7bcad02173bfc50999cfef))
+* поправил конфиги docker-compose и kubernetes ([1146e3f](https://github.com/rame0/bonds-filter-tinkoff/commit/1146e3f920febebfb9d202f64d3f7a8135bbee09))
+
 ## [0.3.0](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.2.6...v0.3.0) (2026-04-15)
 
 
