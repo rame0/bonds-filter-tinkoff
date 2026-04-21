@@ -34,12 +34,12 @@ export async function getPortfolioTable(
 		const positionCost = fullPrice !== undefined ? roundTo(fullPrice * qty) : undefined
 
 		rows.push({
-			uid: bond.uid,
-			name: bond.name,
-			ticker: bond.ticker,
+			uid: normalizeString(bond.uid, position.uid),
+			name: normalizeString(bond.name),
+			ticker: normalizeString(bond.ticker),
 			qty,
 			currency,
-			displayDate: normalizeDateString(bond.buyBackDate ?? bond.maturityDate),
+			displayDate: normalizeDateString(bond.buyBackDate) ?? normalizeDateString(bond.maturityDate),
 			pricePct: roundTo(bond.price),
 			nominal,
 			aciValue,
@@ -75,8 +75,12 @@ function normalizeCurrency(currency: unknown) {
 	return typeof currency === "string" && currency ? currency.toUpperCase() : "RUB"
 }
 
-function normalizeDateString(value: Date | string | undefined) {
-	if (!value) {
+function normalizeString(value: unknown, fallback = "") {
+	return typeof value === "string" ? value : fallback
+}
+
+function normalizeDateString(value: unknown) {
+	if (!(value instanceof Date) && typeof value !== "string") {
 		return undefined
 	}
 
