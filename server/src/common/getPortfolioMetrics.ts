@@ -7,6 +7,8 @@ import {
 	type PortfolioCouponScheduleItem,
 	type PortfolioMetricsResponse,
 	type PortfolioPositionInput,
+	type PortfolioRiskProfile,
+	type PortfolioRiskProfileItem,
 	type PortfolioSectorAllocationItem,
 } from "./interfaces/PortfolioMetrics"
 import { roundTo } from "./utils/round"
@@ -21,6 +23,8 @@ export async function getPortfolioMetrics(
 	const bondByUid = new Map(bonds.map(bond => [bond.uid, bond]))
 	const scheduleByMonth = new Map<string, number>()
 	const sectorAmounts = new Map<string, number>()
+	const riskAmounts = new Map<number, number>()
+	const couponScheduleStart = getCouponScheduleStart(now)
 	let totalBonds = 0
 	let totalCoupons = 0
 	let purchaseCostRub = 0
@@ -58,13 +62,16 @@ export async function getPortfolioMetrics(
 		const sectorKey = typeof bond.sector === "string" && bond.sector ? bond.sector : "other"
 		sectorAmounts.set(sectorKey, roundTo((sectorAmounts.get(sectorKey) ?? 0) + sectorAmountRub) ?? 0)
 
+		const riskLevel = normalizeRiskLevel(bond.riskLevel)
+		riskAmounts.set(riskLevel, roundTo((riskAmounts.get(riskLevel) ?? 0) + sectorAmountRub) ?? 0)
+
 		for (const coupon of couponSummary?.coupons ?? []) {
 			const couponDate = moment(coupon.couponDate)
 			if (!couponDate.isValid()) {
 				continue
 			}
 
-			const monthDiff = couponDate.startOf("month").diff(now.clone().startOf("month"), "months")
+			const monthDiff = couponDate.startOf("month").diff(couponScheduleStart, "months")
 			if (monthDiff < 0 || monthDiff >= 12) {
 				continue
 			}
@@ -79,7 +86,7 @@ export async function getPortfolioMetrics(
 	const normalizedCouponProfitRub = roundTo(couponProfitRub) ?? 0
 	const normalizedMaturityValueRub = roundTo(maturityValueRub) ?? 0
 	const maturityValuePct = normalizedPurchaseCostRub > 0
-		? roundTo((normalizedMaturityValueRub / normalizedPurchaseCostRub) * 100) ?? 0
+		? roundTo(((normalizedMaturityValueRub - normalizedPurchaseCostRub) / normalizedPurchaseCostRub) * 100) ?? 0
 		: 0
 
 	return {
@@ -92,8 +99,9 @@ export async function getPortfolioMetrics(
 			maturityValueRub: normalizedMaturityValueRub,
 			maturityValuePct,
 		},
-		couponSchedule: buildCouponSchedule(scheduleByMonth, now),
+		couponSchedule: buildCouponSchedule(scheduleByMonth, couponScheduleStart),
 		sectorAllocation: buildSectorAllocation(sectorAmounts),
+		riskProfile: buildRiskProfile(riskAmounts),
 		actuality: {
 			bondsUpdatedAt: bondsStatus.lastBuildCompletedAt,
 			ratesUpdatedAt: rates.updatedAt,
@@ -116,7 +124,11 @@ async function resolveCouponSummary(bond: CombinedBondsResponse, now: moment.Mom
 	return getCouponSummary(String(bond.figi), Boolean(bond.floatingCouponFlag), now)
 }
 
-function buildCouponSchedule(scheduleByMonth: Map<string, number>, now: moment.Moment): PortfolioCouponScheduleItem[] {
+function getCouponScheduleStart(now: moment.Moment) {
+	return now.date() === 1 ? now.clone().startOf("month") : now.clone().add(1, "month").startOf("month")
+}
+
+function buildCouponSchedule(scheduleByMonth: Map<string, number>, startMonth: moment.Moment): PortfolioCouponScheduleItem[] {
 	const formatter = new Intl.DateTimeFormat("ru-RU", {
 		month: "short",
 		year: "numeric",
@@ -124,7 +136,7 @@ function buildCouponSchedule(scheduleByMonth: Map<string, number>, now: moment.M
 	})
 
 	return Array.from({ length: 12 }, (_, index) => {
-		const month = now.clone().startOf("month").add(index, "months")
+		const month = startMonth.clone().add(index, "months")
 		const monthKey = month.format("YYYY-MM")
 		return {
 			month: monthKey,
@@ -144,4 +156,39 @@ function buildSectorAllocation(sectorAmounts: Map<string, number>): PortfolioSec
 			sharePct: total > 0 ? roundTo((amountRub / total) * 100) ?? 0 : 0,
 		}))
 		.sort((a, b) => b.amountRub - a.amountRub)
+}
+
+function buildRiskProfile(riskAmounts: Map<number, number>): PortfolioRiskProfile {
+	const total = Array.from(riskAmounts.values()).reduce((sum, amount) => sum + amount, 0)
+	const items: PortfolioRiskProfileItem[] = Array.from(riskAmounts.entries())
+		.map(([riskLevel, amountRub]) => ({
+			riskLevel,
+			label: getRiskLabel(riskLevel),
+			amountRub: roundTo(amountRub) ?? 0,
+			sharePct: total > 0 ? roundTo((amountRub / total) * 100) ?? 0 : 0,
+		}))
+		.sort((a, b) => b.amountRub - a.amountRub)
+
+	return {
+		summary: items[0]?.label ?? getRiskLabel(0),
+		items,
+	}
+}
+
+function normalizeRiskLevel(value: unknown) {
+	const riskLevel = Number(value ?? 0)
+	return riskLevel >= 1 && riskLevel <= 3 ? riskLevel : 0
+}
+
+function getRiskLabel(riskLevel: number) {
+	switch (riskLevel) {
+		case 1:
+			return "Низкий"
+		case 2:
+			return "Средний"
+		case 3:
+			return "Высокий"
+		default:
+			return "Не определен"
+	}
 }

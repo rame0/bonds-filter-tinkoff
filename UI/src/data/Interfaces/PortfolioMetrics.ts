@@ -24,6 +24,18 @@ export interface PortfolioSectorAllocationItem {
 	sharePct: number
 }
 
+export interface PortfolioRiskProfileItem {
+	riskLevel: number
+	label: string
+	amountRub: number
+	sharePct: number
+}
+
+export interface PortfolioRiskProfile {
+	summary: string
+	items: PortfolioRiskProfileItem[]
+}
+
 export interface PortfolioActuality {
 	bondsUpdatedAt?: string
 	ratesUpdatedAt: string
@@ -36,5 +48,6 @@ export interface PortfolioMetricsResponse {
 	totals: PortfolioTotals
 	couponSchedule: PortfolioCouponScheduleItem[]
 	sectorAllocation: PortfolioSectorAllocationItem[]
+	riskProfile: PortfolioRiskProfile
 	actuality: PortfolioActuality
 }
