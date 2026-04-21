@@ -3,6 +3,7 @@ import type { CombinedBondsResponse } from '@/data/Interfaces/CombinedBondsRespo
 import type { CombinedCoupon } from "@/data/Interfaces/CombinedCoupon"
 import type { BondsDataStatus } from "@/data/Interfaces/BondsDataStatus"
 import type { PortfolioMetricsResponse, PortfolioPositionInput } from "@/data/Interfaces/PortfolioMetrics"
+import type { PortfolioTableResponse } from "@/data/Interfaces/PortfolioTable"
 
 export default class BondsRepository {
   $http = httpClient
@@ -26,5 +27,9 @@ export default class BondsRepository {
 
   async portfolioMetrics(positions: PortfolioPositionInput[]): Promise<PortfolioMetricsResponse> {
     return this.$http.post(`${this.getEndpoint()}/portfolioMetrics`, { positions }).then((res) => res.data as PortfolioMetricsResponse)
+  }
+
+  async portfolioTable(positions: PortfolioPositionInput[]): Promise<PortfolioTableResponse> {
+    return this.$http.post(`${this.getEndpoint()}/portfolioTable`, { positions }).then((res) => res.data as PortfolioTableResponse)
   }
 }
