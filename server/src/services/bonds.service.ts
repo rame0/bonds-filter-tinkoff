@@ -6,6 +6,7 @@ import { type BondsDataStatus } from "../common/interfaces/BondsDataStatus"
 import { type PortfolioPositionInput } from "../common/interfaces/PortfolioMetrics"
 import { getOrRefreshCurrencyRates } from "../common/getCurrencyRates"
 import { getPortfolioMetrics } from "../common/getPortfolioMetrics"
+import { getPortfolioTable } from "../common/getPortfolioTable"
 import { getBondCoupons } from "../common/investApiFacade"
 import { toNumber } from "../common/utils/money"
 import { roundTo } from "../common/utils/round"
@@ -87,6 +88,21 @@ export default {
 				])
 
 				return getPortfolioMetrics(positions, bonds, rates, bondsStatus, moment())
+			},
+		},
+		portfolioTable: {
+			params: {
+				positions: {
+					type: "array",
+					items: "object",
+				},
+			},
+			cache: false,
+			async handler(ctx) {
+				const positions = ctx.params.positions as PortfolioPositionInput[]
+				const bonds = await getOrBuildBondsData()
+
+				return getPortfolioTable(positions, bonds)
 			},
 		},
 	},
