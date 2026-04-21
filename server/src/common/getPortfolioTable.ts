@@ -9,6 +9,7 @@ import { type PortfolioCouponTooltip, type PortfolioCouponTooltipGroup, type Por
 export async function getPortfolioTable(
 	positions: PortfolioPositionInput[],
 	bonds: CombinedBondsResponse[],
+	now = moment(),
 ): Promise<PortfolioTableResponse> {
 	const bondByUid = new Map(bonds.map(bond => [bond.uid, bond]))
 	const rows: PortfolioTableRow[] = []
@@ -24,7 +25,7 @@ export async function getPortfolioTable(
 			continue
 		}
 
-		const couponSummary = await resolveCouponSummary(bond)
+		const couponSummary = await resolveCouponSummary(bond, now)
 		const currency = normalizeCurrency(bond.currency)
 		const nominal = roundTo(bond.nominal)
 		const aciValue = roundTo(bond.aciValue) ?? 0
@@ -48,7 +49,7 @@ export async function getPortfolioTable(
 			bondYield: roundTo(bond.bondYield),
 			couponCountLeft: couponSummary?.leftCouponCount ?? 0,
 			couponTooltip: buildCouponTooltip(couponSummary?.coupons ?? [], currency, bond),
-			couponMonths: buildCouponMonths(couponSummary?.coupons ?? []),
+			couponMonths: buildCouponMonths(couponSummary?.coupons ?? [], now),
 			sector: typeof bond.sector === "string" ? bond.sector : "other",
 			riskLevel: Number(bond.riskLevel ?? 0),
 			liquidity: bond.liquidity,
@@ -58,7 +59,7 @@ export async function getPortfolioTable(
 	return { rows }
 }
 
-async function resolveCouponSummary(bond: CombinedBondsResponse): Promise<CouponSummary | undefined> {
+async function resolveCouponSummary(bond: CombinedBondsResponse, now: moment.Moment): Promise<CouponSummary | undefined> {
 	if (Array.isArray(bond.coupons) && bond.leftCouponCount !== undefined) {
 		return {
 			coupons: bond.coupons,
@@ -68,7 +69,7 @@ async function resolveCouponSummary(bond: CombinedBondsResponse): Promise<Coupon
 		}
 	}
 
-	return getCouponSummary(String(bond.figi), Boolean(bond.floatingCouponFlag), moment())
+	return getCouponSummary(String(bond.figi), Boolean(bond.floatingCouponFlag), now)
 }
 
 function normalizeCurrency(currency: unknown) {
@@ -122,12 +123,13 @@ function buildCouponTooltip(
 	}
 }
 
-function buildCouponMonths(coupons: CombinedCoupon[]) {
+function buildCouponMonths(coupons: CombinedCoupon[], now: moment.Moment) {
 	const months = Array.from({ length: 12 }, () => false)
+	const oneYearLater = now.clone().add(1, "year")
 
 	for (const coupon of coupons) {
 		const date = moment(coupon.couponDate)
-		if (!date.isValid()) {
+		if (!date.isValid() || date.isAfter(oneYearLater)) {
 			continue
 		}
 
