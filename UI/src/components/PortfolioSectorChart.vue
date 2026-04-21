@@ -10,16 +10,8 @@
 		</div>
 
 		<div v-else class="grid gap-4 md:grid-cols-[12rem_minmax(0,1fr)] md:items-center">
-			<div
-				class="mx-auto h-48 w-48 rounded-full border border-base-300"
-				:style="{ background: chartGradient }"
-			>
-				<div class="mx-auto mt-10 flex h-28 w-28 items-center justify-center rounded-full bg-base-100 text-center text-xs text-base-content/70">
-					<div>
-						<div class="font-semibold text-base-content">{{ formatMoney(totalAmount) }}</div>
-						<div>Всего</div>
-					</div>
-				</div>
+			<div class="mx-auto h-48 w-full max-w-48 overflow-hidden rounded-full bg-base-200">
+				<v-chart :option="chartOption" autoresize class="h-48 w-48" />
 			</div>
 
 			<div class="space-y-2">
@@ -44,31 +36,85 @@
 
 <script lang="ts" setup>
 import { computed, type PropType } from "vue"
+import { PieChart } from "echarts/charts"
+import { TooltipComponent } from "echarts/components"
+import { use } from "echarts/core"
+import { CanvasRenderer } from "echarts/renderers"
+import VChart from "vue-echarts"
 import SectorsCollation from "@/data/collations/SectorsCollation"
 import type { PortfolioSectorAllocationItem } from "@/data/Interfaces/PortfolioMetrics"
 import { formatMoney, formatPercent } from "@/utils/format"
+
+use([CanvasRenderer, PieChart, TooltipComponent])
 
 const colors = ["#2563eb", "#7c3aed", "#ea580c", "#059669", "#dc2626", "#ca8a04", "#0f766e", "#9333ea"]
 
 const props = defineProps({
 	items: {
 		type: Array as PropType<PortfolioSectorAllocationItem[]>,
-		default: () => []
-	}
+		default: () => [],
+	},
 })
 
 const totalAmount = computed(() => props.items.reduce((sum, item) => sum + item.amountRub, 0))
 
-const chartGradient = computed(() => {
-	if (props.items.length < 1) {
-		return "conic-gradient(var(--color-base-300) 0deg 360deg)"
-	}
-
-	let currentAngle = 0
-	return `conic-gradient(${props.items.map((item, index) => {
-			const start = currentAngle
-			currentAngle += (item.sharePct / 100) * 360
-			return `${colors[index % colors.length]} ${start}deg ${currentAngle}deg`
-		}).join(", ")})`
-})
+const chartOption = computed(() => ({
+	animation: false,
+	tooltip: {
+		trigger: "item",
+		backgroundColor: "rgba(15, 23, 42, 0.92)",
+		borderWidth: 0,
+		textStyle: {
+			color: "#f8fafc",
+		},
+		formatter: (params: { data: { amountRub: number; sharePct: number }; name: string }) => {
+			return [params.name, formatMoney(params.data.amountRub), formatPercent(params.data.sharePct)].join("<br/>")
+		},
+	},
+	graphic: [
+		{
+			type: "text",
+			left: "center",
+			top: "40%",
+			style: {
+				text: formatMoney(totalAmount.value),
+				textAlign: "center",
+				fill: "#0f172a",
+				fontSize: 15,
+				fontWeight: 600,
+			},
+		},
+		{
+			type: "text",
+			left: "center",
+			top: "54%",
+			style: {
+				text: "Всего",
+				textAlign: "center",
+				fill: "rgba(15, 23, 42, 0.7)",
+				fontSize: 12,
+			},
+		},
+	],
+	series: [
+		{
+			type: "pie",
+			radius: ["58%", "82%"],
+			avoidLabelOverlap: false,
+			label: { show: false },
+			labelLine: { show: false },
+			itemStyle: {
+				borderColor: "#ffffff",
+				borderWidth: 3,
+			},
+			data: props.items.map((item, index) => ({
+				value: item.amountRub,
+				name: SectorsCollation.getLabel(item.sector),
+				amountRub: item.amountRub,
+				sharePct: item.sharePct,
+				itemStyle: { color: colors[index % colors.length] },
+			})),
+		},
+	],
+}))
 </script>
