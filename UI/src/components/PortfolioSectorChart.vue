@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch, type PropType } from "vue"
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, type PropType } from "vue"
 import { PieChart } from "echarts/charts"
 import { GraphicComponent, TooltipComponent } from "echarts/components"
 import { init, use, type EChartsType } from "echarts/core"
@@ -25,7 +25,8 @@ import { formatMoney, formatPercent } from "@/utils/format"
 
 use([CanvasRenderer, PieChart, GraphicComponent, TooltipComponent])
 
-const colors = ["#2563eb", "#7c3aed", "#ea580c", "#059669", "#dc2626", "#ca8a04", "#0f766e", "#9333ea"]
+const lightColors = ["#2563eb", "#7c3aed", "#ea580c", "#059669", "#dc2626", "#ca8a04", "#0f766e", "#9333ea"]
+const darkColors = ["#f472b6", "#c084fc", "#fb923c", "#34d399", "#f87171", "#facc15", "#2dd4bf", "#a78bfa"]
 
 const props = defineProps({
 	items: {
@@ -39,6 +40,20 @@ const totalAmount = computed(() => props.items.reduce((sum, item) => sum + item.
 
 let chart: EChartsType | undefined
 let resizeObserver: ResizeObserver | undefined
+let themeObserver: MutationObserver | undefined
+
+const getThemePalette = () => {
+	const isDark = document.documentElement.getAttribute("data-theme") === "dracula"
+
+	return {
+		text: isDark ? "#f8fafc" : "#0f172a",
+		subtleText: isDark ? "rgba(248, 250, 252, 0.7)" : "rgba(15, 23, 42, 0.7)",
+		tooltipBg: isDark ? "rgba(15, 23, 42, 0.94)" : "rgba(15, 23, 42, 0.92)",
+		tooltipText: "#f8fafc",
+		border: isDark ? "#282a36" : "#f8fafc",
+		colors: isDark ? darkColors : lightColors,
+	}
+}
 
 const renderChart = () => {
 	if (!chartElement.value) {
@@ -49,13 +64,15 @@ const renderChart = () => {
 		chart = init(chartElement.value)
 	}
 
+	const palette = getThemePalette()
+
 	chart.setOption({
 		animation: false,
 		tooltip: {
 			trigger: "item",
-			backgroundColor: "rgba(15, 23, 42, 0.92)",
+			backgroundColor: palette.tooltipBg,
 			borderWidth: 0,
-			textStyle: { color: "#f8fafc" },
+			textStyle: { color: palette.tooltipText },
 			formatter: (params: { data: { amountRub: number; sharePct: number }; name: string }) => {
 				return [params.name, formatMoney(params.data.amountRub), formatPercent(params.data.sharePct)].join("<br/>")
 			},
@@ -68,7 +85,7 @@ const renderChart = () => {
 				style: {
 					text: formatMoney(totalAmount.value),
 					textAlign: "center",
-					fill: "#0f172a",
+					fill: palette.text,
 					fontSize: 15,
 					fontWeight: 600,
 				},
@@ -80,7 +97,7 @@ const renderChart = () => {
 				style: {
 					text: "Всего",
 					textAlign: "center",
-					fill: "rgba(15, 23, 42, 0.7)",
+					fill: palette.subtleText,
 					fontSize: 12,
 				},
 			},
@@ -93,7 +110,7 @@ const renderChart = () => {
 				label: { show: false },
 				labelLine: { show: false },
 				itemStyle: {
-					borderColor: "#f8fafc",
+					borderColor: palette.border,
 					borderWidth: 3,
 				},
 				data: props.items.map((item, index) => ({
@@ -101,26 +118,36 @@ const renderChart = () => {
 					name: SectorsCollation.getLabel(item.sector),
 					amountRub: item.amountRub,
 					sharePct: item.sharePct,
-					itemStyle: { color: colors[index % colors.length] },
+					itemStyle: { color: palette.colors[index % palette.colors.length] },
 				})),
 			},
 		],
 	})
+
+	chart.resize()
 }
 
-onMounted(() => {
+onMounted(async () => {
+	await nextTick()
 	renderChart()
 
 	if (chartElement.value) {
 		resizeObserver = new ResizeObserver(() => chart?.resize())
 		resizeObserver.observe(chartElement.value)
 	}
+
+	themeObserver = new MutationObserver(() => renderChart())
+	themeObserver.observe(document.documentElement, {
+		attributes: true,
+		attributeFilter: ["data-theme"],
+	})
 })
 
-watch(() => props.items, renderChart, { deep: true })
+watch(() => props.items, () => renderChart(), { deep: true })
 
 onBeforeUnmount(() => {
 	resizeObserver?.disconnect()
+	themeObserver?.disconnect()
 	chart?.dispose()
 })
 </script>

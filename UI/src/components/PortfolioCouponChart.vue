@@ -14,7 +14,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onBeforeUnmount, onMounted, ref, watch, type PropType } from "vue"
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch, type PropType } from "vue"
 import { BarChart } from "echarts/charts"
 import { GridComponent, TooltipComponent } from "echarts/components"
 import { init, use, type EChartsType } from "echarts/core"
@@ -40,8 +40,23 @@ const totalCouponsRub = computed(() => props.items.reduce((sum, item) => sum + i
 
 let chart: EChartsType | undefined
 let resizeObserver: ResizeObserver | undefined
+let themeObserver: MutationObserver | undefined
 
 const shortLabel = (label: string) => label.replace(/\s+\d{4}\s*г\.?$/u, "")
+
+const getThemePalette = () => {
+	const isDark = document.documentElement.getAttribute("data-theme") === "dracula"
+
+	return {
+		axisText: isDark ? "rgba(248, 250, 252, 0.7)" : "rgba(15, 23, 42, 0.7)",
+		axisLine: isDark ? "rgba(148, 163, 184, 0.35)" : "rgba(148, 163, 184, 0.35)",
+		splitLine: isDark ? "rgba(148, 163, 184, 0.18)" : "rgba(148, 163, 184, 0.2)",
+		bar: isDark ? "#f472b6" : "#2563eb",
+		barHover: isDark ? "#ec4899" : "#1d4ed8",
+		tooltipBg: isDark ? "rgba(15, 23, 42, 0.94)" : "rgba(15, 23, 42, 0.92)",
+		tooltipText: "#f8fafc",
+	}
+}
 
 const renderChart = () => {
 	if (!chartElement.value) {
@@ -51,6 +66,8 @@ const renderChart = () => {
 	if (!chart) {
 		chart = init(chartElement.value)
 	}
+
+	const palette = getThemePalette()
 
 	chart.setOption({
 		animation: false,
@@ -65,9 +82,9 @@ const renderChart = () => {
 			type: "category",
 			data: props.items.map(item => shortLabel(item.label)),
 			axisTick: { show: false },
-			axisLine: { lineStyle: { color: "rgba(148, 163, 184, 0.35)" } },
+			axisLine: { lineStyle: { color: palette.axisLine } },
 			axisLabel: {
-				color: "rgba(15, 23, 42, 0.7)",
+				color: palette.axisText,
 				fontSize: 11,
 			},
 		},
@@ -75,19 +92,19 @@ const renderChart = () => {
 			type: "value",
 			splitNumber: 4,
 			axisLabel: {
-				color: "rgba(15, 23, 42, 0.7)",
+				color: palette.axisText,
 				formatter: (value: number) => compactNumberFormatter.format(value),
 			},
 			splitLine: {
-				lineStyle: { color: "rgba(148, 163, 184, 0.2)" },
+				lineStyle: { color: palette.splitLine },
 			},
 		},
 		tooltip: {
 			trigger: "axis",
 			axisPointer: { type: "shadow" },
-			backgroundColor: "rgba(15, 23, 42, 0.92)",
+			backgroundColor: palette.tooltipBg,
 			borderWidth: 0,
-			textStyle: { color: "#f8fafc" },
+			textStyle: { color: palette.tooltipText },
 			formatter: (params: { dataIndex: number }[]) => {
 				const item = props.items[params[0]?.dataIndex ?? 0]
 				return item ? item.label + "<br/>" + formatMoney(item.amountRub) : ""
@@ -99,30 +116,40 @@ const renderChart = () => {
 				data: props.items.map(item => item.amountRub),
 				barMaxWidth: 28,
 				itemStyle: {
-					color: "#2563eb",
+					color: palette.bar,
 					borderRadius: [8, 8, 0, 0],
 				},
 				emphasis: {
-					itemStyle: { color: "#1d4ed8" },
+					itemStyle: { color: palette.barHover },
 				},
 			},
 		],
 	})
+
+	chart.resize()
 }
 
-onMounted(() => {
+onMounted(async () => {
+	await nextTick()
 	renderChart()
 
 	if (chartElement.value) {
 		resizeObserver = new ResizeObserver(() => chart?.resize())
 		resizeObserver.observe(chartElement.value)
 	}
+
+	themeObserver = new MutationObserver(() => renderChart())
+	themeObserver.observe(document.documentElement, {
+		attributes: true,
+		attributeFilter: ["data-theme"],
+	})
 })
 
-watch(() => props.items, renderChart, { deep: true })
+watch(() => props.items, () => renderChart(), { deep: true })
 
 onBeforeUnmount(() => {
 	resizeObserver?.disconnect()
+	themeObserver?.disconnect()
 	chart?.dispose()
 })
 </script>
