@@ -67,6 +67,7 @@
 
 <script lang="ts">
 import BondsRepository from "@/data/BondsRepository"
+import moment from "moment"
 import { computed, onBeforeUnmount, ref } from "vue"
 import { useStorage } from "@vueuse/core"
 
@@ -78,8 +79,41 @@ import { DefaultFilterSelections, defaultFilterValues } from "@/data/Types/Filte
 import type { CombinedBondsResponse } from "@/data/Interfaces/CombinedBondsResponse"
 import type { BondsDataStatus } from "@/data/Interfaces/BondsDataStatus"
 import type { sortState } from "@/data/Types/SortState"
+import type { CombinedCoupon } from "@/data/Interfaces/CombinedCoupon"
 
 const STATUS_POLL_INTERVAL_MS = 10_000
+
+const createFilterSelections = (storedFilters: Partial<FilterOptions> | undefined): FilterOptions => ({
+	...DefaultFilterSelections,
+	...storedFilters,
+	nominal: {
+		...DefaultFilterSelections.nominal,
+		...storedFilters?.nominal,
+	},
+	price: {
+		...DefaultFilterSelections.price,
+		...storedFilters?.price,
+	},
+	bondYield: {
+		...DefaultFilterSelections.bondYield,
+		...storedFilters?.bondYield,
+	},
+	duration: {
+		...DefaultFilterSelections.duration,
+		...storedFilters?.duration,
+	},
+})
+
+const getKnownCouponMonths = (coupons?: CombinedCoupon[]) => {
+	if (!Array.isArray(coupons) || coupons.length < 1) {
+		return []
+	}
+
+	return [...new Set(coupons.flatMap((coupon) => {
+		const couponDate = moment(coupon.couponDate)
+		return couponDate.isValid() ? [couponDate.month()] : []
+	}))]
+}
 
 export default {
 	name: "HomeView",
@@ -90,12 +124,13 @@ export default {
 			"filterSelections",
 			DefaultFilterSelections
 		)
+		filterSelectionsStore.value = createFilterSelections(filterSelectionsStore.value)
 		const sortState = useStorage<sortState>("sort-state", {
 			prop: "name",
 			order: "ascending"
 		})
 
-		const filterSelections = ref<FilterOptions>(filterSelectionsStore.value)
+		const filterSelections = ref<FilterOptions>(createFilterSelections(filterSelectionsStore.value))
 
 		const filterOptions = ref(defaultFilterValues)
 
@@ -212,7 +247,11 @@ export default {
 		}
 		const updateTable = () => {
 			isFetching.value = true
-			const appliedFilters = Object.entries(filterSelections.value).filter(([, value]) => {
+			const appliedFilters = Object.entries(filterSelections.value).filter(([key, value]) => {
+				if (key === "couponMonthsMatchMode") {
+					return false
+				}
+
 				if (value === undefined) {
 					return false
 				} else if (Array.isArray(value)) {
@@ -228,6 +267,24 @@ export default {
 
 			const filtered = response.value.filter((bond) => {
 				for (const [key, value] of appliedFilters) {
+					if (key === "couponMonths") {
+						const knownCouponMonths = getKnownCouponMonths(bond.coupons)
+						if (knownCouponMonths.length < 1) {
+							return false
+						}
+
+						const selectedMonths = value as number[]
+						const hasMatch = filterSelections.value.couponMonthsMatchMode === "all"
+							? selectedMonths.every((month) => knownCouponMonths.includes(month))
+							: selectedMonths.some((month) => knownCouponMonths.includes(month))
+
+						if (!hasMatch) {
+							return false
+						}
+
+						continue
+					}
+
 					if (key == "search") {
 						const filterValue = value.toString().toLowerCase()
 						const bondName = bond.name.toString().toLowerCase()
