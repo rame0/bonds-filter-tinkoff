@@ -152,6 +152,31 @@
         :options="filterOptions.countryOfRisk"
         label="Страна"
       />
+      <bond-options-checks
+        v-model="value.couponMonths"
+        :options="filterOptions.couponMonths"
+        label="Месяцы купонов"
+        group-name="couponMonths"
+        size="btn-sm"
+      />
+    </section>
+
+    <section class="grid grid-cols-1 gap-3 xl:grid-cols-2 2xl:grid-cols-3">
+      <div class="space-y-1">
+        <label class="label-text block text-sm font-medium text-base-content">Совпадение месяцев</label>
+        <div class="flex flex-wrap gap-1">
+          <button
+            v-for="option in couponMonthsMatchModeOptions"
+            :key="option.value"
+            type="button"
+            class="btn btn-sm"
+            :class="value.couponMonthsMatchMode === option.value ? 'btn-primary' : 'btn-outline'"
+            @click="value.couponMonthsMatchMode = option.value"
+          >
+            {{ option.label }}
+          </button>
+        </div>
+      </div>
     </section>
 
     <section class="grid grid-cols-1 gap-3 xl:grid-cols-2 2xl:grid-cols-3">
@@ -295,6 +320,11 @@ import { BondOptionsChecks, BondOptionsRadios, BondOptionsSelect } from '@/compo
 import { type FilterValues, type FilterOptions } from '@/data/Types/FilterOptions'
 import type { PropType } from 'vue'
 
+const couponMonthsMatchModeOptions = [
+  { value: 'any', label: 'Хотя бы один' },
+  { value: 'all', label: 'Все выбранные' }
+]
+
 export default {
   name: 'BondFilter',
   props: {
@@ -310,7 +340,8 @@ export default {
 
   data() {
     return {
-      value: this.modelValue
+      value: this.modelValue,
+      couponMonthsMatchModeOptions
     }
   },
 
