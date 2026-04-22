@@ -317,10 +317,10 @@
 
 <script lang="ts">
 import { BondOptionsChecks, BondOptionsRadios, BondOptionsSelect } from '@/components/UI'
-import { type FilterValues, type FilterOptions } from '@/data/Types/FilterOptions'
+import { type CouponMonthsMatchMode, type FilterValues, type FilterOptions } from '@/data/Types/FilterOptions'
 import type { PropType } from 'vue'
 
-const couponMonthsMatchModeOptions = [
+const couponMonthsMatchModeOptions: { value: CouponMonthsMatchMode; label: string }[] = [
   { value: 'any', label: 'Хотя бы один' },
   { value: 'all', label: 'Все выбранные' }
 ]

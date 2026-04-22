@@ -10,6 +10,7 @@ import LiquidityCollations from '@/data/collations/LiquidityCollations'
 export type FromTo = { from: number; to: number }
 
 export type CouponMonthsMatchMode = 'any' | 'all'
+export type NumericFilterOption = { value: number; label: string }
 
 export interface FilterOptions {
   search: string
@@ -62,7 +63,7 @@ export interface FilterValues {
   classCode: CollationItem[]
   currency: CollationItem[]
   couponQuantityPerYear: CollationItem[]
-  couponMonths: CollationItem[]
+  couponMonths: NumericFilterOption[]
   countryOfRisk: CollationItem[]
   sector: CollationItem[]
   issueKind: CollationItem[]
