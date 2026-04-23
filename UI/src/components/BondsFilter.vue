@@ -152,29 +152,44 @@
         :options="filterOptions.countryOfRisk"
         label="Страна"
       />
-      <bond-options-checks
-        v-model="value.couponMonths"
-        :options="filterOptions.couponMonths"
-        label="Месяцы купонов"
-        group-name="couponMonths"
-        size="btn-sm"
-      />
-    </section>
-
-    <section class="grid grid-cols-1 gap-3 xl:grid-cols-2 2xl:grid-cols-3">
-      <div class="space-y-1">
-        <label class="label-text block text-sm font-medium text-base-content">Совпадение месяцев</label>
-        <div class="flex flex-wrap gap-1">
-          <button
-            v-for="option in couponMonthsMatchModeOptions"
-            :key="option.value"
-            type="button"
-            class="btn btn-sm"
-            :class="value.couponMonthsMatchMode === option.value ? 'btn-primary' : 'btn-outline'"
-            @click="value.couponMonthsMatchMode = option.value"
-          >
-            {{ option.label }}
-          </button>
+      <div class="space-y-3 rounded-box border border-base-300 bg-base-100 p-2.5 xl:col-span-2 2xl:col-span-1">
+        <div class="space-y-1">
+          <div class="flex items-center gap-2">
+            <label class="label-text block text-sm font-medium text-base-content">Месяцы купонов</label>
+            <div
+              class="tooltip tooltip-right"
+              data-tip="Хотя бы один: облигация подойдет, если выплата есть хотя бы в одном выбранном месяце. Все выбранные: облигация подойдет только если выплаты есть во всех выбранных месяцах."
+            >
+              <button
+                type="button"
+                class="inline-flex h-5 w-5 items-center justify-center rounded-full border border-base-300 text-xs font-semibold text-base-content/70 transition hover:border-base-content/30 hover:text-base-content"
+                aria-label="Пояснение по режимам совпадения месяцев"
+              >
+                ?
+              </button>
+            </div>
+          </div>
+          <bond-options-checks
+            v-model="value.couponMonths"
+            :options="filterOptions.couponMonths"
+            group-name="couponMonths"
+            size="btn-sm"
+          />
+        </div>
+        <div class="space-y-1">
+          <label class="label-text block text-sm font-medium text-base-content">Тип совпадения</label>
+          <div class="flex flex-wrap gap-1">
+            <button
+              v-for="option in couponMonthsMatchModeOptions"
+              :key="option.value"
+              type="button"
+              class="btn btn-sm"
+              :class="value.couponMonthsMatchMode === option.value ? 'btn-primary' : 'btn-outline'"
+              @click="value.couponMonthsMatchMode = option.value"
+            >
+              {{ option.label }}
+            </button>
+          </div>
         </div>
       </div>
     </section>
