@@ -9,6 +9,9 @@ import LiquidityCollations from '@/data/collations/LiquidityCollations'
 
 export type FromTo = { from: number; to: number }
 
+export type CouponMonthsMatchMode = 'any' | 'all'
+export type NumericFilterOption = { value: number; label: string }
+
 export interface FilterOptions {
   search: string
   nominal: FromTo
@@ -37,6 +40,8 @@ export interface FilterOptions {
   classCode: number[]
   currency: string[]
   couponQuantityPerYear: number[]
+  couponMonths: number[]
+  couponMonthsMatchMode: CouponMonthsMatchMode
   countryOfRisk: string[]
   sector: string[]
   issueKind: string[]
@@ -58,6 +63,7 @@ export interface FilterValues {
   classCode: CollationItem[]
   currency: CollationItem[]
   couponQuantityPerYear: CollationItem[]
+  couponMonths: NumericFilterOption[]
   countryOfRisk: CollationItem[]
   sector: CollationItem[]
   issueKind: CollationItem[]
@@ -75,6 +81,20 @@ export const defaultFilterValues: FilterValues = {
   classCode: [],
   currency: CurrencyCollation.asArray(),
   couponQuantityPerYear: [],
+  couponMonths: [
+    { value: 0, label: 'янв' },
+    { value: 1, label: 'фев' },
+    { value: 2, label: 'мар' },
+    { value: 3, label: 'апр' },
+    { value: 4, label: 'май' },
+    { value: 5, label: 'июн' },
+    { value: 6, label: 'июл' },
+    { value: 7, label: 'авг' },
+    { value: 8, label: 'сен' },
+    { value: 9, label: 'окт' },
+    { value: 10, label: 'ноя' },
+    { value: 11, label: 'дек' }
+  ],
   countryOfRisk: CountryCollation.asArray(),
   sector: SectorsCollation.asArray(),
   issueKind: IssueKindCollations.asArray()
@@ -108,6 +128,8 @@ export const DefaultFilterSelections: FilterOptions = {
   classCode: [],
   currency: [],
   couponQuantityPerYear: [],
+  couponMonths: [],
+  couponMonthsMatchMode: 'any',
   countryOfRisk: [],
   sector: [],
   issueKind: [],
