@@ -77,12 +77,12 @@ export async function mapWithConcurrency<T>(
 }
 
 export function getMoexData(tickers: string[]): Promise<MoexResults> {
-  return new Promise((resolve, reject) => {
-    const cache = createCache({ ttl: 60 * 60 * 4 })
+	  return new Promise((resolve, reject) => {
+	    const cache = createCache({ ttl: 60 * 60 * 4 })
 
-    const moexData = cache.getSync("moexData")
-    if (moexData) {
-      resolve(moexData)
+	    const moexData = cache.getSync<MoexResults>("moexData")
+	    if (moexData) {
+	      resolve(moexData)
     } else {
       const bondRequestColumns = "SECID,SECNAME,PREVLEGALCLOSEPRICE,BOARDID,COUPONPERIOD,FACEVALUE,FACEUNIT,SECTYPE"
       const url1 = `https://iss.moex.com/iss/engines/stock/markets/bonds/boardgroups/7/securities.json?iss.dp=comma&iss.meta=off&iss.only=securities,marketdata&securities.columns=${bondRequestColumns}&marketdata.columns=SECID,YIELD,DURATION`

@@ -1,7 +1,7 @@
 import { httpClient } from '@/plugins/axios'
-import type { CombinedBondsResponse } from '@/data/Interfaces/CombinedBondsResponse'
 import type { CombinedCoupon } from "@/data/Interfaces/CombinedCoupon"
 import type { BondsDataStatus } from "@/data/Interfaces/BondsDataStatus"
+import type { BondFilterOptionsResponse, BondListQuery, BondListResponse } from "@/data/Interfaces/BondList"
 import type { PortfolioMetricsResponse, PortfolioPositionInput } from "@/data/Interfaces/PortfolioMetrics"
 import type { PortfolioTableResponse } from "@/data/Interfaces/PortfolioTable"
 
@@ -13,12 +13,21 @@ export default class BondsRepository {
     if (this.endpoint) return this.endpoint
   }
 
-  async list(): Promise<CombinedBondsResponse[]> {
-    return this.$http.get(`${this.getEndpoint()}/instruments`, {}).then((res) => res.data)
+  async list(query: BondListQuery): Promise<BondListResponse> {
+	return this.$http.get(`${this.getEndpoint()}/instruments`, {
+		params: {
+			...query,
+			filters: JSON.stringify(query.filters ?? {}),
+		},
+	}).then((res) => res.data as BondListResponse)
   }
 
   async status(): Promise<BondsDataStatus> {
     return this.$http.get(`${this.getEndpoint()}/status`, {}).then((res) => res.data as BondsDataStatus)
+  }
+
+  async filterOptions(): Promise<BondFilterOptionsResponse> {
+	return this.$http.get(`${this.getEndpoint()}/filterOptions`, {}).then((res) => res.data as BondFilterOptionsResponse)
   }
 
   async coupons(id: string): Promise<CombinedCoupon[]> {

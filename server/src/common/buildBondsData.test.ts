@@ -8,9 +8,10 @@ const getMoexDataMock = mock(async () => ({}))
 const getBondCouponsMock = mock(async () => [] as any[])
 let cacheStore = new Map<string, unknown>()
 
-mock.module("file-system-cache", () => ({
-	default: () => ({
+mock.module("./cache", () => ({
+	createCache: () => ({
 		get: async (key: string) => cacheStore.get(key),
+		getSync: (key: string) => cacheStore.get(key),
 		set: async (key: string, value: unknown) => {
 			cacheStore.set(key, value)
 		},

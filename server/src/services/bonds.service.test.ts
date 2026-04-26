@@ -7,6 +7,8 @@ const ensureBondsDataBuildMock = mock(async () => undefined)
 const getOrRefreshCurrencyRatesMock = mock(async () => ({ baseCurrency: "RUB", rateDate: "20.04.2026", updatedAt: "2026-04-20T04:00:00.000Z", rates: {} }))
 const getPortfolioMetricsMock = mock(async () => ({ baseCurrency: "RUB" }))
 const getPortfolioTableMock = mock(async () => ({ rows: [] }))
+const listBondsDataMock = mock(() => ({ items: [], total: 0, page: 1, pageSize: 20 }))
+const getBondFilterOptionsMock = mock(() => ({ classCode: [], currency: [], couponQuantityPerYear: [], countryOfRisk: [] }))
 
 mock.module("../common/api", () => ({
 	api: {
@@ -34,6 +36,11 @@ mock.module("../common/getPortfolioTable", () => ({
 	getPortfolioTable: getPortfolioTableMock,
 }))
 
+mock.module("../common/listBondsData", () => ({
+	listBondsData: listBondsDataMock,
+	getBondFilterOptions: getBondFilterOptionsMock,
+}))
+
 const { default: bondsService } = await import("./bonds.service")
 
 describe("bonds.service coupons action", () => {
@@ -50,6 +57,38 @@ describe("bonds.service coupons action", () => {
 		getOrRefreshCurrencyRatesMock.mockResolvedValue({ baseCurrency: "RUB", rateDate: "20.04.2026", updatedAt: "2026-04-20T04:00:00.000Z", rates: {} })
 		getPortfolioMetricsMock.mockResolvedValue({ baseCurrency: "RUB" })
 		getPortfolioTableMock.mockResolvedValue({ rows: [] })
+		listBondsDataMock.mockReset()
+		listBondsDataMock.mockReturnValue({ items: [], total: 0, page: 1, pageSize: 20 })
+		getBondFilterOptionsMock.mockReset()
+		getBondFilterOptionsMock.mockReturnValue({ classCode: [], currency: [], couponQuantityPerYear: [], countryOfRisk: [] })
+	})
+
+	test("delegates instruments query to server-side listing helper", async () => {
+		getOrBuildBondsDataMock.mockResolvedValueOnce([{ uid: "bond-1" }])
+		listBondsDataMock.mockReturnValueOnce({ items: [{ uid: "bond-1" }], total: 1, page: 1, pageSize: 20 })
+
+		const result = await bondsService.actions.instruments.handler({
+			params: { page: 1, pageSize: 20, sortProp: "name", sortOrder: "ascending", filters: JSON.stringify({ search: "офз" }) },
+			meta: {},
+		})
+
+		expect(getOrBuildBondsDataMock).toHaveBeenCalledTimes(1)
+		expect(listBondsDataMock).toHaveBeenCalledWith(
+			[{ uid: "bond-1" }],
+			{ page: 1, pageSize: 20, sortProp: "name", sortOrder: "ascending", filters: { search: "офз" } },
+		)
+		expect(result).toEqual({ items: [{ uid: "bond-1" }], total: 1, page: 1, pageSize: 20 })
+	})
+
+	test("returns server-side filter options from cached bonds", async () => {
+		getOrBuildBondsDataMock.mockResolvedValueOnce([{ uid: "bond-1" }])
+		getBondFilterOptionsMock.mockReturnValueOnce({ classCode: [1], currency: ["rub"], couponQuantityPerYear: [2], countryOfRisk: ["RU"] })
+
+		const result = await bondsService.actions.filterOptions.handler()
+
+		expect(getOrBuildBondsDataMock).toHaveBeenCalledTimes(1)
+		expect(getBondFilterOptionsMock).toHaveBeenCalledWith([{ uid: "bond-1" }])
+		expect(result).toEqual({ classCode: [1], currency: ["rub"], couponQuantityPerYear: [2], countryOfRisk: ["RU"] })
 	})
 
 	test("sorts future coupons and maps payout from payOneBond", async () => {

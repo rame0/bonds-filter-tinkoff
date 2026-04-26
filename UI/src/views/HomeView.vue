@@ -67,19 +67,18 @@
 
 <script lang="ts">
 import BondsRepository from "@/data/BondsRepository"
-import moment from "moment"
 import { computed, onBeforeUnmount, ref } from "vue"
 import { useStorage } from "@vueuse/core"
 
 import CurrencyCollation from "@/data/collations/CurrencyCollation"
 import CountryCollation from "@/data/collations/CountryCollation"
 import type { CollationValueType } from "@/data/collations/BaseCollations"
-import type { FilterOptions, FromTo } from "@/data/Types/FilterOptions"
+import type { FilterOptions } from "@/data/Types/FilterOptions"
 import { DefaultFilterSelections, defaultFilterValues } from "@/data/Types/FilterOptions"
 import type { CombinedBondsResponse } from "@/data/Interfaces/CombinedBondsResponse"
+import type { BondFilterOptionsResponse } from "@/data/Interfaces/BondList"
 import type { BondsDataStatus } from "@/data/Interfaces/BondsDataStatus"
 import type { sortState } from "@/data/Types/SortState"
-import type { CombinedCoupon } from "@/data/Interfaces/CombinedCoupon"
 
 const STATUS_POLL_INTERVAL_MS = 10_000
 
@@ -104,17 +103,6 @@ const createFilterSelections = (storedFilters: Partial<FilterOptions> | undefine
 	},
 })
 
-const getKnownCouponMonths = (coupons?: CombinedCoupon[]) => {
-	if (!Array.isArray(coupons) || coupons.length < 1) {
-		return []
-	}
-
-	return [...new Set(coupons.flatMap((coupon) => {
-		const couponDate = moment(coupon.couponDate)
-		return couponDate.isValid() ? [couponDate.month()] : []
-	}))]
-}
-
 export default {
 	name: "HomeView",
 
@@ -134,7 +122,6 @@ export default {
 
 		const filterOptions = ref(defaultFilterValues)
 
-		const response = ref<CombinedBondsResponse[]>([])
 		const isFetching = ref(false)
 		const status = ref<BondsDataStatus | null>(null)
 		const isPolling = ref(false)
@@ -144,7 +131,6 @@ export default {
 
 		const arrayOptions = ["classCode", "currency", "couponQuantityPerYear", "countryOfRisk"] as const
 		type ArrayOptionKey = (typeof arrayOptions)[number]
-		type ComparableValue = string | number
 		const paginationData = ref({
 			total: 0,
 			pageSize: useStorage<number>("pageSize", 20),
@@ -196,7 +182,7 @@ export default {
 				}
 
 				clearStatusPoll()
-				await fetchBonds()
+				await Promise.all([fetchFilterOptions(), fetchBonds()])
 			} finally {
 				isPolling.value = false
 			}
@@ -209,154 +195,38 @@ export default {
 		const fetchBonds = async () => {
 			isFetching.value = true
 			try {
-				response.value = await bondsRepository.list()
+				const result = await bondsRepository.list({
+					page: paginationData.value.currentPage,
+					pageSize: paginationData.value.pageSize,
+					sortProp: sortState.value.prop,
+					sortOrder: sortState.value.order,
+					filters: filterSelections.value,
+				})
 
-				if (response.value) {
-					updateFilters()
-					updateTable()
-				}
+				bonds.value = result.items
+				paginationData.value.total = result.total
 			} finally {
 				isFetching.value = false
 			}
 		}
 
-		const compareValues = (left: ComparableValue, right: ComparableValue, order: "ascending" | "descending") => {
-			if (left > right) return order === "ascending" ? 1 : -1
-			if (left < right) return order === "ascending" ? -1 : 1
-			return 0
-		}
-
 		const isArrayOptionValue = (
-			value: FilterOptions[ArrayOptionKey][number] | null | undefined
+			value: FilterOptions[ArrayOptionKey][number] | null | undefined,
 		): value is FilterOptions[ArrayOptionKey][number] => value !== null && value !== undefined && value !== ""
-
-		const isRange = (
-			value: unknown
-		): value is {
-			from: number
-			to: number
-		} =>
-			value !== null &&
-			typeof value === "object" &&
-			Object.prototype.hasOwnProperty.call(value, "from") &&
-			Object.prototype.hasOwnProperty.call(value, "to")
 
 		const sortChanged = (sort: sortState) => {
 			sortState.value = sort
-			updateTable()
-		}
-		const updateTable = () => {
-			isFetching.value = true
-			const appliedFilters = Object.entries(filterSelections.value).filter(([key, value]) => {
-				if (key === "couponMonthsMatchMode") {
-					return false
-				}
-
-				if (value === undefined) {
-					return false
-				} else if (Array.isArray(value)) {
-					return (value as []).length > 0
-				} else if (isRange(value)) {
-					return true
-				} else if (typeof value === "string") {
-					return value !== ""
-				} else {
-					return (value as number) >= 0
-				}
-			})
-
-			const filtered = response.value.filter((bond) => {
-				for (const [key, value] of appliedFilters) {
-					if (key === "couponMonths") {
-						const knownCouponMonths = getKnownCouponMonths(bond.coupons)
-						if (knownCouponMonths.length < 1) {
-							return false
-						}
-
-						const selectedMonths = value as number[]
-						const hasMatch = filterSelections.value.couponMonthsMatchMode === "all"
-							? selectedMonths.every((month) => knownCouponMonths.includes(month))
-							: selectedMonths.some((month) => knownCouponMonths.includes(month))
-
-						if (!hasMatch) {
-							return false
-						}
-
-						continue
-					}
-
-					if (key == "search") {
-						const filterValue = value.toString().toLowerCase()
-						const bondName = bond.name.toString().toLowerCase()
-						const bondTicker = bond.ticker.toString().toLowerCase()
-						const bondFigi = bond.figi.toString().toLowerCase()
-						const bondIsin = bond.isin.toString().toLowerCase()
-
-						if (
-							!bondName.includes(filterValue) &&
-							!bondTicker.includes(filterValue) &&
-							!bondFigi.includes(filterValue) &&
-							!bondIsin.includes(filterValue)
-						) {
-							return false
-						}
-
-						continue
-					}
-					const bondKeyValue = bond[key as keyof CombinedBondsResponse]
-					if (
-						key === "nominal" ||
-						key === "placementPrice" ||
-						key === "price" ||
-						key === "yield" ||
-						key === "bondYield" ||
-						key == "duration"
-					) {
-						if (
-							(bondKeyValue as number) < (value as FromTo).from ||
-							(bondKeyValue as number) > (value as FromTo).to
-						) {
-							return false
-						} else {
-							continue
-						}
-					}
-					if (value instanceof Array) {
-						if (
-							!(value as number[]).includes(+(bondKeyValue ?? 0)) &&
-							!(value as string[]).includes(`${bondKeyValue}`)
-						) {
-							return false
-						} else {
-							continue
-						}
-					}
-					if (value !== -1 && value != bondKeyValue) {
-						return false
-					}
-				}
-				return true
-			})
-
-			paginationData.value.total = filtered.length
-			const start = (paginationData.value.currentPage - 1) * paginationData.value.pageSize
-			const end = start + paginationData.value.pageSize
-
-			const sorted = filtered.sort((a, b) => {
-				const key = sortState.value.prop as keyof CombinedBondsResponse
-				const order = sortState.value.order
-				if (a[key] === undefined) return 1
-				if (b[key] === undefined) return -1
-				return compareValues(a[key] as ComparableValue, b[key] as ComparableValue, order)
-			})
-
-			bonds.value = sorted.slice(start, end)
-			isFetching.value = false
+			void fetchBonds()
 		}
 
-		const updateFilters = () => {
+		const fetchFilterOptions = async () => {
+			const options = await bondsRepository.filterOptions()
+			updateFilters(options)
+		}
+
+		const updateFilters = (optionsResponse: BondFilterOptionsResponse) => {
 			for (const opt of arrayOptions) {
-				let options = response.value.map((a) => a[opt]) as Array<FilterOptions[ArrayOptionKey][number] | null | undefined>
+				let options = optionsResponse[opt] as Array<FilterOptions[ArrayOptionKey][number] | null | undefined>
 
 				options = options
 					.filter(isArrayOptionValue)
@@ -383,17 +253,19 @@ export default {
 
 		const filterChanged = () => {
 			filterSelectionsStore.value = filterSelections.value
-			updateTable()
+			paginationData.value.currentPage = 1
+			void fetchBonds()
 		}
 
 		const pageChanged = (page: number) => {
 			paginationData.value.currentPage = page
-			updateTable()
+			void fetchBonds()
 		}
 
 		const pageSizeChanged = (pageSize: number) => {
 			paginationData.value.pageSize = pageSize
-			updateTable()
+			paginationData.value.currentPage = 1
+			void fetchBonds()
 		}
 
 		return {
@@ -409,7 +281,6 @@ export default {
 			filterSelectionsStore,
 			sortState,
 			fetchBonds,
-			updateTable,
 			sortChanged,
 			filterChanged,
 			pageChanged,

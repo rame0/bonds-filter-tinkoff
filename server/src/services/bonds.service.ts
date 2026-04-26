@@ -8,6 +8,8 @@ import { getOrRefreshCurrencyRates } from "../common/getCurrencyRates"
 import { getPortfolioMetrics } from "../common/getPortfolioMetrics"
 import { getPortfolioTable } from "../common/getPortfolioTable"
 import { getBondCoupons } from "../common/investApiFacade"
+import { getBondFilterOptions, listBondsData } from "../common/listBondsData"
+import { BondFilterOptionsResponse, BondListResponse } from "../common/interfaces/BondList"
 import { toNumber } from "../common/utils/money"
 import { roundTo } from "../common/utils/round"
 import { ensureBondsDataBuild, getBondsDataStatus, getOrBuildBondsData } from "../common/getOrBuildBondsData"
@@ -18,7 +20,7 @@ export default {
 
 	settings: {},
 
-	actions: {
+		actions: {
 		status: {
 			params: {},
 			cache: false,
@@ -28,16 +30,34 @@ export default {
 			},
 		},
 		instruments: {
-			params: {},
+			params: {
+				page: { type: "number", optional: true, convert: true },
+				pageSize: { type: "number", optional: true, convert: true },
+				sortProp: { type: "string", optional: true },
+				sortOrder: { type: "enum", values: ["ascending", "descending"], optional: true },
+				filters: { type: "string", optional: true },
+			},
 			cache: true,
-			async handler(ctx): Promise<CombinedBondsResponse[]> {
+			async handler(ctx): Promise<BondListResponse> {
 				try {
-					return await getOrBuildBondsData()
+					const bonds = await getOrBuildBondsData()
+					return listBondsData(bonds, {
+						...ctx.params,
+						filters: parseFilters(ctx.params.filters),
+					})
 				} catch (err) {
 					ctx.meta.$statusCode = 503
 					console.error("[bonds.instruments] Failed to build bonds data:", err)
 					throw new Error("Failed to build bonds data")
 				}
+			},
+		},
+		filterOptions: {
+			params: {},
+			cache: true,
+			async handler(): Promise<BondFilterOptionsResponse> {
+				const bonds = await getOrBuildBondsData()
+				return getBondFilterOptions(bonds)
 			},
 		},
 		coupons: {
@@ -106,4 +126,17 @@ export default {
 			},
 		},
 	},
+}
+
+function parseFilters(rawFilters: unknown) {
+	if (typeof rawFilters !== "string" || rawFilters === "") {
+		return {}
+	}
+
+	try {
+		const parsed = JSON.parse(rawFilters)
+		return typeof parsed === "object" && parsed !== null ? parsed as Record<string, unknown> : {}
+	} catch {
+		return {}
+	}
 }
