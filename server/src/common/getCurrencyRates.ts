@@ -1,5 +1,6 @@
 import axios from "axios"
 import { createCache } from "./cache"
+import { getErrorMessage } from "./utils/error"
 import { roundTo } from "./utils/round"
 
 const cache = createCache()
@@ -48,7 +49,7 @@ export async function refreshCurrencyRates(now = new Date()) {
 		return snapshot
 	} catch (error) {
 		if (cached) {
-			console.error("[currencyRates] Failed to refresh rates, using cached snapshot:", error?.message ?? error)
+			console.error("[currencyRates] Failed to refresh rates, using cached snapshot:", getErrorMessage(error))
 			return cached
 		}
 

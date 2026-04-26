@@ -128,7 +128,7 @@ function buildCouponMonths(coupons: CombinedCoupon[], now: moment.Moment) {
 	const monthsHorizon = now.clone().add(14, "months")
 
 	for (const coupon of coupons) {
-		const date = moment(coupon.couponDate)
+		const date = moment(String(coupon.couponDate))
 		if (!date.isValid() || date.isAfter(monthsHorizon)) {
 			continue
 		}

@@ -1,6 +1,7 @@
 import axios from "axios"
 import moment from "moment"
 import { createCache } from "./cache"
+import { getErrorMessage } from "./utils/error"
 import { sleep } from "./utils/sleep"
 import { roundTo } from "./utils/round"
 import { LiquidityType, MoexCoupon, MoexResults, MoexTrade } from "./interfaces/Moex"
@@ -101,7 +102,7 @@ export function getMoexData(tickers: string[]): Promise<MoexResults> {
           resolve(marketData)
         })
         .catch(error => {
-          console.error("[getMoexData] MOEX request failed:", error?.message ?? error)
+          console.error("[getMoexData] MOEX request failed:", getErrorMessage(error))
           reject(error)
         })
     }
@@ -121,7 +122,7 @@ export async function buildDataFromMoex(marketData, tickers: string[]) {
     }
 
     return [{ marketRow, rowData: marketData.marketdata.data[i] }]
-  })
+  }) as { marketRow: any[]; rowData: any[] | undefined }[]
 
   await mapWithConcurrency(relevantRows, MOEX_BUILD_CONCURRENCY, async ({ marketRow, rowData }) => {
     const secId: string = marketRow[0]
@@ -136,97 +137,98 @@ export async function buildDataFromMoex(marketData, tickers: string[]) {
         BondPrice: marketRow[2],
         CouponPeriod: marketRow[4],
         BondVolume: -1,
-        BondYield: +rowData[1],
-        BondDuration: roundTo(rowData[2] / 30, 2, "floor") ?? 0,
-        MonthsOfPaymentsDates: null,
+        BondYield: +(rowData?.[1] ?? 0),
+        BondDuration: roundTo((rowData?.[2] ?? 0) / 30, 2, "floor") ?? 0,
         liquidity: LiquidityType.high,
       }
 
-      result[secId].coupons = await cache.get(`moexData.${secId}.coupons`)
+      const security = result[secId]
 
-      if (result[secId].coupons && result[secId].coupons.length > 0) {
-        result[secId].coupons.forEach(coupon => {
+      security.coupons = await cache.get(`moexData.${secId}.coupons`)
+
+      if (security.coupons && security.coupons.length > 0) {
+		security.coupons.forEach(coupon => {
           coupon.date = moment(coupon.date)
         })
       } else {
         await sleep(MOEX_REQUEST_DELAY_MS)
-        result[secId].coupons = []
+		security.coupons = []
 		const responseCoupons = await moexGet(
 		  `https://iss.moex.com/iss/statistics/engines/stock/markets/bonds/bondization/${secId}.json?iss.meta=off&iss.only=coupons&coupons.columns=coupondate,faceunit,value,valueprc,value_rub`,
 		)
-        responseCoupons.data?.coupons?.data.forEach(resp => {
+		responseCoupons.data?.coupons?.data?.forEach(resp => {
           const coupon: MoexCoupon = {} as MoexCoupon
           coupon.date = moment(resp[0])
           coupon.faceUnit = resp[1]
           coupon.value = +resp[2]
           coupon.valuePrc = +resp[3]
           coupon.valueRub = +resp[4]
-          result[secId].coupons.push(coupon)
+		  security.coupons?.push(coupon)
         })
 
-        await cache.set(`moexData.${secId}.coupons`, result[secId].coupons)
+		await cache.set(`moexData.${secId}.coupons`, security.coupons)
       }
 
       const nowDate = moment()
-      result[secId].couponsYield = calculateCouponsYieldForYear(result[secId].coupons, nowDate)
+      security.couponsYield = calculateCouponsYieldForYear(security.coupons ?? [], nowDate)
 
-      result[secId].trades = await cache.get(`moexData.${secId}.trades`)
+      security.trades = await cache.get(`moexData.${secId}.trades`)
 
-      if (result[secId].trades && result[secId].trades.length > 0) {
-        result[secId].trades = result[secId].trades.map(trade => {
+      if (security.trades && security.trades.length > 0) {
+		security.trades = security.trades.map(trade => {
           trade.date = moment(trade.date)
           return trade
         })
       } else {
-        result[secId].trades = []
+		security.trades = []
         await sleep(MOEX_REQUEST_DELAY_MS)
 		const responseTrades = await moexGet(
-		  `https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/${result[secId].BOARDID}/securities/${secId}.json?iss.meta=off&iss.only=history&history.columns=TRADEDATE,VOLUME,NUMTRADES&limit=20&from=${DateRequestPrevious}`,
+		  `https://iss.moex.com/iss/history/engines/stock/markets/bonds/boards/${security.BOARDID}/securities/${secId}.json?iss.meta=off&iss.only=history&history.columns=TRADEDATE,VOLUME,NUMTRADES&limit=20&from=${DateRequestPrevious}`,
 		)
 
         if (!responseTrades.data?.history) {
-          result[secId].BondVolume = 0
-          result[secId].liquidity = LiquidityType.low
-          result[secId].tradeDays = 0
+		  security.BondVolume = 0
+		  security.liquidity = LiquidityType.low
+		  security.tradeDays = 0
         } else {
-          responseTrades.data?.history?.data.forEach(resp => {
+		  responseTrades.data?.history?.data?.forEach(resp => {
             const trade: MoexTrade = {} as MoexTrade
             trade.date = moment(resp[0])
             trade.volume = +resp[1]
             trade.numTrades = +resp[2]
-            result[secId].trades.push(trade)
+			security.trades?.push(trade)
           })
         }
 
-        await cache.set(`moexData.${secId}.trades`, result[secId].trades)
+		await cache.set(`moexData.${secId}.trades`, security.trades)
       }
 
-      if (result[secId].trades.length < 1) {
-        result[secId].BondVolume = 0
-        result[secId].liquidity = LiquidityType.low
-        result[secId].tradeDays = 0
-        return
-      }
+	  if ((security.trades?.length ?? 0) < 1) {
+		security.BondVolume = 0
+		security.liquidity = LiquidityType.low
+		security.tradeDays = 0
+		return
+	  }
 
       let volumeSum = 0
       let lowLiquidity = false
 
-      for (const histItem of result[secId].trades) {
+	  for (const histItem of security.trades ?? []) {
         const volume = histItem.volume
         volumeSum += volume
         if (1 > volume) {
           lowLiquidity = true
         }
       }
-      result[secId].tradeDays = result[secId].trades.length
-      if (result[secId].tradeDays < 6) {
-        lowLiquidity = true
-      }
+	  security.tradeDays = security.trades?.length ?? 0
+	  if (security.tradeDays < 6) {
+		lowLiquidity = true
+	  }
 
-      result[secId].liquidity = lowLiquidity ? LiquidityType.low : LiquidityType.high
-      result[secId].BondVolume = volumeSum
+	  security.liquidity = lowLiquidity ? LiquidityType.low : LiquidityType.high
+	  security.BondVolume = volumeSum
     } catch (err) {
-      console.error(`[buildDataFromMoex] Failed to process ${secId}:`, err?.message ?? err)
+	  console.error(`[buildDataFromMoex] Failed to process ${secId}:`, getErrorMessage(err))
       if (result[secId]) {
         result[secId].BondVolume = 0
         result[secId].liquidity = LiquidityType.low

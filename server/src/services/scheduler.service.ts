@@ -1,6 +1,7 @@
 import Cron from "moleculer-cron"
 import { getCachedCurrencyRates, refreshCurrencyRates } from "../common/getCurrencyRates"
 import { getCachedBondsData, getOrBuildBondsData } from "../common/getOrBuildBondsData"
+import { getErrorMessage } from "../common/utils/error"
 
 let isDataGrabberRunning = false
 let isCurrencyRatesRefreshRunning = false
@@ -45,18 +46,18 @@ export default {
       onTick: async () => {
         try {
           await runDataGrabber("tick")
-        } catch (err) {
-          console.error("[DataGrabber] onTick failed:", err?.message ?? err)
-        }
+		} catch (err) {
+			console.error("[DataGrabber] onTick failed:", getErrorMessage(err))
+		}
       },
       runOnInit: async () => {
         const data = await getCachedBondsData()
         if (!data) {
           try {
             await runDataGrabber("init")
-          } catch (err) {
-            console.error("[DataGrabber] runOnInit failed:", err?.message ?? err)
-          }
+			} catch (err) {
+				console.error("[DataGrabber] runOnInit failed:", getErrorMessage(err))
+			}
         }
       },
       timeZone: "GMT",
@@ -67,18 +68,18 @@ export default {
       onTick: async () => {
         try {
           await runCurrencyRatesRefresh("tick")
-        } catch (err) {
-          console.error("[CurrencyRates] onTick failed:", err?.message ?? err)
-        }
+		} catch (err) {
+			console.error("[CurrencyRates] onTick failed:", getErrorMessage(err))
+		}
       },
       runOnInit: async () => {
         const rates = await getCachedCurrencyRates()
         if (!rates) {
           try {
             await runCurrencyRatesRefresh("init")
-          } catch (err) {
-            console.error("[CurrencyRates] runOnInit failed:", err?.message ?? err)
-          }
+			} catch (err) {
+				console.error("[CurrencyRates] runOnInit failed:", getErrorMessage(err))
+			}
         }
       },
       timeZone: "Europe/Moscow",

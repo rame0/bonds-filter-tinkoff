@@ -4,6 +4,7 @@ import { mapWithConcurrency } from "./getMoexData"
 import { getCouponSummary } from "./getCouponSummary"
 import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
 import { listBonds, getLastPrices } from "./investApiFacade"
+import { getErrorMessage } from "./utils/error"
 import { isMoneyLike, toNumber } from "./utils/money"
 import { roundTo } from "./utils/round"
 
@@ -86,7 +87,7 @@ export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
         instrument.bondYield = roundTo((couponSummary.annualCouponSum / realPrice) * 100)
       }
     } catch (error) {
-      console.error(`[buildBondsData] Failed to backfill coupon data for ${instrument.figi}:`, error?.message ?? error)
+      console.error(`[buildBondsData] Failed to backfill coupon data for ${instrument.figi}:`, getErrorMessage(error))
     }
   })
 
