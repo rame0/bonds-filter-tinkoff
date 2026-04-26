@@ -80,17 +80,20 @@
 				</div>
 			</div>
 
-			<portfolio-coupon-chart :items="metrics.couponSchedule" />
-			<portfolio-sector-chart :items="metrics.sectorAllocation" />
+			<PortfolioCouponChart :items="metrics.couponSchedule" />
+			<PortfolioSectorChart :items="metrics.sectorAllocation" />
 		</template>
 	</div>
 </template>
 
 <script lang="ts" setup>
-import type { PropType } from "vue"
+import { defineAsyncComponent, type PropType } from "vue"
 import LoadingOverlay from "@/components/UI/LoadingOverlay.vue"
 import type { PortfolioMetricsResponse } from "@/data/Interfaces/PortfolioMetrics"
 import { formatDateTime, formatInteger, formatMoney, formatPercent } from "@/utils/format"
+
+const PortfolioCouponChart = defineAsyncComponent(() => import("@/components/PortfolioCouponChart.vue"))
+const PortfolioSectorChart = defineAsyncComponent(() => import("@/components/PortfolioSectorChart.vue"))
 
 const riskBadgeClass = (riskLevel: number) => {
 	switch (riskLevel) {

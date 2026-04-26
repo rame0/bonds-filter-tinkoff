@@ -152,7 +152,7 @@
         :options="filterOptions.countryOfRisk"
         label="Страна"
       />
-      <div class="space-y-3 rounded-box border border-base-300 bg-base-100 p-2.5 xl:col-span-2 2xl:col-span-1">
+      <div class="space-y-3 rounded-box border border-base-300 bg-base-100 p-2.5 xl:col-span-2 2xl:col-span-3">
         <div class="space-y-1">
           <div class="flex items-center gap-2">
             <label class="label-text block text-sm font-medium text-base-content">Месяцы купонов</label>
