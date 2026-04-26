@@ -6,8 +6,16 @@
 			class="card card-border min-w-0 h-[calc(100vh-var(--header-height)-1px)] bg-base-100"
 			id="table-view"
 		>
-			<div class="card-body h-full">
-				<portfolio-table :rows="portfolioRows" :loading="isFetchingTable" />
+			<div class="card-body flex h-full gap-4">
+				<div class="flex flex-wrap items-center justify-between gap-3 border-b border-base-300 pb-4">
+					<div>
+						<h1 class="text-lg font-semibold text-base-content">{{ activePortfolio.name }}</h1>
+						<p class="text-sm text-base-content/70">
+							{{ portfolioPositions.length }} позиций, {{ store.bondsQty }} шт.
+						</p>
+					</div>
+				</div>
+				<portfolio-table :rows="portfolioRows" :loading="isFetchingTable" class="min-h-0 flex-1" />
 			</div>
 		</div>
 
@@ -36,6 +44,7 @@ export default {
 		const isFetchingMetrics = ref(false)
 		const isFetchingTable = ref(false)
 		const store = portfolioStore()
+		const activePortfolio = computed(() => store.activePortfolio)
 		const portfolioPositions = computed<PortfolioPositionInput[]>(() => store.positions)
 		const portfolioMetrics = ref<PortfolioMetricsResponse | null>(null)
 		const portfolioRows = ref<PortfolioTableRow[]>([])
@@ -124,6 +133,9 @@ export default {
 		)
 
 		return {
+			store,
+			activePortfolio,
+			portfolioPositions,
 			portfolioRows,
 			portfolioMetrics,
 			isFetchingMetrics,

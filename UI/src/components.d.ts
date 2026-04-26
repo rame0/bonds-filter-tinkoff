@@ -25,6 +25,7 @@ declare module 'vue' {
     PortfolioPriceCell: typeof import('./components/PortfolioPriceCell.vue')['default']
     PortfolioSectorChart: typeof import('./components/PortfolioSectorChart.vue')['default']
     PortfolioStats: typeof import('./components/PortfolioStats.vue')['default']
+    PortfolioSwitcher: typeof import('./components/PortfolioSwitcher.vue')['default']
     PortfolioTable: typeof import('./components/PortfolioTable.vue')['default']
     RiskStars: typeof import('./components/UI/RiskStars.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
