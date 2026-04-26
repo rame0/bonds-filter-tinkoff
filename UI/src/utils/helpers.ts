@@ -3,8 +3,8 @@
  * See: https://tinkoff.github.io/investAPI/faq_custom_types/
  */
 
-// @ts-ignore
-import ms, { StringValue } from 'ms'
+import ms from 'ms'
+import type { StringValue } from 'ms'
 import {
   type MoneyValue,
   type Quotation,

@@ -15,8 +15,8 @@ export default (app: App<Element>) => {
       return response
     },
     (error: AxiosError) => {
-      const errorBody: { message: string; data: any } | any | undefined = error?.response?.data
-      const errorMessage: string | undefined = errorBody?.message
+      const errorBody = error?.response?.data as { message?: string } | undefined
+      const errorMessage = errorBody?.message
 
       if (!errorMessage) return Promise.reject(error)
 
