@@ -1,6 +1,6 @@
 <template>
 	<header class="border-b border-base-300 bg-base-100/90 backdrop-blur">
-		<nav class="navbar min-h-[var(--header-height)] gap-3 px-4">
+		<nav class="navbar min-h-[var(--header-height)] flex-wrap gap-3 px-4 py-2">
 			<RouterLink
 				to="/"
 				class="text-lg font-semibold text-base-content transition hover:text-primary"
@@ -18,6 +18,7 @@
 					{{ store.bondsQty > 99 ? "99+" : store.bondsQty }}
 				</span>
 			</RouterLink>
+			<portfolio-switcher />
 			<button
 				type="button"
 				class="btn btn-ghost btn-square btn-sm"
