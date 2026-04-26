@@ -26,7 +26,7 @@ export interface CombinedBondsResponse extends Omit<ApiBond, "klong" | "kshort" 
 	leftToPay?: number,
 	buyBackDate?: Date,
 	yield?: number,
-	bondYield: number,
+	bondYield?: number,
 
 	price?: number,
 	realPrice?: number,

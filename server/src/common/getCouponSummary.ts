@@ -2,6 +2,7 @@ import moment from "moment/moment"
 import { createCache } from "./cache"
 import { CombinedCoupon } from "./interfaces/CombinedCoupon"
 import { getBondCoupons } from "./investApiFacade"
+import { getErrorMessage } from "./utils/error"
 import { toNumber } from "./utils/money"
 import { roundTo } from "./utils/round"
 import { sleep } from "./utils/sleep"
@@ -77,7 +78,7 @@ async function getBondCouponsWithRetry(figi: string) {
 			return coupons
 		} catch (error) {
 			lastError = error
-			if (!String(error?.message ?? error).includes("RESOURCE_EXHAUSTED") || attempt === COUPON_FALLBACK_MAX_RETRIES) {
+			if (!getErrorMessage(error).includes("RESOURCE_EXHAUSTED") || attempt === COUPON_FALLBACK_MAX_RETRIES) {
 				throw error
 			}
 		}

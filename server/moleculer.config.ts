@@ -40,7 +40,7 @@ const brokerConfig: BrokerOptions = {
 		minRequestCount: 20,
 		windowTime: 60,
 		halfOpenTime: 10 * 1000,
-		check: (err: Errors.MoleculerError) => err && err.code >= 500,
+		check: (err: Errors.MoleculerError | Error) => err instanceof Errors.MoleculerError && err.code >= 500,
 	},
 	bulkhead: {
 		enabled: false,
@@ -48,7 +48,7 @@ const brokerConfig: BrokerOptions = {
 		maxQueueSize: 100,
 	},
 	validator: true,
-	errorHandler: null,
+	errorHandler: undefined,
 	metrics: {
 		enabled: false,
 		reporter: {

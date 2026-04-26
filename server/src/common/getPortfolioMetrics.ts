@@ -66,7 +66,7 @@ export async function getPortfolioMetrics(
 		riskAmounts.set(riskLevel, roundTo((riskAmounts.get(riskLevel) ?? 0) + sectorAmountRub) ?? 0)
 
 		for (const coupon of couponSummary?.coupons ?? []) {
-			const couponDate = moment(coupon.couponDate)
+			const couponDate = moment(String(coupon.couponDate))
 			if (!couponDate.isValid()) {
 				continue
 			}
