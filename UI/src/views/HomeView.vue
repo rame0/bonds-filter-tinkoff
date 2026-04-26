@@ -72,7 +72,8 @@ import { useStorage } from "@vueuse/core"
 
 import CurrencyCollation from "@/data/collations/CurrencyCollation"
 import CountryCollation from "@/data/collations/CountryCollation"
-import type { FilterOptions, FilterValues, FromTo } from "@/data/Types/FilterOptions"
+import type { CollationValueType } from "@/data/collations/BaseCollations"
+import type { FilterOptions, FromTo } from "@/data/Types/FilterOptions"
 import { DefaultFilterSelections, defaultFilterValues } from "@/data/Types/FilterOptions"
 import type { CombinedBondsResponse } from "@/data/Interfaces/CombinedBondsResponse"
 import type { BondsDataStatus } from "@/data/Interfaces/BondsDataStatus"
@@ -106,7 +107,9 @@ export default {
 
 		const bonds = ref<CombinedBondsResponse[]>([])
 
-		const arrayOptions = ["classCode", "currency", "couponQuantityPerYear", "countryOfRisk"]
+		const arrayOptions = ["classCode", "currency", "couponQuantityPerYear", "countryOfRisk"] as const
+		type ArrayOptionKey = (typeof arrayOptions)[number]
+		type ComparableValue = string | number
 		const paginationData = ref({
 			total: 0,
 			pageSize: useStorage<number>("pageSize", 20),
@@ -181,6 +184,16 @@ export default {
 				isFetching.value = false
 			}
 		}
+
+		const compareValues = (left: ComparableValue, right: ComparableValue, order: "ascending" | "descending") => {
+			if (left > right) return order === "ascending" ? 1 : -1
+			if (left < right) return order === "ascending" ? -1 : 1
+			return 0
+		}
+
+		const isArrayOptionValue = (
+			value: FilterOptions[ArrayOptionKey][number] | null | undefined
+		): value is FilterOptions[ArrayOptionKey][number] => value !== null && value !== undefined && value !== ""
 
 		const isRange = (
 			value: unknown
@@ -277,11 +290,7 @@ export default {
 				const order = sortState.value.order
 				if (a[key] === undefined) return 1
 				if (b[key] === undefined) return -1
-				// @ts-ignore
-				if (a[key] > b[key]) return order === "ascending" ? 1 : -1
-				// @ts-ignore
-				if (a[key] < b[key]) return order === "ascending" ? -1 : 1
-				return 0
+				return compareValues(a[key] as ComparableValue, b[key] as ComparableValue, order)
 			})
 
 			bonds.value = sorted.slice(start, end)
@@ -290,27 +299,23 @@ export default {
 
 		const updateFilters = () => {
 			for (const opt of arrayOptions) {
-				let options = response.value.map((a) => a[opt as keyof CombinedBondsResponse])
+				let options = response.value.map((a) => a[opt]) as Array<FilterOptions[ArrayOptionKey][number] | null | undefined>
 
 				options = options
-					.filter((a) => a !== null && a !== undefined && a !== "")
+					.filter(isArrayOptionValue)
 					.sort((a, b) => {
-						if (a === undefined || b === undefined) return 0
 						if (a > b) return 1
 						if (a < b) return -1
 						return 0
 					})
 
-				// @ts-ignore
-				filterOptions.value[opt as keyof FilterValues] = [...new Set(options)].map((a) => {
-					let label = a
+				filterOptions.value[opt] = [...new Set(options)].map((a) => {
+					let label: CollationValueType = String(a)
 					switch (opt) {
 						case "currency":
-							// @ts-ignore
 							label = CurrencyCollation.getLabel(a as string)
 							break
 						case "countryOfRisk":
-							// @ts-ignore
 							label = CountryCollation.getLabel(a as string)
 							break
 					}

@@ -15,14 +15,9 @@ import { RouterView } from 'vue-router'
 import BaseHeader from '@/components/UI/BaseHeader.vue'
 
 if (import.meta.env.VITE_METRIKA_ID) {
-  const metrika = import('@/utils/metrika')
-  const addMetrika = metrika.then((m: any) => {
-    return m.default
-  })
-
-  addMetrika.then((am) => {
+  import('@/utils/metrika').then(({ default: addMetrika }) => {
     // noinspection TypeScriptValidateTypes
-    am(import.meta.env.VITE_METRIKA_ID)
+    addMetrika(import.meta.env.VITE_METRIKA_ID)
   })
 }
 </script>
