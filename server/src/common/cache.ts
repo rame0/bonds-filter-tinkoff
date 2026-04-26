@@ -7,12 +7,12 @@ export const CACHE_DB_FILE_NAME = "cache.sqlite"
 export const FETCH_MARKER_FILE_NAME = ".updated"
 export const FETCH_MARKER_TTL_MS = 4 * 60 * 60 * 1000
 
-type CacheEntryRow = {
+interface CacheEntryRow {
 	value: string
 	expires_at: number | null
 }
 
-type CacheOptions = {
+interface CacheOptions {
 	ttl?: number
 }
 
