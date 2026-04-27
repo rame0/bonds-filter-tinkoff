@@ -128,8 +128,9 @@ function matchesCouponMonths(bond: CombinedBondsResponse, selectedValue: unknown
 }
 
 function getKnownCouponMonths(coupons: CombinedCoupon[] = []) {
-	return [...new Set(coupons.flatMap(coupon => {
-		const couponDate = moment(coupon.couponDate)
+	return [...new Set(coupons.flatMap((coupon: CombinedCoupon) => {
+		const couponDateValue = coupon.couponDate as Date | string
+		const couponDate = moment(couponDateValue)
 		return couponDate.isValid() ? [couponDate.month()] : []
 	}))]
 }
