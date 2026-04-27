@@ -312,9 +312,9 @@ function normalizeTinkoffCouponEvents(
 	now: Date,
 ): BondCouponEventRecord[] {
 	return coupons
-		.filter(coupon => moment(coupon.couponDate).isAfter(now))
+		.filter(coupon => moment(coupon.couponDate as Date | string).isAfter(now))
 		.map(coupon => {
-			const eventDate = moment(coupon.couponDate).toISOString()
+			const eventDate = moment(coupon.couponDate as Date | string).toISOString()
 			const nativeValue = toOptionalNumber(coupon.payout)
 			return {
 				eventKey: `${ref.uid}:${eventDate}:${coupon.couponNumber}`,
