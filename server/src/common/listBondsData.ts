@@ -1,6 +1,7 @@
 import moment from "moment"
 import { BondFilterOptionsResponse, BondListQuery, BondListResponse } from "./interfaces/BondList"
 import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
+import { CombinedCoupon } from "./interfaces/CombinedCoupon"
 
 const DEFAULT_PAGE = 1
 const DEFAULT_PAGE_SIZE = 20
@@ -126,7 +127,7 @@ function matchesCouponMonths(bond: CombinedBondsResponse, selectedValue: unknown
 		: selectedMonths.some(month => knownCouponMonths.includes(month))
 }
 
-function getKnownCouponMonths(coupons = []) {
+function getKnownCouponMonths(coupons: CombinedCoupon[] = []) {
 	return [...new Set(coupons.flatMap(coupon => {
 		const couponDate = moment(coupon.couponDate)
 		return couponDate.isValid() ? [couponDate.month()] : []
@@ -154,11 +155,11 @@ function compareBonds(
 	const leftValue = left[sortProp as keyof CombinedBondsResponse]
 	const rightValue = right[sortProp as keyof CombinedBondsResponse]
 
-	if (leftValue === undefined) {
+	if (leftValue === undefined || leftValue === null) {
 		return 1
 	}
 
-	if (rightValue === undefined) {
+	if (rightValue === undefined || rightValue === null) {
 		return -1
 	}
 
@@ -177,10 +178,12 @@ function getUniqueOptionValues(
 	bonds: CombinedBondsResponse[],
 	key: (typeof DYNAMIC_FILTER_KEYS)[number],
 ) {
+	const values = bonds
+		.map(bond => bond[key])
+		.filter((value): value is string | number => value !== null && value !== undefined && value !== "")
+
 	return [...new Set(
-		bonds
-			.map(bond => bond[key])
-			.filter(value => value !== null && value !== undefined && value !== ""),
+		values,
 	)]
 		.sort((left, right) => left > right ? 1 : left < right ? -1 : 0)
 }
