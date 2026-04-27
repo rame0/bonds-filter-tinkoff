@@ -1,9 +1,7 @@
-import { mkdirSync } from "node:fs"
-import path from "node:path"
-import { Database } from "bun:sqlite"
+import { getDatabase, SQLITE_BASE_PATH, SQLITE_DB_FILE_NAME } from "./sqlite"
 
-export const CACHE_BASE_PATH = ".cache"
-export const CACHE_DB_FILE_NAME = "cache.sqlite"
+export const CACHE_BASE_PATH = SQLITE_BASE_PATH
+export const CACHE_DB_FILE_NAME = SQLITE_DB_FILE_NAME
 export const FETCH_MARKER_TTL_MS = 4 * 60 * 60 * 1000
 
 interface CacheEntryRow {
@@ -15,21 +13,7 @@ interface CacheOptions {
 	ttl?: number
 }
 
-const cacheDirectory = path.resolve(CACHE_BASE_PATH)
-const cacheDbPath = path.join(cacheDirectory, CACHE_DB_FILE_NAME)
-
-mkdirSync(cacheDirectory, { recursive: true })
-
-const db = new Database(cacheDbPath, { create: true })
-db.run("PRAGMA journal_mode = WAL;")
-db.run(`
-	CREATE TABLE IF NOT EXISTS cache_entries (
-		key TEXT PRIMARY KEY,
-		value TEXT NOT NULL,
-		expires_at INTEGER,
-		updated_at INTEGER NOT NULL
-	)
-`)
+const db = getDatabase()
 
 const selectEntryStatement = db.query<CacheEntryRow, [string]>(`
 	SELECT value, expires_at

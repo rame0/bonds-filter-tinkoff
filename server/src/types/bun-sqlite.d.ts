@@ -7,6 +7,7 @@ declare module "bun:sqlite" {
 		}
 		query<TRow = unknown, TParams extends unknown[] = unknown[]>(query: string): {
 			get(...params: TParams): TRow | undefined
+			all(...params: TParams): TRow[]
 			run(...params: TParams): {
 				changes: number
 				lastInsertRowid: number
