@@ -1,4 +1,5 @@
 import moment from "moment"
+import { listDerivedMetricInputs } from "./bondDataSnapshot"
 import { getCouponSummary } from "./getCouponSummary"
 import { convertToRub, getOrRefreshCurrencyRates } from "./getCurrencyRates"
 import { getMoexCouponsData, getMoexLiquidityData, getMoexMarketData } from "./getMoexData"
@@ -11,6 +12,7 @@ import {
 	listLiquidityRefreshCandidates,
 	replaceBondCouponEvents,
 	upsertBondCouponAggregates,
+	upsertBondDerivedMetrics,
 	upsertBondInstrument,
 	upsertBondLiquiditySnapshot,
 	upsertBondMarketSnapshot,
@@ -160,6 +162,70 @@ export async function syncLiquiditySnapshot(now = new Date()) {
 	}
 
 	return { total: refs.length }
+}
+
+export async function recomputeDerivedMetrics(now = new Date()) {
+	const rates = await getOrRefreshCurrencyRates()
+	const rows = listDerivedMetricInputs(true)
+	let updated = 0
+
+	for (const row of rows) {
+		const realPriceLocal = row.nominal !== undefined && row.pricePercent !== undefined
+			? roundTo((row.nominal * row.pricePercent) / 100 + (row.aciValue ?? 0))
+			: undefined
+		const realPriceRub = convertSafely(realPriceLocal, row.currency, rates)
+		const bondYieldPercentFinal = row.bondYieldPercent
+			?? deriveBondYieldPercent(row.annualCouponSumRub, realPriceRub)
+		const durationMonthsFinal = row.durationMonths ?? deriveDurationMonths(now, row.buyBackDate, row.maturityDate)
+		const bondYieldFinalSource = row.bondYieldPercent !== undefined
+			? row.bondYieldSource
+			: bondYieldPercentFinal !== undefined
+				? "derived_coupon_yield"
+				: undefined
+		const durationFinalSource = row.durationMonths !== undefined
+			? row.durationSource
+			: durationMonthsFinal !== undefined
+				? "calendar_fallback"
+				: undefined
+
+		upsertBondDerivedMetrics({
+			uid: row.uid,
+			realPriceRub,
+			couponsYieldRub12m: row.annualCouponSumRub,
+			couponsYieldSource: row.aggregateSource,
+			bondYieldPercentFinal,
+			bondYieldFinalSource,
+			durationMonthsFinal,
+			durationFinalSource,
+			leftCouponCount: row.leftCouponCount,
+			leftToPayRub: row.leftToPayRub,
+			dirtyReason: undefined,
+			computedAt: now.toISOString(),
+		})
+		upsertBondSyncState(row.uid, {
+			derivedMetricsUpdatedAt: now.toISOString(),
+			needsRecompute: false,
+		})
+		updated += 1
+	}
+
+	return { total: updated }
+}
+
+export async function syncAllBondData(now = new Date()) {
+	const instrumentCore = await syncInstrumentCore(now)
+	const marketSnapshot = await syncMarketSnapshot(now)
+	const couponEvents = await syncCouponEvents(now)
+	const liquiditySnapshot = await syncLiquiditySnapshot(now)
+	const derivedMetrics = await recomputeDerivedMetrics(now)
+
+	return {
+		instrumentCore,
+		marketSnapshot,
+		couponEvents,
+		liquiditySnapshot,
+		derivedMetrics,
+	}
 }
 
 function normalizeBondInstrument(bond: ApiBond, updatedAt: string): BondInstrumentRecord {
@@ -369,6 +435,28 @@ function convertSafely(amount: number | undefined, currency: string | undefined,
 	} catch {
 		return undefined
 	}
+}
+
+function deriveBondYieldPercent(annualCouponSumRub: number | undefined, realPriceRub: number | undefined) {
+	if (annualCouponSumRub === undefined || realPriceRub === undefined || realPriceRub <= 0) {
+		return undefined
+	}
+
+	return roundTo((annualCouponSumRub / realPriceRub) * 100)
+}
+
+function deriveDurationMonths(now: Date, buyBackDate?: string, maturityDate?: string) {
+	const dateValue = buyBackDate ?? maturityDate
+	if (!dateValue) {
+		return undefined
+	}
+
+	const date = moment(dateValue)
+	if (!date.isValid()) {
+		return undefined
+	}
+
+	return roundTo(date.diff(moment(now), "days") / 30) ?? 0
 }
 
 function toOptionalString(value: unknown) {

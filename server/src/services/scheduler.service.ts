@@ -1,6 +1,7 @@
 import Cron from "moleculer-cron"
 import * as currencyRatesModule from "../common/getCurrencyRates"
 import * as bondsDataModule from "../common/getOrBuildBondsData"
+import { syncAllBondData } from "../common/syncBondData"
 import { getErrorMessage } from "../common/utils/error"
 
 let isDataGrabberRunning = false
@@ -12,12 +13,12 @@ async function runDataGrabber(reason: "tick" | "init") {
     return
   }
 
-  isDataGrabberRunning = true
-  try {
-		await bondsDataModule.getOrBuildBondsData(true)
-  } finally {
-    isDataGrabberRunning = false
-  }
+	isDataGrabberRunning = true
+	try {
+		await syncAllBondData(new Date())
+	} finally {
+		isDataGrabberRunning = false
+	}
 }
 
 async function runCurrencyRatesRefresh(reason: "tick" | "init") {
@@ -50,9 +51,9 @@ export default {
 			console.error("[DataGrabber] onTick failed:", getErrorMessage(err))
 		}
       },
-      runOnInit: async () => {
-		const data = await bondsDataModule.getCachedBondsData()
-        if (!data) {
+		runOnInit: async () => {
+			const data = await bondsDataModule.getCachedBondsData()
+			if (!data) {
           try {
             await runDataGrabber("init")
 			} catch (err) {

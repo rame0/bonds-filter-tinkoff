@@ -32,6 +32,11 @@ export interface CombinedBondsResponse extends Omit<ApiBond, "klong" | "kshort" 
 	realPrice?: number,
 	volume?: number,
 	duration?: number,
+	durationSource?: string,
 	liquidity?: LiquidityType,
+	liquiditySource?: string,
+	bondYieldSource?: string,
+	couponsYieldSource?: string,
+	couponProjectionQuality?: string,
 	qty: number,
 }

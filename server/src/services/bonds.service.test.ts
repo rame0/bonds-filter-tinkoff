@@ -62,7 +62,6 @@ describe("bonds.service coupons action", () => {
 
 		expect(getOrBuildBondsDataMock).toHaveBeenCalledTimes(1)
 		expect(listBondsDataMock).toHaveBeenCalledWith(
-			[{ uid: "bond-1" }],
 			{ page: 1, pageSize: 20, sortProp: "name", sortOrder: "ascending", filters: { search: "офз" } },
 		)
 		expect(result).toEqual({ items: [{ uid: "bond-1" }], total: 1, page: 1, pageSize: 20 })
@@ -75,7 +74,7 @@ describe("bonds.service coupons action", () => {
 		const result = await bondsService.actions.filterOptions.handler()
 
 		expect(getOrBuildBondsDataMock).toHaveBeenCalledTimes(1)
-		expect(getBondFilterOptionsMock).toHaveBeenCalledWith([{ uid: "bond-1" }])
+		expect(getBondFilterOptionsMock).toHaveBeenCalledWith()
 		expect(result).toEqual({ classCode: [1], currency: ["rub"], couponQuantityPerYear: [2], countryOfRisk: ["RU"] })
 	})
 

@@ -40,8 +40,8 @@ export default {
 			cache: true,
 			async handler(ctx): Promise<BondListResponse> {
 				try {
-					const bonds = await bondsDataModule.getOrBuildBondsData()
-					return bondListModule.listBondsData(bonds, {
+					await bondsDataModule.getOrBuildBondsData()
+					return bondListModule.listBondsData({
 						...ctx.params,
 						filters: parseFilters(ctx.params.filters),
 					})
@@ -56,8 +56,8 @@ export default {
 			params: {},
 			cache: true,
 			async handler(): Promise<BondFilterOptionsResponse> {
-				const bonds = await bondsDataModule.getOrBuildBondsData()
-				return bondListModule.getBondFilterOptions(bonds)
+				await bondsDataModule.getOrBuildBondsData()
+				return bondListModule.getBondFilterOptions()
 			},
 		},
 		coupons: {
