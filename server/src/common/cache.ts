@@ -4,7 +4,6 @@ import { Database } from "bun:sqlite"
 
 export const CACHE_BASE_PATH = ".cache"
 export const CACHE_DB_FILE_NAME = "cache.sqlite"
-export const FETCH_MARKER_FILE_NAME = ".updated"
 export const FETCH_MARKER_TTL_MS = 4 * 60 * 60 * 1000
 
 interface CacheEntryRow {
@@ -60,6 +59,9 @@ export function createCache(options: CacheOptions = {}) {
 		},
 		async set(key: string, value: unknown) {
 			writeCacheEntry(key, value, options.ttl)
+		},
+		async delete(key: string) {
+			deleteCacheEntry(key)
 		},
 	}
 }
