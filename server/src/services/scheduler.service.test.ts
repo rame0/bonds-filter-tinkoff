@@ -1,24 +1,20 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterEach, beforeEach, describe, expect, mock, spyOn, test } from "bun:test"
+import * as currencyRatesModule from "../common/getCurrencyRates"
+import * as bondsDataModule from "../common/getOrBuildBondsData"
 
 const getCachedBondsDataMock = mock(async () => null)
 const getOrBuildBondsDataMock = mock(async () => [])
 const getCachedCurrencyRatesMock = mock(async () => null)
 const refreshCurrencyRatesMock = mock(async () => ({ rates: {} }))
 
-mock.module("../common/getOrBuildBondsData", () => ({
-	getCachedBondsData: getCachedBondsDataMock,
-	getOrBuildBondsData: getOrBuildBondsDataMock,
-}))
-
-mock.module("../common/getCurrencyRates", () => ({
-	getCachedCurrencyRates: getCachedCurrencyRatesMock,
-	refreshCurrencyRates: refreshCurrencyRatesMock,
-}))
-
 const { default: schedulerService } = await import("./scheduler.service")
 
 describe("scheduler.service", () => {
 	beforeEach(() => {
+		spyOn(bondsDataModule, "getCachedBondsData").mockImplementation(getCachedBondsDataMock as any)
+		spyOn(bondsDataModule, "getOrBuildBondsData").mockImplementation(getOrBuildBondsDataMock as any)
+		spyOn(currencyRatesModule, "getCachedCurrencyRates").mockImplementation(getCachedCurrencyRatesMock as any)
+		spyOn(currencyRatesModule, "refreshCurrencyRates").mockImplementation(refreshCurrencyRatesMock as any)
 		getCachedBondsDataMock.mockReset()
 		getOrBuildBondsDataMock.mockReset()
 		getCachedCurrencyRatesMock.mockReset()
@@ -27,6 +23,10 @@ describe("scheduler.service", () => {
 		getOrBuildBondsDataMock.mockResolvedValue([])
 		getCachedCurrencyRatesMock.mockResolvedValue(null)
 		refreshCurrencyRatesMock.mockResolvedValue({ rates: {} })
+	})
+
+	afterEach(() => {
+		mock.restore()
 	})
 
 	test("triggers initial jobs when caches are empty", async () => {

@@ -1,5 +1,6 @@
 import moment from "moment"
-import { getCouponSummary, type CouponSummary } from "./getCouponSummary"
+import * as couponSummaryModule from "./getCouponSummary"
+import { type CouponSummary } from "./getCouponSummary"
 import { convertToRub, type CurrencyRatesSnapshot } from "./getCurrencyRates"
 import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
 import { type BondsDataStatus } from "./interfaces/BondsDataStatus"
@@ -121,7 +122,7 @@ async function resolveCouponSummary(bond: CombinedBondsResponse, now: moment.Mom
 		}
 	}
 
-	return getCouponSummary(String(bond.figi), Boolean(bond.floatingCouponFlag), now)
+	return couponSummaryModule.getCouponSummary(String(bond.figi), Boolean(bond.floatingCouponFlag), now)
 }
 
 function getCouponScheduleStart(now: moment.Moment) {

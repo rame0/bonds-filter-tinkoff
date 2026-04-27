@@ -1,6 +1,12 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterEach, beforeEach, describe, expect, mock, spyOn, test } from "bun:test"
+import * as currencyRatesModule from "../common/getCurrencyRates"
+import * as bondsDataModule from "../common/getOrBuildBondsData"
+import * as portfolioMetricsModule from "../common/getPortfolioMetrics"
+import * as portfolioTableModule from "../common/getPortfolioTable"
+import * as investApiFacade from "../common/investApiFacade"
+import * as bondListModule from "../common/listBondsData"
 
-const getBondCouponsMock = mock(async () => ({ events: [] as any[] }))
+const getBondCouponsMock = mock(async () => [] as any[])
 const getOrBuildBondsDataMock = mock(async () => [])
 const getBondsDataStatusMock = mock(async () => ({ isBuilding: false, hasCachedData: true }))
 const ensureBondsDataBuildMock = mock(async () => undefined)
@@ -10,41 +16,19 @@ const getPortfolioTableMock = mock(async () => ({ rows: [] }))
 const listBondsDataMock = mock(() => ({ items: [], total: 0, page: 1, pageSize: 20 }))
 const getBondFilterOptionsMock = mock(() => ({ classCode: [], currency: [], couponQuantityPerYear: [], countryOfRisk: [] }))
 
-mock.module("../common/api", () => ({
-	api: {
-		instruments: {
-			getBondCoupons: getBondCouponsMock,
-		},
-	},
-}))
-
-mock.module("../common/getOrBuildBondsData", () => ({
-	getOrBuildBondsData: getOrBuildBondsDataMock,
-	getBondsDataStatus: getBondsDataStatusMock,
-	ensureBondsDataBuild: ensureBondsDataBuildMock,
-}))
-
-mock.module("../common/getCurrencyRates", () => ({
-	getOrRefreshCurrencyRates: getOrRefreshCurrencyRatesMock,
-}))
-
-mock.module("../common/getPortfolioMetrics", () => ({
-	getPortfolioMetrics: getPortfolioMetricsMock,
-}))
-
-mock.module("../common/getPortfolioTable", () => ({
-	getPortfolioTable: getPortfolioTableMock,
-}))
-
-mock.module("../common/listBondsData", () => ({
-	listBondsData: listBondsDataMock,
-	getBondFilterOptions: getBondFilterOptionsMock,
-}))
-
 const { default: bondsService } = await import("./bonds.service")
 
 describe("bonds.service coupons action", () => {
 	beforeEach(() => {
+		spyOn(investApiFacade, "getBondCoupons").mockImplementation(getBondCouponsMock as any)
+		spyOn(bondsDataModule, "getOrBuildBondsData").mockImplementation(getOrBuildBondsDataMock as any)
+		spyOn(bondsDataModule, "getBondsDataStatus").mockImplementation(getBondsDataStatusMock as any)
+		spyOn(bondsDataModule, "ensureBondsDataBuild").mockImplementation(ensureBondsDataBuildMock as any)
+		spyOn(currencyRatesModule, "getOrRefreshCurrencyRates").mockImplementation(getOrRefreshCurrencyRatesMock as any)
+		spyOn(portfolioMetricsModule, "getPortfolioMetrics").mockImplementation(getPortfolioMetricsMock as any)
+		spyOn(portfolioTableModule, "getPortfolioTable").mockImplementation(getPortfolioTableMock as any)
+		spyOn(bondListModule, "listBondsData").mockImplementation(listBondsDataMock as any)
+		spyOn(bondListModule, "getBondFilterOptions").mockImplementation(getBondFilterOptionsMock as any)
 		getBondCouponsMock.mockReset()
 		getOrBuildBondsDataMock.mockReset()
 		getBondsDataStatusMock.mockReset()
@@ -61,6 +45,10 @@ describe("bonds.service coupons action", () => {
 		listBondsDataMock.mockReturnValue({ items: [], total: 0, page: 1, pageSize: 20 })
 		getBondFilterOptionsMock.mockReset()
 		getBondFilterOptionsMock.mockReturnValue({ classCode: [], currency: [], couponQuantityPerYear: [], countryOfRisk: [] })
+	})
+
+	afterEach(() => {
+		mock.restore()
 	})
 
 	test("delegates instruments query to server-side listing helper", async () => {
@@ -92,50 +80,41 @@ describe("bonds.service coupons action", () => {
 	})
 
 	test("sorts future coupons and maps payout from payOneBond", async () => {
-		getBondCouponsMock.mockResolvedValue({
-			events: [
-				{
-					couponNumber: 3,
-					couponDate: futureDate(30),
-					payOneBond: { units: 7, nano: 250000000 },
-				},
-				{
-					couponNumber: 1,
-					couponDate: futureDate(-30),
-					payOneBond: { units: 99, nano: 0 },
-				},
-				{
-					couponNumber: 2,
-					couponDate: futureDate(10),
-					payOneBond: { units: 5, nano: 500000000 },
-				},
-			],
-		})
+		getBondCouponsMock.mockResolvedValue([
+			{
+				couponNumber: 3,
+				couponDate: futureDate(30),
+				payOneBond: { units: 7, nano: 250000000 },
+			},
+			{
+				couponNumber: 1,
+				couponDate: futureDate(-30),
+				payOneBond: { units: 99, nano: 0 },
+			},
+			{
+				couponNumber: 2,
+				couponDate: futureDate(10),
+				payOneBond: { units: 5, nano: 500000000 },
+			},
+		])
 
 		const result = await bondsService.actions.coupons.handler({
 			params: { id: "figi-1" },
 			meta: {},
 		})
 
-		expect(getBondCouponsMock).toHaveBeenCalledWith({
-			figi: "figi-1",
-			from: new Date("2000-01-01T00:00:00.000Z"),
-			to: new Date("2100-01-01T00:00:00.000Z"),
-			instrumentId: "figi-1",
-		})
+		expect(getBondCouponsMock).toHaveBeenCalledWith("figi-1")
 		expect(result).toHaveLength(2)
 		expect(result.map((coupon: any) => coupon.couponNumber)).toEqual([2, 3])
 		expect(result.map((coupon: any) => coupon.payout)).toEqual([5.5, 7.25])
 	})
 
 	test("respects explicit coupon limit", async () => {
-		getBondCouponsMock.mockResolvedValue({
-			events: [
-				{ couponNumber: 1, couponDate: futureDate(1), payOneBond: { units: 1, nano: 0 } },
-				{ couponNumber: 2, couponDate: futureDate(2), payOneBond: { units: 2, nano: 0 } },
-				{ couponNumber: 3, couponDate: futureDate(3), payOneBond: { units: 3, nano: 0 } },
-			],
-		})
+		getBondCouponsMock.mockResolvedValue([
+			{ couponNumber: 1, couponDate: futureDate(1), payOneBond: { units: 1, nano: 0 } },
+			{ couponNumber: 2, couponDate: futureDate(2), payOneBond: { units: 2, nano: 0 } },
+			{ couponNumber: 3, couponDate: futureDate(3), payOneBond: { units: 3, nano: 0 } },
+		])
 
 		const result = await bondsService.actions.coupons.handler({
 			params: { id: "figi-2", limit: 2 },

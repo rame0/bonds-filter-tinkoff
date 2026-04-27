@@ -1,6 +1,6 @@
 import Cron from "moleculer-cron"
-import { getCachedCurrencyRates, refreshCurrencyRates } from "../common/getCurrencyRates"
-import { getCachedBondsData, getOrBuildBondsData } from "../common/getOrBuildBondsData"
+import * as currencyRatesModule from "../common/getCurrencyRates"
+import * as bondsDataModule from "../common/getOrBuildBondsData"
 import { getErrorMessage } from "../common/utils/error"
 
 let isDataGrabberRunning = false
@@ -14,7 +14,7 @@ async function runDataGrabber(reason: "tick" | "init") {
 
   isDataGrabberRunning = true
   try {
-    await getOrBuildBondsData(true)
+		await bondsDataModule.getOrBuildBondsData(true)
   } finally {
     isDataGrabberRunning = false
   }
@@ -28,7 +28,7 @@ async function runCurrencyRatesRefresh(reason: "tick" | "init") {
 
   isCurrencyRatesRefreshRunning = true
   try {
-    await refreshCurrencyRates()
+		await currencyRatesModule.refreshCurrencyRates()
   } finally {
     isCurrencyRatesRefreshRunning = false
   }
@@ -51,7 +51,7 @@ export default {
 		}
       },
       runOnInit: async () => {
-        const data = await getCachedBondsData()
+		const data = await bondsDataModule.getCachedBondsData()
         if (!data) {
           try {
             await runDataGrabber("init")
@@ -73,7 +73,7 @@ export default {
 		}
       },
       runOnInit: async () => {
-        const rates = await getCachedCurrencyRates()
+		const rates = await currencyRatesModule.getCachedCurrencyRates()
         if (!rates) {
           try {
             await runCurrencyRatesRefresh("init")

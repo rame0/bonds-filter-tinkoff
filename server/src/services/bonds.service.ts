@@ -4,15 +4,15 @@ import { CombinedBondsResponse } from "../common/interfaces/CombinedBondsRespons
 import { type ApiCoupon } from "../common/interfaces/InvestApi"
 import { type BondsDataStatus } from "../common/interfaces/BondsDataStatus"
 import { type PortfolioPositionInput } from "../common/interfaces/PortfolioMetrics"
-import { getOrRefreshCurrencyRates } from "../common/getCurrencyRates"
-import { getPortfolioMetrics } from "../common/getPortfolioMetrics"
-import { getPortfolioTable } from "../common/getPortfolioTable"
-import { getBondCoupons } from "../common/investApiFacade"
-import { getBondFilterOptions, listBondsData } from "../common/listBondsData"
+import * as currencyRatesModule from "../common/getCurrencyRates"
+import * as portfolioMetricsModule from "../common/getPortfolioMetrics"
+import * as portfolioTableModule from "../common/getPortfolioTable"
+import * as investApiFacade from "../common/investApiFacade"
+import * as bondListModule from "../common/listBondsData"
 import { BondFilterOptionsResponse, BondListResponse } from "../common/interfaces/BondList"
 import { toNumber } from "../common/utils/money"
 import { roundTo } from "../common/utils/round"
-import { ensureBondsDataBuild, getBondsDataStatus, getOrBuildBondsData } from "../common/getOrBuildBondsData"
+import * as bondsDataModule from "../common/getOrBuildBondsData"
 
 export default {
 	name: "bonds",
@@ -25,8 +25,8 @@ export default {
 			params: {},
 			cache: false,
 			async handler(): Promise<BondsDataStatus> {
-				await ensureBondsDataBuild()
-				return getBondsDataStatus()
+				await bondsDataModule.ensureBondsDataBuild()
+				return bondsDataModule.getBondsDataStatus()
 			},
 		},
 		instruments: {
@@ -40,8 +40,8 @@ export default {
 			cache: true,
 			async handler(ctx): Promise<BondListResponse> {
 				try {
-					const bonds = await getOrBuildBondsData()
-					return listBondsData(bonds, {
+					const bonds = await bondsDataModule.getOrBuildBondsData()
+					return bondListModule.listBondsData(bonds, {
 						...ctx.params,
 						filters: parseFilters(ctx.params.filters),
 					})
@@ -56,8 +56,8 @@ export default {
 			params: {},
 			cache: true,
 			async handler(): Promise<BondFilterOptionsResponse> {
-				const bonds = await getOrBuildBondsData()
-				return getBondFilterOptions(bonds)
+				const bonds = await bondsDataModule.getOrBuildBondsData()
+				return bondListModule.getBondFilterOptions(bonds)
 			},
 		},
 		coupons: {
@@ -69,7 +69,7 @@ export default {
 			async handler(ctx) {
 				const limit = ctx.params.limit ?? 12
 				try {
-					let coupons: ApiCoupon[] = await getBondCoupons(ctx.params.id)
+					let coupons: ApiCoupon[] = await investApiFacade.getBondCoupons(ctx.params.id)
 					coupons = coupons.sort((a, b) => {
 						if (a.couponNumber > b.couponNumber) return 1
 						if (a.couponNumber < b.couponNumber) return -1
@@ -102,12 +102,12 @@ export default {
 			async handler(ctx) {
 				const positions = ctx.params.positions as PortfolioPositionInput[]
 				const [bonds, bondsStatus, rates] = await Promise.all([
-					getOrBuildBondsData(),
-					getBondsDataStatus(),
-					getOrRefreshCurrencyRates(),
+					bondsDataModule.getOrBuildBondsData(),
+					bondsDataModule.getBondsDataStatus(),
+					currencyRatesModule.getOrRefreshCurrencyRates(),
 				])
 
-				return getPortfolioMetrics(positions, bonds, rates, bondsStatus, moment())
+				return portfolioMetricsModule.getPortfolioMetrics(positions, bonds, rates, bondsStatus, moment())
 			},
 		},
 		portfolioTable: {
@@ -120,9 +120,9 @@ export default {
 			cache: false,
 			async handler(ctx) {
 				const positions = ctx.params.positions as PortfolioPositionInput[]
-				const bonds = await getOrBuildBondsData()
+				const bonds = await bondsDataModule.getOrBuildBondsData()
 
-				return getPortfolioTable(positions, bonds)
+				return portfolioTableModule.getPortfolioTable(positions, bonds)
 			},
 		},
 	},

@@ -1,36 +1,22 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterEach, beforeEach, describe, expect, mock, spyOn, test } from "bun:test"
+import * as buildBondsDataModule from "./buildBondsData"
+import { clearCacheEntries } from "./cache"
+import * as fetchGate from "./fetchGate"
 
 const buildBondsDataMock = mock(async () => [{ figi: "figi-1" }])
 const shouldStartFetchMock = mock(async () => true)
 const markFetchStartedMock = mock(async () => undefined)
 const clearFetchMarkerMock = mock(async () => undefined)
-let cacheStore = new Map<string, unknown>()
-
-mock.module("./cache", () => ({
-	createCache: () => ({
-		get: async (key: string) => cacheStore.get(key),
-		getSync: (key: string) => cacheStore.get(key),
-		set: async (key: string, value: unknown) => {
-			cacheStore.set(key, value)
-		},
-	}),
-}))
-
-mock.module("./buildBondsData", () => ({
-	buildBondsData: buildBondsDataMock,
-}))
-
-mock.module("./fetchGate", () => ({
-	shouldStartFetch: shouldStartFetchMock,
-	markFetchStarted: markFetchStartedMock,
-	clearFetchMarker: clearFetchMarkerMock,
-}))
 
 const { getOrBuildBondsData } = await import("./getOrBuildBondsData")
 
 describe("getOrBuildBondsData", () => {
 	beforeEach(() => {
-		cacheStore = new Map<string, unknown>()
+		spyOn(buildBondsDataModule, "buildBondsData").mockImplementation(buildBondsDataMock as any)
+		spyOn(fetchGate, "shouldStartFetch").mockImplementation(shouldStartFetchMock as any)
+		spyOn(fetchGate, "markFetchStarted").mockImplementation(markFetchStartedMock as any)
+		spyOn(fetchGate, "clearFetchMarker").mockImplementation(clearFetchMarkerMock as any)
+		clearCacheEntries()
 		buildBondsDataMock.mockReset()
 		buildBondsDataMock.mockResolvedValue([{ figi: "figi-1" }])
 		shouldStartFetchMock.mockReset()
@@ -39,8 +25,13 @@ describe("getOrBuildBondsData", () => {
 		clearFetchMarkerMock.mockReset()
 	})
 
+	afterEach(() => {
+		mock.restore()
+		clearCacheEntries()
+	})
+
 	test("returns cached bonds without starting fetch", async () => {
-		cacheStore.set("bonds", [{ figi: "cached" }])
+		await import("./cache").then(({ createCache }) => createCache().set("bonds", [{ figi: "cached" }]))
 
 		const result = await getOrBuildBondsData()
 
@@ -56,12 +47,13 @@ describe("getOrBuildBondsData", () => {
 		expect(markFetchStartedMock).toHaveBeenCalledTimes(1)
 		expect(buildBondsDataMock).toHaveBeenCalledTimes(1)
 		expect(result).toEqual([{ figi: "figi-1" }])
-		expect(cacheStore.get("bonds")).toEqual([{ figi: "figi-1" }])
+		const { createCache } = await import("./cache")
+		expect(await createCache().get("bonds")).toEqual([{ figi: "figi-1" }])
 	})
 
 	test("skips fetch when marker is still fresh", async () => {
 		shouldStartFetchMock.mockResolvedValueOnce(false)
-		cacheStore.set("bonds", [{ figi: "cached" }])
+		await import("./cache").then(({ createCache }) => createCache().set("bonds", [{ figi: "cached" }]))
 
 		const result = await getOrBuildBondsData(true)
 

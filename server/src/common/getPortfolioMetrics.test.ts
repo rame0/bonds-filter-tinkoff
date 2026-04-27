@@ -1,15 +1,21 @@
-import { describe, expect, mock, test } from "bun:test"
+import { afterEach, beforeEach, describe, expect, mock, spyOn, test } from "bun:test"
 import moment from "moment"
+import * as couponSummaryModule from "./getCouponSummary"
 
 const getCouponSummaryMock = mock(async () => undefined)
-
-mock.module("./getCouponSummary", () => ({
-	getCouponSummary: getCouponSummaryMock,
-}))
 
 const { getPortfolioMetrics } = await import("./getPortfolioMetrics")
 
 describe("getPortfolioMetrics", () => {
+	beforeEach(() => {
+		spyOn(couponSummaryModule, "getCouponSummary").mockImplementation(getCouponSummaryMock as any)
+		getCouponSummaryMock.mockReset()
+	})
+
+	afterEach(() => {
+		mock.restore()
+	})
+
 	test("calculates totals, coupon schedule and sector allocation in rubles", async () => {
 		const result = await getPortfolioMetrics(
 			[

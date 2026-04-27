@@ -1,4 +1,4 @@
-import { api } from "./api"
+import { getApi } from "./api"
 import {
 	InstrumentStatus,
 	type ApiBond,
@@ -10,6 +10,7 @@ const COUPON_LOOKUP_FROM = new Date("2000-01-01T00:00:00.000Z")
 const COUPON_LOOKUP_TO = new Date("2100-01-01T00:00:00.000Z")
 
 export async function listBonds(): Promise<ApiBond[]> {
+	const api = getApi()
 	const { instruments } = await api.instruments.bonds({
 		instrumentStatus: InstrumentStatus.INSTRUMENT_STATUS_BASE,
 	})
@@ -18,6 +19,7 @@ export async function listBonds(): Promise<ApiBond[]> {
 }
 
 export async function getLastPrices(instrumentIds: string[]): Promise<LastPrice[]> {
+	const api = getApi()
 	const { lastPrices } = await api.marketdata.getLastPrices({
 		figi: [],
 		instrumentId: instrumentIds,
@@ -27,6 +29,7 @@ export async function getLastPrices(instrumentIds: string[]): Promise<LastPrice[
 }
 
 export async function getBondCoupons(figi: string): Promise<ApiCoupon[]> {
+	const api = getApi()
 	const { events } = await api.instruments.getBondCoupons({
 		figi,
 		from: COUPON_LOOKUP_FROM,

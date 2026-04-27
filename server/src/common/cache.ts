@@ -48,6 +48,7 @@ const upsertEntryStatement = db.query(`
 `)
 
 const deleteEntryStatement = db.query("DELETE FROM cache_entries WHERE key = ?1")
+const clearEntriesStatement = db.query("DELETE FROM cache_entries")
 
 export function createCache(options: CacheOptions = {}) {
 	return {
@@ -61,6 +62,14 @@ export function createCache(options: CacheOptions = {}) {
 			writeCacheEntry(key, value, options.ttl)
 		},
 	}
+}
+
+export function deleteCacheEntry(key: string) {
+	deleteEntryStatement.run(key)
+}
+
+export function clearCacheEntries() {
+	clearEntriesStatement.run()
 }
 
 function readCacheEntry<T>(key: string): T | undefined {
