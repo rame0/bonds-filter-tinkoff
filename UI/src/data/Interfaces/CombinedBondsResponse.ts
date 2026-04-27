@@ -37,13 +37,18 @@ export interface CombinedBondsResponse
 	realPrice?: number
 	volume?: number
 	duration?: number
+	durationSource?: string
 	liquidity?: LiquidityType
+	liquiditySource?: string
 	coupons?: CombinedCoupon[]
 	couponsYield?: number
+	couponsYieldSource?: string
 	leftCouponCount?: number
 	leftToPay?: number
 	buyBackDate?: Date | string
 	yield?: number
 	bondYield: number
+	bondYieldSource?: string
+	couponProjectionQuality?: string
 	qty: number
 }
