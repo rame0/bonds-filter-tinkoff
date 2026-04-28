@@ -15,6 +15,10 @@ export interface BondInstrumentRecord {
 	realExchange?: string
 	riskLevel?: number
 	couponQuantityPerYear?: number
+	indexedNominalFlag: boolean
+	collateralFlag: boolean
+	taxFreeFlag: boolean
+	shortEnabledFlag: boolean
 	floatingCouponFlag: boolean
 	amortizationFlag: boolean
 	perpetualFlag: boolean
@@ -26,6 +30,7 @@ export interface BondInstrumentRecord {
 	forQualInvestorFlag: boolean
 	otcFlag: boolean
 	weekendFlag: boolean
+	blockedTcaFlag: boolean
 	buyBackDate?: string
 	maturityDate?: string
 	classCode?: string
@@ -152,16 +157,18 @@ export function upsertBondInstrument(record: BondInstrumentRecord) {
 		INSERT INTO bond_instruments (
 			uid, figi, ticker, isin, name, currency, nominal, aci_value, country_of_risk, sector,
 			issue_kind, real_exchange, risk_level, coupon_quantity_per_year,
+			indexed_nominal_flag, collateral_flag, tax_free_flag, short_enabled_flag,
 			floating_coupon_flag, amortization_flag, perpetual_flag, subordinated_flag,
 			buy_available_flag, sell_available_flag, api_trade_available_flag, for_iis_flag,
-			for_qual_investor_flag, otc_flag, weekend_flag, buyback_date, maturity_date,
+			for_qual_investor_flag, otc_flag, weekend_flag, blocked_tca_flag, buyback_date, maturity_date,
 			class_code, source_updated_at, updated_at
 		) VALUES (
 			$uid, $figi, $ticker, $isin, $name, $currency, $nominal, $aciValue, $countryOfRisk, $sector,
 			$issueKind, $realExchange, $riskLevel, $couponQuantityPerYear,
+			$indexedNominalFlag, $collateralFlag, $taxFreeFlag, $shortEnabledFlag,
 			$floatingCouponFlag, $amortizationFlag, $perpetualFlag, $subordinatedFlag,
 			$buyAvailableFlag, $sellAvailableFlag, $apiTradeAvailableFlag, $forIisFlag,
-			$forQualInvestorFlag, $otcFlag, $weekendFlag, $buyBackDate, $maturityDate,
+			$forQualInvestorFlag, $otcFlag, $weekendFlag, $blockedTcaFlag, $buyBackDate, $maturityDate,
 			$classCode, $sourceUpdatedAt, $updatedAt
 		)
 		ON CONFLICT(uid) DO UPDATE SET
@@ -178,6 +185,10 @@ export function upsertBondInstrument(record: BondInstrumentRecord) {
 			real_exchange = excluded.real_exchange,
 			risk_level = excluded.risk_level,
 			coupon_quantity_per_year = excluded.coupon_quantity_per_year,
+			indexed_nominal_flag = excluded.indexed_nominal_flag,
+			collateral_flag = excluded.collateral_flag,
+			tax_free_flag = excluded.tax_free_flag,
+			short_enabled_flag = excluded.short_enabled_flag,
 			floating_coupon_flag = excluded.floating_coupon_flag,
 			amortization_flag = excluded.amortization_flag,
 			perpetual_flag = excluded.perpetual_flag,
@@ -189,6 +200,7 @@ export function upsertBondInstrument(record: BondInstrumentRecord) {
 			for_qual_investor_flag = excluded.for_qual_investor_flag,
 			otc_flag = excluded.otc_flag,
 			weekend_flag = excluded.weekend_flag,
+			blocked_tca_flag = excluded.blocked_tca_flag,
 			buyback_date = excluded.buyback_date,
 			maturity_date = excluded.maturity_date,
 			class_code = excluded.class_code,

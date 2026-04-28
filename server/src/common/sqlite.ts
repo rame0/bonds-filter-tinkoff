@@ -11,6 +11,7 @@ const sqliteDbPath = path.join(sqliteDirectory, SQLITE_DB_FILE_NAME)
 mkdirSync(sqliteDirectory, { recursive: true })
 
 const db = new Database(sqliteDbPath, { create: true })
+let schemaEnsured = false
 
 db.run("PRAGMA journal_mode = WAL;")
 db.run("PRAGMA foreign_keys = ON;")
@@ -40,6 +41,10 @@ db.run(`
 		real_exchange TEXT,
 		risk_level INTEGER,
 		coupon_quantity_per_year INTEGER,
+		indexed_nominal_flag INTEGER NOT NULL DEFAULT 0,
+		collateral_flag INTEGER NOT NULL DEFAULT 0,
+		tax_free_flag INTEGER NOT NULL DEFAULT 0,
+		short_enabled_flag INTEGER NOT NULL DEFAULT 0,
 		floating_coupon_flag INTEGER NOT NULL DEFAULT 0,
 		amortization_flag INTEGER NOT NULL DEFAULT 0,
 		perpetual_flag INTEGER NOT NULL DEFAULT 0,
@@ -51,6 +56,7 @@ db.run(`
 		for_qual_investor_flag INTEGER NOT NULL DEFAULT 0,
 		otc_flag INTEGER NOT NULL DEFAULT 0,
 		weekend_flag INTEGER NOT NULL DEFAULT 0,
+		blocked_tca_flag INTEGER NOT NULL DEFAULT 0,
 		buyback_date TEXT,
 		maturity_date TEXT,
 		class_code TEXT,
@@ -62,6 +68,8 @@ db.run(`
 db.run("CREATE INDEX IF NOT EXISTS idx_bond_instruments_ticker ON bond_instruments(ticker)")
 db.run("CREATE INDEX IF NOT EXISTS idx_bond_instruments_figi ON bond_instruments(figi)")
 db.run("CREATE INDEX IF NOT EXISTS idx_bond_instruments_isin ON bond_instruments(isin)")
+
+ensureBondInstrumentColumns()
 
 db.run(`
 	CREATE TABLE IF NOT EXISTS bond_market_snapshot (
@@ -208,6 +216,7 @@ db.run(`
 `)
 
 export function getDatabase() {
+	ensureSchema()
 	return db
 }
 
@@ -227,4 +236,30 @@ export function clearBondDataTables() {
 	for (const tableName of BOND_TABLE_NAMES) {
 		db.run(`DELETE FROM ${tableName}`)
 	}
+}
+
+function ensureColumnExists(tableName: string, columnName: string, columnDefinition: string) {
+	const columns = db.query<{ name: string }>(`PRAGMA table_info(${tableName})`).all()
+	if (columns.some(column => column.name === columnName)) {
+		return
+	}
+
+	db.run(`ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${columnDefinition}`)
+}
+
+function ensureSchema() {
+	if (schemaEnsured) {
+		return
+	}
+
+	ensureBondInstrumentColumns()
+	schemaEnsured = true
+}
+
+function ensureBondInstrumentColumns() {
+	ensureColumnExists("bond_instruments", "indexed_nominal_flag", "INTEGER NOT NULL DEFAULT 0")
+	ensureColumnExists("bond_instruments", "collateral_flag", "INTEGER NOT NULL DEFAULT 0")
+	ensureColumnExists("bond_instruments", "tax_free_flag", "INTEGER NOT NULL DEFAULT 0")
+	ensureColumnExists("bond_instruments", "short_enabled_flag", "INTEGER NOT NULL DEFAULT 0")
+	ensureColumnExists("bond_instruments", "blocked_tca_flag", "INTEGER NOT NULL DEFAULT 0")
 }

@@ -128,6 +128,8 @@ export default {
 		let statusPollTimer: ReturnType<typeof setTimeout> | undefined
 
 		const bonds = ref<CombinedBondsResponse[]>([])
+		let activeBondsRequestKey: string | undefined
+		let activeBondsRequest: Promise<void> | undefined
 
 		const arrayOptions = ["classCode", "currency", "couponQuantityPerYear", "countryOfRisk"] as const
 		type ArrayOptionKey = (typeof arrayOptions)[number]
@@ -193,21 +195,36 @@ export default {
 		})
 
 		const fetchBonds = async () => {
+			const query = {
+				page: paginationData.value.currentPage,
+				pageSize: paginationData.value.pageSize,
+				sortProp: sortState.value.prop,
+				sortOrder: sortState.value.order,
+				filters: filterSelections.value,
+			}
+			const requestKey = JSON.stringify(query)
+			if (activeBondsRequestKey === requestKey && activeBondsRequest) {
+				return activeBondsRequest
+			}
+
+			activeBondsRequestKey = requestKey
+			activeBondsRequest = (async () => {
 			isFetching.value = true
 			try {
-				const result = await bondsRepository.list({
-					page: paginationData.value.currentPage,
-					pageSize: paginationData.value.pageSize,
-					sortProp: sortState.value.prop,
-					sortOrder: sortState.value.order,
-					filters: filterSelections.value,
-				})
+				const result = await bondsRepository.list(query)
 
 				bonds.value = result.items
 				paginationData.value.total = result.total
 			} finally {
 				isFetching.value = false
+				if (activeBondsRequestKey === requestKey) {
+					activeBondsRequestKey = undefined
+					activeBondsRequest = undefined
+				}
 			}
+			})()
+
+			return activeBondsRequest
 		}
 
 		const isArrayOptionValue = (

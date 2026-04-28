@@ -26,6 +26,10 @@ interface BondListItemRow {
 	classCode: string | null
 	couponQuantityPerYear: number | null
 	countryOfRisk: string | null
+	sector: string | null
+	issueKind: string | null
+	realExchange: string | null
+	riskLevel: number | null
 	nominal: number | null
 	aciValue: number | null
 	price: number | null
@@ -34,13 +38,24 @@ interface BondListItemRow {
 	liquidity: number | null
 	couponsYield: number | null
 	leftCouponCount: number | null
-	sector: string | null
-	riskLevel: number | null
 	buyBackDate: string | null
 	maturityDate: string | null
+	indexedNominalFlag: number
+	collateralFlag: number
+	taxFreeFlag: number
+	shortEnabledFlag: number
 	floatingCouponFlag: number
 	amortizationFlag: number
 	perpetualFlag: number
+	buyAvailableFlag: number
+	sellAvailableFlag: number
+	apiTradeAvailableFlag: number
+	forIisFlag: number
+	forQualInvestorFlag: number
+	otcFlag: number
+	weekendFlag: number
+	blockedTcaFlag: number
+	subordinatedFlag: number
 	couponProjectionQuality: string | null
 	bondYieldSource: string | null
 	durationSource: string | null
@@ -102,6 +117,10 @@ export function loadStoredBonds(): CombinedBondsResponse[] {
 			classCode: row.classCode ?? undefined,
 			couponQuantityPerYear: row.couponQuantityPerYear ?? undefined,
 			countryOfRisk: row.countryOfRisk ?? undefined,
+			sector: row.sector ?? undefined,
+			issueKind: row.issueKind ?? undefined,
+			realExchange: row.realExchange ?? undefined,
+			riskLevel: row.riskLevel ?? undefined,
 			nominal: row.nominal ?? undefined,
 			aciValue: row.aciValue ?? undefined,
 			price: row.price ?? undefined,
@@ -111,13 +130,24 @@ export function loadStoredBonds(): CombinedBondsResponse[] {
 			couponsYield: row.couponsYield ?? undefined,
 			leftCouponCount: row.leftCouponCount ?? coupons.length,
 			leftToPay,
-			sector: row.sector ?? undefined,
-			riskLevel: row.riskLevel ?? undefined,
 			buyBackDate: row.buyBackDate ? new Date(row.buyBackDate) : undefined,
 			maturityDate: row.maturityDate ? new Date(row.maturityDate) : undefined,
+			indexedNominalFlag: Boolean(row.indexedNominalFlag),
+			collateralFlag: Boolean(row.collateralFlag),
+			taxFreeFlag: Boolean(row.taxFreeFlag),
+			shortEnabledFlag: Boolean(row.shortEnabledFlag),
 			floatingCouponFlag: Boolean(row.floatingCouponFlag),
 			amortizationFlag: Boolean(row.amortizationFlag),
 			perpetualFlag: Boolean(row.perpetualFlag),
+			buyAvailableFlag: Boolean(row.buyAvailableFlag),
+			sellAvailableFlag: Boolean(row.sellAvailableFlag),
+			apiTradeAvailableFlag: Boolean(row.apiTradeAvailableFlag),
+			forIisFlag: Boolean(row.forIisFlag),
+			forQualInvestorFlag: Boolean(row.forQualInvestorFlag),
+			otcFlag: Boolean(row.otcFlag),
+			weekendFlag: Boolean(row.weekendFlag),
+			blockedTcaFlag: Boolean(row.blockedTcaFlag),
+			subordinatedFlag: Boolean(row.subordinatedFlag),
 			couponProjectionQuality: row.couponProjectionQuality ?? undefined,
 			bondYieldSource: row.bondYieldSource ?? undefined,
 			durationSource: row.durationSource ?? undefined,
@@ -226,6 +256,10 @@ function readBondListRows(whereClause: string, params: Record<string, unknown>, 
 			bi.class_code AS classCode,
 			bi.coupon_quantity_per_year AS couponQuantityPerYear,
 			bi.country_of_risk AS countryOfRisk,
+			bi.sector,
+			bi.issue_kind AS issueKind,
+			bi.real_exchange AS realExchange,
+			bi.risk_level AS riskLevel,
 			bi.nominal,
 			bi.aci_value AS aciValue,
 			bms.price_percent AS price,
@@ -234,13 +268,24 @@ function readBondListRows(whereClause: string, params: Record<string, unknown>, 
 			bls.liquidity,
 			COALESCE(bdm.coupons_yield_rub_12m, bca.annual_coupon_sum_rub) AS couponsYield,
 			COALESCE(bdm.left_coupon_count, bca.left_coupon_count) AS leftCouponCount,
-			bi.sector,
-			bi.risk_level AS riskLevel,
 			bi.buyback_date AS buyBackDate,
 			bi.maturity_date AS maturityDate,
+			bi.indexed_nominal_flag AS indexedNominalFlag,
+			bi.collateral_flag AS collateralFlag,
+			bi.tax_free_flag AS taxFreeFlag,
+			bi.short_enabled_flag AS shortEnabledFlag,
 			bi.floating_coupon_flag AS floatingCouponFlag,
 			bi.amortization_flag AS amortizationFlag,
 			bi.perpetual_flag AS perpetualFlag,
+			bi.buy_available_flag AS buyAvailableFlag,
+			bi.sell_available_flag AS sellAvailableFlag,
+			bi.api_trade_available_flag AS apiTradeAvailableFlag,
+			bi.for_iis_flag AS forIisFlag,
+			bi.for_qual_investor_flag AS forQualInvestorFlag,
+			bi.otc_flag AS otcFlag,
+			bi.weekend_flag AS weekendFlag,
+			bi.blocked_tca_flag AS blockedTcaFlag,
+			bi.subordinated_flag AS subordinatedFlag,
 			bca.coupon_projection_quality AS couponProjectionQuality,
 			COALESCE(bdm.bond_yield_final_source, bms.bond_yield_source) AS bondYieldSource,
 			COALESCE(bdm.duration_final_source, bms.duration_source) AS durationSource,
@@ -287,25 +332,40 @@ function mapBondListRow(row: BondListItemRow): CombinedBondsResponse {
 		isin: row.isin ?? undefined,
 		name: row.name,
 		currency: row.currency ?? undefined,
-		classCode: row.classCode ?? undefined,
-		couponQuantityPerYear: row.couponQuantityPerYear ?? undefined,
-		countryOfRisk: row.countryOfRisk ?? undefined,
-		nominal: row.nominal ?? undefined,
-		aciValue: row.aciValue ?? undefined,
-		price: row.price ?? undefined,
+			classCode: row.classCode ?? undefined,
+			couponQuantityPerYear: row.couponQuantityPerYear ?? undefined,
+			countryOfRisk: row.countryOfRisk ?? undefined,
+			sector: row.sector ?? undefined,
+			issueKind: row.issueKind ?? undefined,
+			realExchange: row.realExchange ?? undefined,
+			riskLevel: row.riskLevel ?? undefined,
+			nominal: row.nominal ?? undefined,
+			aciValue: row.aciValue ?? undefined,
+			price: row.price ?? undefined,
 		bondYield: row.bondYield ?? undefined,
 		duration: row.duration ?? undefined,
 		liquidity: row.liquidity ?? undefined,
 		couponsYield: row.couponsYield ?? undefined,
 		leftCouponCount: row.leftCouponCount ?? undefined,
-		sector: row.sector ?? undefined,
-		riskLevel: row.riskLevel ?? undefined,
-		buyBackDate: row.buyBackDate ? new Date(row.buyBackDate) : undefined,
-		maturityDate: row.maturityDate ? new Date(row.maturityDate) : undefined,
-		floatingCouponFlag: Boolean(row.floatingCouponFlag),
-		amortizationFlag: Boolean(row.amortizationFlag),
-		perpetualFlag: Boolean(row.perpetualFlag),
-		couponProjectionQuality: row.couponProjectionQuality ?? undefined,
+			buyBackDate: row.buyBackDate ? new Date(row.buyBackDate) : undefined,
+			maturityDate: row.maturityDate ? new Date(row.maturityDate) : undefined,
+			indexedNominalFlag: Boolean(row.indexedNominalFlag),
+			collateralFlag: Boolean(row.collateralFlag),
+			taxFreeFlag: Boolean(row.taxFreeFlag),
+			shortEnabledFlag: Boolean(row.shortEnabledFlag),
+			floatingCouponFlag: Boolean(row.floatingCouponFlag),
+			amortizationFlag: Boolean(row.amortizationFlag),
+			perpetualFlag: Boolean(row.perpetualFlag),
+			buyAvailableFlag: Boolean(row.buyAvailableFlag),
+			sellAvailableFlag: Boolean(row.sellAvailableFlag),
+			apiTradeAvailableFlag: Boolean(row.apiTradeAvailableFlag),
+			forIisFlag: Boolean(row.forIisFlag),
+			forQualInvestorFlag: Boolean(row.forQualInvestorFlag),
+			otcFlag: Boolean(row.otcFlag),
+			weekendFlag: Boolean(row.weekendFlag),
+			blockedTcaFlag: Boolean(row.blockedTcaFlag),
+			subordinatedFlag: Boolean(row.subordinatedFlag),
+			couponProjectionQuality: row.couponProjectionQuality ?? undefined,
 		bondYieldSource: row.bondYieldSource ?? undefined,
 		durationSource: row.durationSource ?? undefined,
 		couponsYieldSource: row.couponsYieldSource ?? undefined,
@@ -347,17 +407,35 @@ function buildWhereClause(filters: Record<string, unknown>, params: Record<strin
 			continue
 		}
 
-		if (key === "currency" || key === "classCode" || key === "couponQuantityPerYear" || key === "countryOfRisk") {
+		if (ARRAY_FILTER_COLUMNS[key]) {
 			pushArrayCondition(conditions, params, key, value)
 			continue
 		}
 
-		if (key === "nominal" || key === "price" || key === "bondYield" || key === "duration") {
+		if (RANGE_FILTER_COLUMNS[key]) {
 			pushRangeCondition(conditions, params, key, value)
+			continue
+		}
+
+		if (BOOLEAN_FILTER_COLUMNS[key]) {
+			pushBooleanCondition(conditions, params, key, value)
 		}
 	}
 
 	return conditions.length > 0 ? `WHERE ${conditions.join(" AND ")}` : ""
+}
+
+
+const ARRAY_FILTER_COLUMNS: Record<string, string> = {
+	classCode: "bi.class_code",
+	currency: "bi.currency",
+	couponQuantityPerYear: "bi.coupon_quantity_per_year",
+	countryOfRisk: "bi.country_of_risk",
+	sector: "bi.sector",
+	issueKind: "bi.issue_kind",
+	realExchange: "bi.real_exchange",
+	riskLevel: "bi.risk_level",
+	liquidity: "bls.liquidity",
 }
 
 function pushArrayCondition(conditions: string[], params: Record<string, unknown>, key: string, value: unknown) {
@@ -365,18 +443,19 @@ function pushArrayCondition(conditions: string[], params: Record<string, unknown
 		return
 	}
 
-	const columnByKey: Record<string, string> = {
-		classCode: "bi.class_code",
-		currency: "bi.currency",
-		couponQuantityPerYear: "bi.coupon_quantity_per_year",
-		countryOfRisk: "bi.country_of_risk",
-	}
 	const placeholders = value.map((item, index) => {
 		const paramName = `$${key}${index}`
 		params[paramName] = item
 		return paramName
 	})
-	conditions.push(`${columnByKey[key]} IN (${placeholders.join(", ")})`)
+	conditions.push(`${ARRAY_FILTER_COLUMNS[key]} IN (${placeholders.join(", ")})`)
+}
+
+const RANGE_FILTER_COLUMNS: Record<string, string> = {
+	nominal: "bi.nominal",
+	price: "bms.price_percent",
+	bondYield: "COALESCE(bdm.bond_yield_percent_final, bms.bond_yield_percent)",
+	duration: "COALESCE(bdm.duration_months_final, bms.duration_months)",
 }
 
 function pushRangeCondition(conditions: string[], params: Record<string, unknown>, key: string, value: unknown) {
@@ -384,15 +463,42 @@ function pushRangeCondition(conditions: string[], params: Record<string, unknown
 		return
 	}
 
-	const columnByKey: Record<string, string> = {
-		nominal: "bi.nominal",
-		price: "bms.price_percent",
-		bondYield: "COALESCE(bdm.bond_yield_percent_final, bms.bond_yield_percent)",
-		duration: "COALESCE(bdm.duration_months_final, bms.duration_months)",
-	}
 	params[`$${key}From`] = value.from
 	params[`$${key}To`] = value.to
-	conditions.push(`${columnByKey[key]} BETWEEN $${key}From AND $${key}To`)
+	conditions.push(`${RANGE_FILTER_COLUMNS[key]} BETWEEN $${key}From AND $${key}To`)
+}
+
+const BOOLEAN_FILTER_COLUMNS: Record<string, string> = {
+	indexedNominalFlag: "bi.indexed_nominal_flag",
+	collateralFlag: "bi.collateral_flag",
+	taxFreeFlag: "bi.tax_free_flag",
+	shortEnabledFlag: "bi.short_enabled_flag",
+	otcFlag: "bi.otc_flag",
+	buyAvailableFlag: "bi.buy_available_flag",
+	sellAvailableFlag: "bi.sell_available_flag",
+	floatingCouponFlag: "bi.floating_coupon_flag",
+	perpetualFlag: "bi.perpetual_flag",
+	amortizationFlag: "bi.amortization_flag",
+	apiTradeAvailableFlag: "bi.api_trade_available_flag",
+	forIisFlag: "bi.for_iis_flag",
+	forQualInvestorFlag: "bi.for_qual_investor_flag",
+	weekendFlag: "bi.weekend_flag",
+	blockedTcaFlag: "bi.blocked_tca_flag",
+	subordinatedFlag: "bi.subordinated_flag",
+}
+
+function pushBooleanCondition(conditions: string[], params: Record<string, unknown>, key: string, value: unknown) {
+	if (value === -1 || value === undefined) {
+		return
+	}
+
+	if (typeof value !== "boolean") {
+		return
+	}
+
+	const paramName = `$${key}`
+	params[paramName] = value ? 1 : 0
+	conditions.push(`${BOOLEAN_FILTER_COLUMNS[key]} = ${paramName}`)
 }
 
 function pushCouponMonthsCondition(
