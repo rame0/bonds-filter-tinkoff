@@ -96,6 +96,11 @@ describe("listBondsData", () => {
 			currency: ["rub", "usd"],
 			couponQuantityPerYear: [2, 4, 12],
 			countryOfRisk: ["RU", "US"],
+			sector: [],
+			issueKind: [],
+			realExchange: [],
+			riskLevel: [],
+			liquidity: [1, 2],
 		})
 	})
 })

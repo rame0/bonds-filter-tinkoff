@@ -72,6 +72,11 @@ import { useStorage } from "@vueuse/core"
 
 import CurrencyCollation from "@/data/collations/CurrencyCollation"
 import CountryCollation from "@/data/collations/CountryCollation"
+import ExchangeCollation from "@/data/collations/ExchangeCollation"
+import IssueKindCollations from "@/data/collations/IssueKindCollations"
+import LiquidityCollations from "@/data/collations/LiquidityCollations"
+import RiskLevelCollation from "@/data/collations/RiskLevelCollation"
+import SectorsCollation from "@/data/collations/SectorsCollation"
 import type { CollationValueType } from "@/data/collations/BaseCollations"
 import type { FilterOptions } from "@/data/Types/FilterOptions"
 import { DefaultFilterSelections, defaultFilterValues } from "@/data/Types/FilterOptions"
@@ -131,7 +136,7 @@ export default {
 		let activeBondsRequestKey: string | undefined
 		let activeBondsRequest: Promise<void> | undefined
 
-		const arrayOptions = ["classCode", "currency", "couponQuantityPerYear", "countryOfRisk"] as const
+		const arrayOptions = ["classCode", "currency", "couponQuantityPerYear", "countryOfRisk", "sector", "issueKind", "realExchange", "riskLevel", "liquidity"] as const
 		type ArrayOptionKey = (typeof arrayOptions)[number]
 		const paginationData = ref({
 			total: 0,
@@ -255,16 +260,31 @@ export default {
 
 				filterOptions.value[opt] = [...new Set(options)].map((a) => {
 					let label: CollationValueType = String(a)
-					switch (opt) {
-						case "currency":
-							label = CurrencyCollation.getLabel(a as string)
-							break
-						case "countryOfRisk":
-							label = CountryCollation.getLabel(a as string)
-							break
-					}
-					return { value: a as string, label: label }
-				})
+						switch (opt) {
+							case "currency":
+								label = CurrencyCollation.getLabel(a as string)
+								break
+							case "countryOfRisk":
+								label = CountryCollation.getLabel(a as string)
+								break
+							case "sector":
+								label = SectorsCollation.getLabel(String(a))
+								break
+							case "issueKind":
+								label = IssueKindCollations.getLabel(String(a))
+								break
+							case "realExchange":
+								label = ExchangeCollation.getLabel(String(a))
+								break
+							case "riskLevel":
+								label = RiskLevelCollation.getLabel(String(a))
+								break
+							case "liquidity":
+								label = LiquidityCollations.getLabel(String(a))
+								break
+						}
+						return { value: String(a), label }
+					})
 			}
 		}
 

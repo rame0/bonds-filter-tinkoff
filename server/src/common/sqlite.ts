@@ -1,8 +1,8 @@
-import { mkdirSync } from "node:fs"
+import { existsSync, mkdirSync } from "node:fs"
 import path from "node:path"
 import { Database } from "bun:sqlite"
 
-export const SQLITE_BASE_PATH = ".cache"
+export const SQLITE_BASE_PATH = resolveSqliteBasePath()
 export const SQLITE_DB_FILE_NAME = "cache.sqlite"
 
 const sqliteDirectory = path.resolve(SQLITE_BASE_PATH)
@@ -262,4 +262,13 @@ function ensureBondInstrumentColumns() {
 	ensureColumnExists("bond_instruments", "tax_free_flag", "INTEGER NOT NULL DEFAULT 0")
 	ensureColumnExists("bond_instruments", "short_enabled_flag", "INTEGER NOT NULL DEFAULT 0")
 	ensureColumnExists("bond_instruments", "blocked_tca_flag", "INTEGER NOT NULL DEFAULT 0")
+}
+
+function resolveSqliteBasePath() {
+	const repoServerPath = path.join(process.cwd(), "server")
+	if (existsSync(repoServerPath)) {
+		return path.join("server", ".cache")
+	}
+
+	return ".cache"
 }

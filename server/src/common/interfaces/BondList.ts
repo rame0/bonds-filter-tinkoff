@@ -22,4 +22,9 @@ export interface BondFilterOptionsResponse {
 	currency: string[]
 	couponQuantityPerYear: number[]
 	countryOfRisk: string[]
+	sector: string[]
+	issueKind: string[]
+	realExchange: string[]
+	riskLevel: number[]
+	liquidity: number[]
 }

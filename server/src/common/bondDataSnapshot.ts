@@ -191,6 +191,11 @@ export function getStoredBondFilterOptions(): BondFilterOptionsResponse {
 		currency: readDistinctStringValues("currency"),
 		couponQuantityPerYear: readDistinctNumberValues("coupon_quantity_per_year"),
 		countryOfRisk: readDistinctStringValues("country_of_risk"),
+		sector: readDistinctStringValues("sector"),
+		issueKind: readDistinctStringValues("issue_kind"),
+		realExchange: readDistinctStringValues("real_exchange"),
+		riskLevel: readDistinctNumberValues("risk_level"),
+		liquidity: readDistinctJoinedNumberValues("bond_liquidity_snapshot", "liquidity"),
 	}
 }
 
@@ -558,6 +563,15 @@ function readDistinctValues(column: string) {
 		WHERE ${column} IS NOT NULL AND ${column} != ''
 		ORDER BY value ASC
 	`).all().flatMap(row => row.value === null ? [] : [row.value])
+}
+
+function readDistinctJoinedNumberValues(tableName: string, column: string) {
+	return db.query<{ value: number | null }>(`
+		SELECT DISTINCT ${tableName}.${column} AS value
+		FROM ${tableName}
+		WHERE ${tableName}.${column} IS NOT NULL
+		ORDER BY value ASC
+	`).all().flatMap(row => typeof row.value === "number" ? [row.value] : [])
 }
 
 function buildOrderBy(sortProp: string | undefined, sortOrder: string | undefined) {
