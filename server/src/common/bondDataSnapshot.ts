@@ -10,9 +10,9 @@ const SORT_COLUMN_BY_PROP: Record<string, string> = {
 	ticker: "bi.ticker",
 	nominal: "bi.nominal",
 	price: "bms.price_percent",
-	bondYield: "bdm.bond_yield_percent_final",
-	duration: "bdm.duration_months_final",
-	couponsYield: "bdm.coupons_yield_rub_12m",
+	bondYield: "COALESCE(bdm.bond_yield_percent_final, bms.bond_yield_percent)",
+	duration: "COALESCE(bdm.duration_months_final, bms.duration_months)",
+	couponsYield: "COALESCE(bdm.coupons_yield_rub_12m, bca.annual_coupon_sum_rub)",
 	liquidity: "bls.liquidity",
 }
 
@@ -229,11 +229,11 @@ function readBondListRows(whereClause: string, params: Record<string, unknown>, 
 			bi.nominal,
 			bi.aci_value AS aciValue,
 			bms.price_percent AS price,
-			bdm.bond_yield_percent_final AS bondYield,
-			bdm.duration_months_final AS duration,
+			COALESCE(bdm.bond_yield_percent_final, bms.bond_yield_percent) AS bondYield,
+			COALESCE(bdm.duration_months_final, bms.duration_months) AS duration,
 			bls.liquidity,
-			bdm.coupons_yield_rub_12m AS couponsYield,
-			bdm.left_coupon_count AS leftCouponCount,
+			COALESCE(bdm.coupons_yield_rub_12m, bca.annual_coupon_sum_rub) AS couponsYield,
+			COALESCE(bdm.left_coupon_count, bca.left_coupon_count) AS leftCouponCount,
 			bi.sector,
 			bi.risk_level AS riskLevel,
 			bi.buyback_date AS buyBackDate,
@@ -242,9 +242,9 @@ function readBondListRows(whereClause: string, params: Record<string, unknown>, 
 			bi.amortization_flag AS amortizationFlag,
 			bi.perpetual_flag AS perpetualFlag,
 			bca.coupon_projection_quality AS couponProjectionQuality,
-			bdm.bond_yield_final_source AS bondYieldSource,
-			bdm.duration_final_source AS durationSource,
-			bdm.coupons_yield_source AS couponsYieldSource,
+			COALESCE(bdm.bond_yield_final_source, bms.bond_yield_source) AS bondYieldSource,
+			COALESCE(bdm.duration_final_source, bms.duration_source) AS durationSource,
+			COALESCE(bdm.coupons_yield_source, bca.aggregate_source) AS couponsYieldSource,
 			bls.liquidity_source AS liquiditySource
 		FROM bond_instruments bi
 		LEFT JOIN bond_market_snapshot bms ON bms.uid = bi.uid
@@ -387,8 +387,8 @@ function pushRangeCondition(conditions: string[], params: Record<string, unknown
 	const columnByKey: Record<string, string> = {
 		nominal: "bi.nominal",
 		price: "bms.price_percent",
-		bondYield: "bdm.bond_yield_percent_final",
-		duration: "bdm.duration_months_final",
+		bondYield: "COALESCE(bdm.bond_yield_percent_final, bms.bond_yield_percent)",
+		duration: "COALESCE(bdm.duration_months_final, bms.duration_months)",
 	}
 	params[`$${key}From`] = value.from
 	params[`$${key}To`] = value.to
