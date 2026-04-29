@@ -28,7 +28,7 @@ interface BondListItemRow {
 	countryOfRisk: string | null
 	sector: string | null
 	issueKind: string | null
-	realExchange: string | null
+	realExchange: number | null
 	riskLevel: number | null
 	nominal: number | null
 	aciValue: number | null
@@ -193,7 +193,7 @@ export function getStoredBondFilterOptions(): BondFilterOptionsResponse {
 		countryOfRisk: readDistinctStringValues("country_of_risk"),
 		sector: readDistinctStringValues("sector"),
 		issueKind: readDistinctStringValues("issue_kind"),
-		realExchange: readDistinctStringValues("real_exchange"),
+		realExchange: readDistinctNumberValues("real_exchange"),
 		riskLevel: readDistinctNumberValues("risk_level"),
 		liquidity: readDistinctJoinedNumberValues("bond_liquidity_snapshot", "liquidity"),
 	}

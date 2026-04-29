@@ -12,7 +12,7 @@ export interface BondInstrumentRecord {
 	countryOfRisk?: string
 	sector?: string
 	issueKind?: string
-	realExchange?: string
+	realExchange?: number
 	riskLevel?: number
 	couponQuantityPerYear?: number
 	indexedNominalFlag: boolean

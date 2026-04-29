@@ -24,7 +24,7 @@ export interface BondFilterOptionsResponse {
 	countryOfRisk: string[]
 	sector: string[]
 	issueKind: string[]
-	realExchange: string[]
+	realExchange: number[]
 	riskLevel: number[]
 	liquidity: number[]
 }

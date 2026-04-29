@@ -253,7 +253,7 @@ function normalizeBondInstrument(bond: ApiBond, updatedAt: string): BondInstrume
 		countryOfRisk: toOptionalString(normalized.countryOfRisk),
 		sector: toOptionalString(normalized.sector),
 		issueKind: toOptionalString(normalized.issueKind),
-		realExchange: toOptionalString(normalized.realExchange),
+		realExchange: toOptionalNumber(normalized.realExchange),
 		riskLevel: toOptionalNumber(normalized.riskLevel),
 		couponQuantityPerYear: toOptionalNumber(normalized.couponQuantityPerYear),
 		indexedNominalFlag: Boolean(normalized.indexedNominalFlag),
@@ -467,6 +467,7 @@ function deriveDurationMonths(now: Date, buyBackDate?: string, maturityDate?: st
 function toOptionalString(value: unknown) {
 	return typeof value === "string" && value !== "" ? value : undefined
 }
+
 
 function toOptionalNumber(value: unknown) {
 	return typeof value === "number" && Number.isFinite(value) ? value : undefined
