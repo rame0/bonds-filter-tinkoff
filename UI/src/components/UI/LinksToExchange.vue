@@ -16,7 +16,7 @@
       target="_blank"
       rel="noreferrer"
       class="link link-error inline-flex items-center gap-1 text-sm font-medium no-underline"
-      v-if="props.exchange == 1 || props.exchange == '1'"
+      v-if="isMoexExchange"
     >
       МосБиржа
       <new-window class="h-3 w-3 shrink-0" />
@@ -26,9 +26,13 @@
 
 <script setup lang="ts">
 import newWindow from '@/components/icons/IconNewWindow.vue'
+import { computed } from 'vue'
+import { RealExchange } from '@/data/Interfaces/common'
 
 const props = defineProps<{
   ticker: string
-  exchange: string | number
+  exchange?: string | number
 }>()
+
+const isMoexExchange = computed(() => Number(props.exchange) === RealExchange.REAL_EXCHANGE_MOEX)
 </script>

@@ -1,32 +1,33 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterEach, beforeEach, describe, expect, mock, spyOn, test } from "bun:test"
+import * as currencyRatesModule from "../common/getCurrencyRates"
+import * as bondsDataModule from "../common/getOrBuildBondsData"
+import * as syncBondDataModule from "../common/syncBondData"
 
 const getCachedBondsDataMock = mock(async () => null)
-const getOrBuildBondsDataMock = mock(async () => [])
+const syncAllBondDataMock = mock(async () => [])
 const getCachedCurrencyRatesMock = mock(async () => null)
 const refreshCurrencyRatesMock = mock(async () => ({ rates: {} }))
-
-mock.module("../common/getOrBuildBondsData", () => ({
-	getCachedBondsData: getCachedBondsDataMock,
-	getOrBuildBondsData: getOrBuildBondsDataMock,
-}))
-
-mock.module("../common/getCurrencyRates", () => ({
-	getCachedCurrencyRates: getCachedCurrencyRatesMock,
-	refreshCurrencyRates: refreshCurrencyRatesMock,
-}))
 
 const { default: schedulerService } = await import("./scheduler.service")
 
 describe("scheduler.service", () => {
 	beforeEach(() => {
+		spyOn(bondsDataModule, "getCachedBondsData").mockImplementation(getCachedBondsDataMock as any)
+		spyOn(syncBondDataModule, "syncAllBondData").mockImplementation(syncAllBondDataMock as any)
+		spyOn(currencyRatesModule, "getCachedCurrencyRates").mockImplementation(getCachedCurrencyRatesMock as any)
+		spyOn(currencyRatesModule, "refreshCurrencyRates").mockImplementation(refreshCurrencyRatesMock as any)
 		getCachedBondsDataMock.mockReset()
-		getOrBuildBondsDataMock.mockReset()
+		syncAllBondDataMock.mockReset()
 		getCachedCurrencyRatesMock.mockReset()
 		refreshCurrencyRatesMock.mockReset()
 		getCachedBondsDataMock.mockResolvedValue(null)
-		getOrBuildBondsDataMock.mockResolvedValue([])
+		syncAllBondDataMock.mockResolvedValue([])
 		getCachedCurrencyRatesMock.mockResolvedValue(null)
 		refreshCurrencyRatesMock.mockResolvedValue({ rates: {} })
+	})
+
+	afterEach(() => {
+		mock.restore()
 	})
 
 	test("triggers initial jobs when caches are empty", async () => {
@@ -36,7 +37,7 @@ describe("scheduler.service", () => {
 		await ratesCron.runOnInit()
 
 		expect(getCachedBondsDataMock).toHaveBeenCalledTimes(1)
-		expect(getOrBuildBondsDataMock).toHaveBeenCalledWith(true)
+		expect(syncAllBondDataMock).toHaveBeenCalledTimes(1)
 		expect(getCachedCurrencyRatesMock).toHaveBeenCalledTimes(1)
 		expect(refreshCurrencyRatesMock).toHaveBeenCalledTimes(1)
 		expect(ratesCron.timeZone).toBe("Europe/Moscow")
@@ -51,7 +52,7 @@ describe("scheduler.service", () => {
 		await bondsCron.runOnInit()
 		await ratesCron.runOnInit()
 
-		expect(getOrBuildBondsDataMock).not.toHaveBeenCalled()
+		expect(syncAllBondDataMock).not.toHaveBeenCalled()
 		expect(refreshCurrencyRatesMock).not.toHaveBeenCalled()
 	})
 })

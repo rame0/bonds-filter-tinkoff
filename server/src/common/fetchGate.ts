@@ -1,51 +1,25 @@
-import { mkdir, rm, stat, utimes, writeFile } from "node:fs/promises"
-import path from "node:path"
-import { CACHE_BASE_PATH, FETCH_MARKER_FILE_NAME, FETCH_MARKER_TTL_MS } from "./cache"
+import { FETCH_MARKER_TTL_MS, createCache } from "./cache"
 
-const fetchMarkerPath = path.resolve(CACHE_BASE_PATH, FETCH_MARKER_FILE_NAME)
+const FETCH_MARKER_CACHE_KEY = "__fetch_marker__"
+const fetchMarkerCache = createCache()
 
 export async function shouldStartFetch(now = Date.now()) {
-	try {
-		const markerStats = await stat(fetchMarkerPath)
-		return now - markerStats.mtimeMs >= FETCH_MARKER_TTL_MS
-	} catch (error) {
-		if (isMissingFileError(error)) {
-			return true
-		}
-
-		throw error
+	const startedAt = await fetchMarkerCache.get<number>(FETCH_MARKER_CACHE_KEY)
+	if (typeof startedAt !== "number") {
+		return true
 	}
+
+	return now - startedAt >= FETCH_MARKER_TTL_MS
 }
 
 export async function markFetchStarted(now = new Date()) {
-	await mkdir(CACHE_BASE_PATH, { recursive: true })
-
-	try {
-		await utimes(fetchMarkerPath, now, now)
-	} catch (error) {
-		if (!isMissingFileError(error)) {
-			throw error
-		}
-
-		await writeFile(fetchMarkerPath, "", "utf8")
-		await utimes(fetchMarkerPath, now, now)
-	}
+	await fetchMarkerCache.set(FETCH_MARKER_CACHE_KEY, now.getTime())
 }
 
 export async function clearFetchMarker() {
-	try {
-		await rm(fetchMarkerPath, { force: true })
-	} catch (error) {
-		if (!isMissingFileError(error)) {
-			throw error
-		}
-	}
+	await fetchMarkerCache.delete(FETCH_MARKER_CACHE_KEY)
 }
 
-export function getFetchMarkerPath() {
-	return fetchMarkerPath
-}
-
-function isMissingFileError(error: unknown) {
-	return typeof error === "object" && error !== null && "code" in error && error.code === "ENOENT"
+export function getFetchMarkerCacheKey() {
+	return FETCH_MARKER_CACHE_KEY
 }

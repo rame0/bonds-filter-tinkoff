@@ -11,6 +11,7 @@ export interface ApiBond {
 	ticker: string
 	name: string
 	currency: string
+	realExchange?: RealExchange
 	buyBackDate?: Date | string
 	maturityDate?: Date | string
 }
@@ -67,4 +68,13 @@ export interface InvestApi {
 
 export enum InstrumentStatus {
 	INSTRUMENT_STATUS_BASE = 1,
+}
+
+export enum RealExchange {
+	REAL_EXCHANGE_UNSPECIFIED = 0,
+	REAL_EXCHANGE_MOEX = 1,
+	REAL_EXCHANGE_RTS = 2,
+	REAL_EXCHANGE_OTC = 3,
+	REAL_EXCHANGE_DEALER = 4,
+	UNRECOGNIZED = -1,
 }

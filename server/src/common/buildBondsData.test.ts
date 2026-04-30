@@ -1,89 +1,57 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterEach, beforeEach, describe, expect, mock, spyOn, test } from "bun:test"
 import moment from "moment"
+import * as couponSummaryModule from "./getCouponSummary"
+import * as investApiFacade from "./investApiFacade"
+import * as moexDataModule from "./getMoexData"
 import { LiquidityType } from "./interfaces/Moex"
 
-const bondsMock = mock(async () => ({ instruments: [] as any[] }))
-const getLastPricesMock = mock(async () => ({ lastPrices: [] as any[] }))
+const listBondsMock = mock(async () => [] as any[])
+const getLastPricesMock = mock(async () => [] as any[])
 const getMoexDataMock = mock(async () => ({}))
-const getBondCouponsMock = mock(async () => [] as any[])
-let cacheStore = new Map<string, unknown>()
-
-mock.module("file-system-cache", () => ({
-	default: () => ({
-		get: async (key: string) => cacheStore.get(key),
-		set: async (key: string, value: unknown) => {
-			cacheStore.set(key, value)
-		},
-	}),
-}))
-
-mock.module("./investApiFacade", () => ({
-	listBonds: async () => {
-		const { instruments } = await bondsMock()
-		return instruments
-	},
-	getLastPrices: async (instrumentIds: string[]) => {
-		const { lastPrices } = await getLastPricesMock(instrumentIds)
-		return lastPrices
-	},
-	getBondCoupons: getBondCouponsMock,
-}))
-
-mock.module("./getMoexData", () => ({
-	getMoexData: getMoexDataMock,
-	calculateCouponsYieldForYear: (coupons: { date?: moment.Moment, value: number }[], nowDate = moment()) => {
-		const oneYearLater = nowDate.clone().add(1, "year")
-
-		return coupons.reduce<number>((acc, coupon) => {
-			const couponDate = coupon?.date
-			if (!couponDate?.isValid()) {
-				return acc
-			}
-
-			return couponDate.isAfter(nowDate) && couponDate.isSameOrBefore(oneYearLater)
-				? acc + coupon.value
-				: acc
-		}, 0)
-	},
-	mapWithConcurrency: async (items: unknown[], _concurrency: number, worker: (item: unknown, index: number) => Promise<void>) => {
-		for (let i = 0; i < items.length; i++) {
-			await worker(items[i], i)
-		}
-	},
-}))
+const getCouponSummaryMock = mock(async () => undefined as any)
 
 const { buildBondsData } = await import("./buildBondsData")
 
-describe("buildBondsData", () => {
+	describe("buildBondsData", () => {
 	beforeEach(() => {
-		cacheStore = new Map<string, unknown>()
-		bondsMock.mockReset()
+		spyOn(investApiFacade, "listBonds").mockImplementation(listBondsMock as any)
+		spyOn(investApiFacade, "getLastPrices").mockImplementation(getLastPricesMock as any)
+		spyOn(moexDataModule, "getMoexData").mockImplementation(getMoexDataMock as any)
+		spyOn(moexDataModule, "mapWithConcurrency").mockImplementation(
+			async (items: unknown[], _concurrency: number, worker: (item: unknown, index: number) => Promise<void>) => {
+				for (let i = 0; i < items.length; i++) {
+					await worker(items[i], i)
+				}
+			},
+		)
+		spyOn(couponSummaryModule, "getCouponSummary").mockImplementation(getCouponSummaryMock as any)
+		listBondsMock.mockReset()
 		getLastPricesMock.mockReset()
 		getMoexDataMock.mockReset()
-		getBondCouponsMock.mockReset()
+		getCouponSummaryMock.mockReset()
+	})
+
+	afterEach(() => {
+		mock.restore()
 	})
 
 	test("converts money-like fields and merges market plus MOEX data", async () => {
-		bondsMock.mockResolvedValue({
-			instruments: [
-				{
-					uid: "uid-1",
-					figi: "figi-1",
-					ticker: "BOND1",
-					name: "Bond 1",
-					currency: "rub",
-					nominal: { units: 1000, nano: 500000000 },
-					placementPrice: { units: 950, nano: 0 },
-					aciValue: { units: 12, nano: 340000000 },
-					buyBackDate: "2030-01-01T00:00:00.000Z",
-					maturityDate: "2031-01-01T00:00:00.000Z",
-				},
-			],
-		})
+		listBondsMock.mockResolvedValue([
+			{
+				uid: "uid-1",
+				figi: "figi-1",
+				ticker: "BOND1",
+				name: "Bond 1",
+				currency: "rub",
+				nominal: { units: 1000, nano: 500000000 },
+				placementPrice: { units: 950, nano: 0 },
+				aciValue: { units: 12, nano: 340000000 },
+				buyBackDate: "2030-01-01T00:00:00.000Z",
+				maturityDate: "2031-01-01T00:00:00.000Z",
+			},
+		])
 
-		getLastPricesMock.mockResolvedValue({
-			lastPrices: [{ figi: "figi-1", price: { units: 101, nano: 230000000 } }],
-		})
+		getLastPricesMock.mockResolvedValue([{ figi: "figi-1", price: { units: 101, nano: 230000000 } }])
 
 		getMoexDataMock.mockResolvedValue({
 			BOND1: {
@@ -93,7 +61,7 @@ describe("buildBondsData", () => {
 				liquidity: LiquidityType.high,
 			},
 		})
-		getBondCouponsMock.mockResolvedValue([])
+		getCouponSummaryMock.mockResolvedValue(undefined)
 
 		const result = await buildBondsData()
 
@@ -117,37 +85,33 @@ describe("buildBondsData", () => {
 		const buyBackDate = moment().add(65, "days").toISOString()
 		const maturityDate = moment().add(130, "days").toISOString()
 
-		bondsMock.mockResolvedValue({
-			instruments: [
-				{
-					uid: "uid-2",
-					figi: "figi-2",
-					ticker: "BOND2",
-					name: "Bond 2",
-					currency: "rub",
-					buyBackDate,
-					maturityDate,
-				},
-				{
-					uid: "uid-3",
-					figi: "figi-3",
-					ticker: "BOND3",
-					name: "Bond 3",
-					currency: "rub",
-					maturityDate,
-				},
-			],
-		})
+		listBondsMock.mockResolvedValue([
+			{
+				uid: "uid-2",
+				figi: "figi-2",
+				ticker: "BOND2",
+				name: "Bond 2",
+				currency: "rub",
+				buyBackDate,
+				maturityDate,
+			},
+			{
+				uid: "uid-3",
+				figi: "figi-3",
+				ticker: "BOND3",
+				name: "Bond 3",
+				currency: "rub",
+				maturityDate,
+			},
+		])
 
-		getLastPricesMock.mockResolvedValue({
-			lastPrices: [],
-		})
+		getLastPricesMock.mockResolvedValue([])
 
 		getMoexDataMock.mockResolvedValue({
 			BOND2: {},
 			BOND3: { BondDuration: 0 },
 		})
-		getBondCouponsMock.mockResolvedValue([])
+		getCouponSummaryMock.mockResolvedValue(undefined)
 
 		const result = await buildBondsData()
 		const buyBackMonths = roundMonthsUntil(buyBackDate)
@@ -161,33 +125,34 @@ describe("buildBondsData", () => {
 	})
 
 	test("backfills coupon metrics when MOEX data is missing", async () => {
-		bondsMock.mockResolvedValue({
-			instruments: [
-				{
-					uid: "uid-4",
-					figi: "figi-4",
-					ticker: "BOND4",
-					name: "Bond 4",
-					currency: "usd",
-					nominal: { units: 1000, nano: 0 },
-					aciValue: { units: 10, nano: 0 },
-				},
+		listBondsMock.mockResolvedValue([
+			{
+				uid: "uid-4",
+				figi: "figi-4",
+				ticker: "BOND4",
+				name: "Bond 4",
+				currency: "usd",
+				nominal: { units: 1000, nano: 0 },
+				aciValue: { units: 10, nano: 0 },
+			},
+		])
+
+		getLastPricesMock.mockResolvedValue([{ figi: "figi-4", price: { units: 95, nano: 0 } }])
+
+		getMoexDataMock.mockResolvedValue({ BOND4: {} })
+		getCouponSummaryMock.mockResolvedValue({
+			annualCouponSum: 41.5,
+			leftCouponCount: 2,
+			leftToPay: 41.5,
+			coupons: [
+				{ couponNumber: 1, couponDate: futureDate(30), payout: 20 },
+				{ couponNumber: 2, couponDate: futureDate(180), payout: 21.5 },
 			],
 		})
 
-		getLastPricesMock.mockResolvedValue({
-			lastPrices: [{ figi: "figi-4", price: { units: 95, nano: 0 } }],
-		})
-
-		getMoexDataMock.mockResolvedValue({ BOND4: {} })
-		getBondCouponsMock.mockResolvedValue([
-				{ couponNumber: 1, couponDate: futureDate(30), payOneBond: { units: 20, nano: 0 } },
-				{ couponNumber: 2, couponDate: futureDate(180), payOneBond: { units: 21, nano: 500000000 } },
-		])
-
 		const result = await buildBondsData()
 
-		expect(getBondCouponsMock).toHaveBeenCalledWith("figi-4")
+		expect(getCouponSummaryMock).toHaveBeenCalledWith("figi-4", false, expect.anything())
 		expect(result[0]).toMatchObject({
 			couponsYield: 41.5,
 			leftCouponCount: 2,
@@ -200,23 +165,19 @@ describe("buildBondsData", () => {
 	})
 
 	test("replaces zero MOEX coupon sum with T-Bank coupon data", async () => {
-		bondsMock.mockResolvedValue({
-			instruments: [
-				{
-					uid: "uid-5",
-					figi: "figi-5",
-					ticker: "BOND5",
-					name: "Bond 5",
-					currency: "rub",
-					nominal: { units: 1000, nano: 0 },
-					aciValue: { units: 5, nano: 0 },
-				},
-			],
-		})
+		listBondsMock.mockResolvedValue([
+			{
+				uid: "uid-5",
+				figi: "figi-5",
+				ticker: "BOND5",
+				name: "Bond 5",
+				currency: "rub",
+				nominal: { units: 1000, nano: 0 },
+				aciValue: { units: 5, nano: 0 },
+			},
+		])
 
-		getLastPricesMock.mockResolvedValue({
-			lastPrices: [{ figi: "figi-5", price: { units: 98, nano: 0 } }],
-		})
+		getLastPricesMock.mockResolvedValue([{ figi: "figi-5", price: { units: 98, nano: 0 } }])
 
 		getMoexDataMock.mockResolvedValue({
 			BOND5: {
@@ -224,10 +185,15 @@ describe("buildBondsData", () => {
 				BondYield: 12.34,
 			},
 		})
-		getBondCouponsMock.mockResolvedValue([
-				{ couponNumber: 1, couponDate: futureDate(30), payOneBond: { units: 10, nano: 0 } },
-				{ couponNumber: 2, couponDate: futureDate(60), payOneBond: { units: 11, nano: 500000000 } },
-		])
+		getCouponSummaryMock.mockResolvedValue({
+			annualCouponSum: 21.5,
+			leftCouponCount: 2,
+			leftToPay: 21.5,
+			coupons: [
+				{ couponNumber: 1, couponDate: futureDate(30), payout: 10 },
+				{ couponNumber: 2, couponDate: futureDate(60), payout: 11.5 },
+			],
+		})
 
 		const result = await buildBondsData()
 
@@ -240,24 +206,20 @@ describe("buildBondsData", () => {
 	})
 
 	test("uses last known payout for floating coupons with zero future values", async () => {
-		bondsMock.mockResolvedValue({
-			instruments: [
-				{
-					uid: "uid-6",
-					figi: "figi-6",
-					ticker: "BOND6",
-					name: "Bond 6",
-					currency: "rub",
-					nominal: { units: 1000, nano: 0 },
-					aciValue: { units: 2, nano: 0 },
-					floatingCouponFlag: true,
-				},
-			],
-		})
+		listBondsMock.mockResolvedValue([
+			{
+				uid: "uid-6",
+				figi: "figi-6",
+				ticker: "BOND6",
+				name: "Bond 6",
+				currency: "rub",
+				nominal: { units: 1000, nano: 0 },
+				aciValue: { units: 2, nano: 0 },
+				floatingCouponFlag: true,
+			},
+		])
 
-		getLastPricesMock.mockResolvedValue({
-			lastPrices: [{ figi: "figi-6", price: { units: 90, nano: 0 } }],
-		})
+		getLastPricesMock.mockResolvedValue([{ figi: "figi-6", price: { units: 90, nano: 0 } }])
 
 		getMoexDataMock.mockResolvedValue({
 			BOND6: {
@@ -265,12 +227,16 @@ describe("buildBondsData", () => {
 				BondYield: 9.99,
 			},
 		})
-		getBondCouponsMock.mockResolvedValue([
-				{ couponNumber: 4, couponDate: futureDate(270), payOneBond: { units: 0, nano: 0 } },
-				{ couponNumber: 3, couponDate: futureDate(180), payOneBond: { units: 0, nano: 0 } },
-				{ couponNumber: 2, couponDate: futureDate(90), payOneBond: { units: 0, nano: 0 } },
-				{ couponNumber: 1, couponDate: pastDate(5), payOneBond: { units: 12, nano: 500000000 } },
-		])
+		getCouponSummaryMock.mockResolvedValue({
+			annualCouponSum: 37.5,
+			leftCouponCount: 3,
+			leftToPay: 37.5,
+			coupons: [
+				{ couponNumber: 2, couponDate: futureDate(90), payout: 12.5, isEstimated: true },
+				{ couponNumber: 3, couponDate: futureDate(180), payout: 12.5, isEstimated: true },
+				{ couponNumber: 4, couponDate: futureDate(270), payout: 12.5, isEstimated: true },
+			],
+		})
 
 		const result = await buildBondsData()
 

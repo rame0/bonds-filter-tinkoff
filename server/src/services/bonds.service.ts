@@ -4,13 +4,15 @@ import { CombinedBondsResponse } from "../common/interfaces/CombinedBondsRespons
 import { type ApiCoupon } from "../common/interfaces/InvestApi"
 import { type BondsDataStatus } from "../common/interfaces/BondsDataStatus"
 import { type PortfolioPositionInput } from "../common/interfaces/PortfolioMetrics"
-import { getOrRefreshCurrencyRates } from "../common/getCurrencyRates"
-import { getPortfolioMetrics } from "../common/getPortfolioMetrics"
-import { getPortfolioTable } from "../common/getPortfolioTable"
-import { getBondCoupons } from "../common/investApiFacade"
+import * as currencyRatesModule from "../common/getCurrencyRates"
+import * as portfolioMetricsModule from "../common/getPortfolioMetrics"
+import * as portfolioTableModule from "../common/getPortfolioTable"
+import * as investApiFacade from "../common/investApiFacade"
+import * as bondListModule from "../common/listBondsData"
+import { BondFilterOptionsResponse, BondListResponse } from "../common/interfaces/BondList"
 import { toNumber } from "../common/utils/money"
 import { roundTo } from "../common/utils/round"
-import { ensureBondsDataBuild, getBondsDataStatus, getOrBuildBondsData } from "../common/getOrBuildBondsData"
+import * as bondsDataModule from "../common/getOrBuildBondsData"
 
 export default {
 	name: "bonds",
@@ -18,26 +20,44 @@ export default {
 
 	settings: {},
 
-	actions: {
+		actions: {
 		status: {
 			params: {},
 			cache: false,
 			async handler(): Promise<BondsDataStatus> {
-				await ensureBondsDataBuild()
-				return getBondsDataStatus()
+				await bondsDataModule.ensureBondsDataBuild()
+				return bondsDataModule.getBondsDataStatus()
 			},
 		},
 		instruments: {
-			params: {},
+			params: {
+				page: { type: "number", optional: true, convert: true },
+				pageSize: { type: "number", optional: true, convert: true },
+				sortProp: { type: "string", optional: true },
+				sortOrder: { type: "enum", values: ["ascending", "descending"], optional: true },
+				filters: { type: "string", optional: true },
+			},
 			cache: true,
-			async handler(ctx): Promise<CombinedBondsResponse[]> {
+			async handler(ctx): Promise<BondListResponse> {
 				try {
-					return await getOrBuildBondsData()
+					await bondsDataModule.getOrBuildBondsData()
+					return bondListModule.listBondsData({
+						...ctx.params,
+						filters: parseFilters(ctx.params.filters),
+					})
 				} catch (err) {
 					ctx.meta.$statusCode = 503
 					console.error("[bonds.instruments] Failed to build bonds data:", err)
 					throw new Error("Failed to build bonds data")
 				}
+			},
+		},
+		filterOptions: {
+			params: {},
+			cache: true,
+			async handler(): Promise<BondFilterOptionsResponse> {
+				await bondsDataModule.getOrBuildBondsData()
+				return bondListModule.getBondFilterOptions()
 			},
 		},
 		coupons: {
@@ -49,7 +69,7 @@ export default {
 			async handler(ctx) {
 				const limit = ctx.params.limit ?? 12
 				try {
-					let coupons: ApiCoupon[] = await getBondCoupons(ctx.params.id)
+					let coupons: ApiCoupon[] = await investApiFacade.getBondCoupons(ctx.params.id)
 					coupons = coupons.sort((a, b) => {
 						if (a.couponNumber > b.couponNumber) return 1
 						if (a.couponNumber < b.couponNumber) return -1
@@ -82,12 +102,12 @@ export default {
 			async handler(ctx) {
 				const positions = ctx.params.positions as PortfolioPositionInput[]
 				const [bonds, bondsStatus, rates] = await Promise.all([
-					getOrBuildBondsData(),
-					getBondsDataStatus(),
-					getOrRefreshCurrencyRates(),
+					bondsDataModule.getOrBuildBondsData(),
+					bondsDataModule.getBondsDataStatus(),
+					currencyRatesModule.getOrRefreshCurrencyRates(),
 				])
 
-				return getPortfolioMetrics(positions, bonds, rates, bondsStatus, moment())
+				return portfolioMetricsModule.getPortfolioMetrics(positions, bonds, rates, bondsStatus, moment())
 			},
 		},
 		portfolioTable: {
@@ -100,10 +120,23 @@ export default {
 			cache: false,
 			async handler(ctx) {
 				const positions = ctx.params.positions as PortfolioPositionInput[]
-				const bonds = await getOrBuildBondsData()
+				const bonds = await bondsDataModule.getOrBuildBondsData()
 
-				return getPortfolioTable(positions, bonds)
+				return portfolioTableModule.getPortfolioTable(positions, bonds)
 			},
 		},
 	},
+}
+
+function parseFilters(rawFilters: unknown) {
+	if (typeof rawFilters !== "string" || rawFilters === "") {
+		return {}
+	}
+
+	try {
+		const parsed = JSON.parse(rawFilters)
+		return typeof parsed === "object" && parsed !== null ? parsed as Record<string, unknown> : {}
+	} catch {
+		return {}
+	}
 }

@@ -1,29 +1,32 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterEach, beforeEach, describe, expect, mock, test } from "bun:test"
 import { InstrumentStatus } from "./interfaces/InvestApi"
+import { setApiForTests } from "./api"
 
 const bondsMock = mock(async () => ({ instruments: [] as any[] }))
 const getLastPricesMock = mock(async () => ({ lastPrices: [] as any[] }))
 const getBondCouponsMock = mock(async () => ({ events: [] as any[] }))
 
-mock.module("./api", () => ({
-	api: {
-		instruments: {
-			bonds: bondsMock,
-			getBondCoupons: getBondCouponsMock,
-		},
-		marketdata: {
-			getLastPrices: getLastPricesMock,
-		},
-	},
-}))
-
 const facade = await import("./investApiFacade")
 
 describe("investApiFacade", () => {
 	beforeEach(() => {
+		setApiForTests({
+			instruments: {
+				bonds: bondsMock as any,
+				getBondCoupons: getBondCouponsMock as any,
+			},
+			marketdata: {
+				getLastPrices: getLastPricesMock as any,
+			},
+		} as any)
 		bondsMock.mockReset()
 		getLastPricesMock.mockReset()
 		getBondCouponsMock.mockReset()
+	})
+
+	afterEach(() => {
+		setApiForTests(undefined)
+		mock.restore()
 	})
 
 	test("listBonds requests base instruments and unwraps response", async () => {

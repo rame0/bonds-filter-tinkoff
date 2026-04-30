@@ -115,7 +115,7 @@
 						</td>
 						<td class="px-3 py-3 text-base-content/80">{{ formatOptionalNumber(row.price) }} %</td>
 						<td class="px-3 py-3 text-base-content/80">
-							{{ formatOptionalNumber(row.couponsYield) }} {{ CurrencyCollation.getLabel(row.currency) }}
+							{{ formatOptionalNumber(row.couponsYield) }} {{ CurrencyCollation.getLabel("rub") }}
 						</td>
 						<td class="px-3 py-3 text-base-content/80">
 							{{ formatOptionalNumber(row.aciValue, 2) }} {{ CurrencyCollation.getLabel(row.currency) }}

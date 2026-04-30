@@ -1,29 +1,21 @@
-import { beforeEach, describe, expect, mock, test } from "bun:test"
+import { afterEach, beforeEach, describe, expect, mock, spyOn, test } from "bun:test"
+import axios from "axios"
+import { clearCacheEntries } from "./cache"
 
 const axiosGetMock = mock(async () => ({ data: "" }))
-let cacheStore = new Map<string, unknown>()
-
-mock.module("axios", () => ({
-	default: {
-		get: axiosGetMock,
-	},
-}))
-
-mock.module("file-system-cache", () => ({
-	default: () => ({
-		get: async (key: string) => cacheStore.get(key),
-		set: async (key: string, value: unknown) => {
-			cacheStore.set(key, value)
-		},
-	}),
-}))
 
 const { convertToRub, getCurrencyRate, parseCurrencyRatesXml, refreshCurrencyRates } = await import("./getCurrencyRates")
 
 describe("getCurrencyRates", () => {
 	beforeEach(() => {
+		spyOn(axios, "get").mockImplementation(axiosGetMock as any)
 		axiosGetMock.mockReset()
-		cacheStore = new Map<string, unknown>()
+		clearCacheEntries()
+	})
+
+	afterEach(() => {
+		mock.restore()
+		clearCacheEntries()
 	})
 
 	test("parses CBR XML and normalizes rates to one currency unit", () => {
@@ -48,18 +40,24 @@ describe("getCurrencyRates", () => {
 	})
 
 	test("returns cached snapshot when refresh fails", async () => {
-		cacheStore.set("currencyRates", {
+		await refreshCurrencyRates(new Date("2026-04-19T04:00:00.000Z")).catch(() => undefined)
+		const cachedSnapshot = {
 			baseCurrency: "RUB",
 			rateDate: "19.04.2026",
 			updatedAt: "2026-04-19T04:00:00.000Z",
 			rates: {
 				USD: { charCode: "USD", nominal: 1, value: 80, rate: 80 },
 			},
+		}
+		axiosGetMock.mockResolvedValueOnce({
+			data: "<ValCurs Date=\"19.04.2026\"><Valute><CharCode>USD</CharCode><Nominal>1</Nominal><Value>80,0000</Value></Valute></ValCurs>",
 		})
+		await refreshCurrencyRates(new Date("2026-04-19T04:00:00.000Z"))
 		axiosGetMock.mockRejectedValueOnce(new Error("boom"))
 
 		const snapshot = await refreshCurrencyRates()
 
+		expect(cachedSnapshot.rateDate).toBe("19.04.2026")
 		expect(snapshot.rateDate).toBe("19.04.2026")
 		expect(snapshot.rates.USD.rate).toBe(80)
 	})

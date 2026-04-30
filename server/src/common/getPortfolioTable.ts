@@ -1,5 +1,6 @@
 import moment from "moment"
-import { getCouponSummary, type CouponSummary } from "./getCouponSummary"
+import * as couponSummaryModule from "./getCouponSummary"
+import { type CouponSummary } from "./getCouponSummary"
 import { roundTo } from "./utils/round"
 import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
 import { type CombinedCoupon } from "./interfaces/CombinedCoupon"
@@ -69,7 +70,7 @@ async function resolveCouponSummary(bond: CombinedBondsResponse, now: moment.Mom
 		}
 	}
 
-	return getCouponSummary(String(bond.figi), Boolean(bond.floatingCouponFlag), now)
+	return couponSummaryModule.getCouponSummary(String(bond.figi), Boolean(bond.floatingCouponFlag), now)
 }
 
 function normalizeCurrency(currency: unknown) {

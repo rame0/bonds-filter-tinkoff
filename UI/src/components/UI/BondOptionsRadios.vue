@@ -19,7 +19,7 @@
         :name="groupName"
         :aria-label="getOptionLabel(option.label)"
         :checked="isSelected(option.value as OptionValue)"
-        @change="emit('update:modelValue', option.value as OptionValue)"
+        @change="handleChange($event, option.value as OptionValue)"
       />
     </form>
   </div>
@@ -64,6 +64,15 @@ const getOptionLabel = (label: CollationValueType) =>
 
 const isSelected = (value: OptionValue) =>
   props.modelValue === value || String(props.modelValue) === String(value)
+
+const handleChange = (event: Event, value: OptionValue) => {
+	const target = event.target as HTMLInputElement | null
+	if (!target?.checked) {
+		return
+	}
+
+	emit('update:modelValue', value)
+}
 
 const renderedOptions = computed(() =>
   (props.options ?? []).filter((option) => String(option.value) !== '-1')

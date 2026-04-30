@@ -1,9 +1,8 @@
 import moment from "moment/moment"
-import { getMoexData } from "./getMoexData"
-import { mapWithConcurrency } from "./getMoexData"
-import { getCouponSummary } from "./getCouponSummary"
+import * as moexDataModule from "./getMoexData"
+import * as couponSummaryModule from "./getCouponSummary"
 import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
-import { listBonds, getLastPrices } from "./investApiFacade"
+import * as investApiFacade from "./investApiFacade"
 import { getErrorMessage } from "./utils/error"
 import { isMoneyLike, toNumber } from "./utils/money"
 import { roundTo } from "./utils/round"
@@ -11,13 +10,13 @@ import { roundTo } from "./utils/round"
 const COUPON_FALLBACK_CONCURRENCY = 1
 
 export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
-  const bonds = await listBonds()
+	const bonds = await investApiFacade.listBonds()
 
   const instrumentIDs: string[] = bonds.map(instrument => instrument.uid)
   const tickers = bonds.map(instrument => instrument.ticker)
-  const prices = await getLastPrices(instrumentIDs)
+	const prices = await investApiFacade.getLastPrices(instrumentIDs)
 
-  const moexBonds = await getMoexData(tickers)
+	const moexBonds = await moexDataModule.getMoexData(tickers)
   const lastPriceByFigi = new Map(prices.map(item => [item.figi, item.price]))
 
   const response: CombinedBondsResponse[] = []
@@ -62,9 +61,9 @@ export async function buildBondsData(): Promise<CombinedBondsResponse[]> {
     return missingCouponsYield || missingBondYield
   })
 
-  await mapWithConcurrency(bondsMissingMoexData, COUPON_FALLBACK_CONCURRENCY, async instrument => {
-    try {
-      const couponSummary = await getCouponSummary(String(instrument.figi), Boolean(instrument.floatingCouponFlag), now)
+	await moexDataModule.mapWithConcurrency(bondsMissingMoexData, COUPON_FALLBACK_CONCURRENCY, async instrument => {
+		try {
+			const couponSummary = await couponSummaryModule.getCouponSummary(String(instrument.figi), Boolean(instrument.floatingCouponFlag), now)
       if (!couponSummary) {
         return
       }
