@@ -21,7 +21,7 @@
     "eslint-plugin-import": "^2.28.0",
     "eslint-plugin-prefer-arrow": "^1.2.2",
     "jaeger-client": "^3.19.0",
-    "moleculer-repl": "^0.7.3",
+    "moleculer-repl": "^0.8.0",
     "typeorm": "^0.3.28",
     "typescript": "^6.0.3"
   },
