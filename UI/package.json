@@ -22,7 +22,7 @@
     "echarts": "^6.0.0",
     "moment": "^2.29.4",
     "ms": "3.0.0-canary.1",
-    "pinia": "^2.1.7",
+    "pinia": "^3.0.4",
     "vue": "^3.3.8",
     "vue-axios": "^3.5.2",
     "vue-router": "^5.0.6"
