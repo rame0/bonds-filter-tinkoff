@@ -15,7 +15,7 @@
         "ioredis": "^5.10.1",
         "moleculer": "^0.14.28",
         "moleculer-cron": "^0.0.2",
-        "moleculer-db": "^0.8.24",
+        "moleculer-db": "^0.9.0",
         "moleculer-web": "^0.11.0",
         "moment": "^2.29.4",
         "nats": "^2.15.1",
@@ -767,7 +767,7 @@
 
     "moleculer-cron": ["moleculer-cron@0.0.2", "", { "dependencies": { "cron": "^1.3.0" }, "peerDependencies": { "moleculer": "^0.11.0" } }, "sha512-PChQ1Sw+AIK85dIsKWxuG8M3YMG8qwLWcCV5vSBWhfGOBZ8VBnxAaISAdd4NxkCyaInK2IpoQOXzRNL0JwL3+w=="],
 
-    "moleculer-db": ["moleculer-db@0.8.29", "", { "dependencies": { "@seald-io/nedb": "^3.0.0", "lodash": "^4.17.21" }, "peerDependencies": { "moleculer": "^0.12.0 || ^0.13.0 || ^0.14.0 || ^0.15.0" } }, "sha512-0e94ia5gkI9Ls2MJ+kAuZsafC0dCFqbaN7FIuoftTizaG+Vixafpj8ezXhGrIPQ1PmOKASSdn0IhkSjzyuc9Gg=="],
+    "moleculer-db": ["moleculer-db@0.9.0", "", { "dependencies": { "@seald-io/nedb": "^3.0.0", "lodash": "^4.17.21" }, "peerDependencies": { "moleculer": "^0.12.0 || ^0.13.0 || ^0.14.0 || ^0.15.0" } }, "sha512-/aNWgmiweMLqcrhy2bJ7+fTYsxN9dDhlko8eeUCjPuCX/jEolcspGPbsF0YOdBy+O+bsoTsDspaI1smLqK2cQw=="],
 
     "moleculer-repl": ["moleculer-repl@0.7.4", "", { "dependencies": { "clui": "^0.3.6", "commander": "^9.4.1", "glob": "^7.1.7", "kleur": "^4.1.5", "lodash": "^4.17.21", "ora": "^5.4.1", "pretty-bytes": "^5.6.0", "string-argv": "^0.3.1", "table": "^6.8.0", "tiny-human-time": "^1.2.0", "yargs-parser": "^21.1.1" } }, "sha512-+K3aPhxPt96d995EpNslDNQCyjV8O53CiQpZI4tiUiv0cpFUA7ZYcyRNQSgFeDHpJm/ljm1itHB+1p2++ZG6bg=="],
 

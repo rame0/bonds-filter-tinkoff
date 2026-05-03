@@ -36,7 +36,7 @@
     "ioredis": "^5.10.1",
     "moleculer": "^0.14.28",
     "moleculer-cron": "^0.0.2",
-    "moleculer-db": "^0.8.24",
+    "moleculer-db": "^0.9.0",
     "moleculer-web": "^0.11.0",
     "moment": "^2.29.4",
     "nats": "^2.15.1"
