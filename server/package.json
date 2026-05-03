@@ -31,7 +31,7 @@
     "@tinkoff/invest-js": "^1.27.1-RC4",
     "axios": "^1.15.2",
     "cbor-x": "^1.5.3",
-    "dotenv": "^16.3.1",
+    "dotenv": "^17.4.2",
     "file-system-cache": "^2.4.4",
     "ioredis": "^5.10.1",
     "moleculer": "^0.14.28",
