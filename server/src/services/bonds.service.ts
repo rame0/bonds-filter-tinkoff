@@ -16,7 +16,6 @@ import * as bondsDataModule from "../common/getOrBuildBondsData"
 
 export default {
 	name: "bonds",
-	// adapter: new MongooseAdapter(process.env.MONGO_URI || "mongodb://localhost/moleculer-blog", { useNewUrlParser: true, useUnifiedTopology: true }),
 
 	settings: {},
 
