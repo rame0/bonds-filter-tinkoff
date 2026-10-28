@@ -17,7 +17,7 @@
   },
   "engineStrict": true,
   "dependencies": {
-    "@vueuse/core": "^10.6.1",
+    "@vueuse/core": "^14.3.0",
     "axios": "^1.15.0",
     "echarts": "^6.0.0",
     "moment": "^2.29.4",
