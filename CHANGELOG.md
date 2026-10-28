@@ -1,4 +1,10 @@
 ## Changelog
+## [0.5.1](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.5.0...v0.5.1) (2026-10-28)
+
+### Bug Fixes
+
+* **ui:** убрать устаревшую запись vue-demi из bun.lock ([0db0b8e](https://github.com/rame0/bonds-filter-tinkoff/commit/0db0b8ed87bb146ed399360633508702058ac675))
+
 ## [0.5.0](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.4.0...v0.5.0) (2026-10-28)
 
 ### Features
