@@ -1,4 +1,37 @@
 ## Changelog
+## [0.5.0](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.4.0...v0.5.0) (2026-10-28)
+
+### Features
+
+* **fullstack:** перенести фильтрацию облигаций на сервер ([24e3ea8](https://github.com/rame0/bonds-filter-tinkoff/commit/24e3ea8b18b5963deae99b1ff3170eea0afc806e))
+* **server:** добавить sqlite-схему предметной модели облигаций ([dcfb267](https://github.com/rame0/bonds-filter-tinkoff/commit/dcfb267fba1ecd0c145de8342294c15b3470d3cd))
+* **server:** перевести runtime выдачу облигаций на sqlite ([63f896d](https://github.com/rame0/bonds-filter-tinkoff/commit/63f896d16d9d505587a6b6f24758f63764ac126c))
+* **ui:** добавить выбор месяцев купонов в фильтр ([0f89fea](https://github.com/rame0/bonds-filter-tinkoff/commit/0f89fea8cae5d2d24dfb01775c7944a8ffdb0f19))
+* **ui:** добавить переключение сохраненных портфелей ([8eabc27](https://github.com/rame0/bonds-filter-tinkoff/commit/8eabc2744815fbf6c00c30fd898c0de125c0d034))
+* **ui:** добавить состояние фильтра месяцев купонов ([2564706](https://github.com/rame0/bonds-filter-tinkoff/commit/256470627e2e25490c6b2578fe7f7968bf77423b))
+* **ui:** добавить хранение нескольких портфелей в браузере ([4bae66e](https://github.com/rame0/bonds-filter-tinkoff/commit/4bae66e0630a1b09673a661ac3f4a2fab1dc4343))
+* **ui:** объединить фильтр месяцев купонов в один блок ([198accb](https://github.com/rame0/bonds-filter-tinkoff/commit/198accbd47e114f45ce81b346cb82d6835079216))
+* **ui:** показать активный сохраненный портфель ([88cc105](https://github.com/rame0/bonds-filter-tinkoff/commit/88cc1054409b2c6ab4e6015960ee22271b7f4d7a))
+* **ui:** фильтровать облигации по известным месяцам купонов ([044dadc](https://github.com/rame0/bonds-filter-tinkoff/commit/044dadc83e8afe1d9d28e227d7739355f99db9c0))
+
+### Bug Fixes
+
+* **fullstack:** восстановить кнопочные фильтры списка облигаций ([fe6cb62](https://github.com/rame0/bonds-filter-tinkoff/commit/fe6cb62860c38815ceef25772df728fd9f871749))
+* **fullstack:** синхронизировать backend-фильтры и frontend-опции ([6db75e9](https://github.com/rame0/bonds-filter-tinkoff/commit/6db75e9e2c0bea2caf57fd9e2c16fdfa2731ca43))
+* **fullstack:** хранить realExchange как enum и восстановить ссылки на moex ([dcdaf33](https://github.com/rame0/bonds-filter-tinkoff/commit/dcdaf3301a292294322e6c52020bfff2b73daa3f))
+* **server:** support typescript 6 build ([273e5c3](https://github.com/rame0/bonds-filter-tinkoff/commit/273e5c307fc0316b6fbe79436fd685c7af51080c))
+* **server:** добавить fallback list-запросов без derived-слоя ([cbd7c8b](https://github.com/rame0/bonds-filter-tinkoff/commit/cbd7c8b74a8da38fcacba0f70e8b42d853b3b00b))
+* **server:** отключить служебный лог dotenv при запуске ([9a66592](https://github.com/rame0/bonds-filter-tinkoff/commit/9a66592ee8018673f221e3af45c178716db3ee14))
+* **server:** устранить ошибки типизации в фильтрации ([65eb1d8](https://github.com/rame0/bonds-filter-tinkoff/commit/65eb1d8ec7496d1e445ea1d877c5ec1654b5da54))
+* **server:** уточнить тип даты купона ([8fcf25f](https://github.com/rame0/bonds-filter-tinkoff/commit/8fcf25f7e4362f29dc488a05de083004eaf8eb1a))
+* **server:** уточнить тип даты купона для docker-сборки ([e9409ae](https://github.com/rame0/bonds-filter-tinkoff/commit/e9409ae8cf4a9500132678bd4ed2bb99823f7101))
+* **ui:** migrate lint config for eslint 10 ([bebdba3](https://github.com/rame0/bonds-filter-tinkoff/commit/bebdba3ef2746f940d5e8a528be0e0644ad3e85b))
+* **ui:** исправить адаптив фильтра и сборку фронта ([68e6bc0](https://github.com/rame0/bonds-filter-tinkoff/commit/68e6bc04de855f133ffa1743027d2e616440a177))
+* **ui:** исправить сборку и чанки портфеля ([e37b46b](https://github.com/rame0/bonds-filter-tinkoff/commit/e37b46bb52acb1c96fd6d573c4a12f18874a7000))
+* **ui:** обновить vue-tsc до 3.x для совместимости с TypeScript 6 ([dcfd69e](https://github.com/rame0/bonds-filter-tinkoff/commit/dcfd69eae0ebef1015e58cbeca0810b25f8d51d1))
+* **ui:** показывать годовой купонный поток в рублях ([d03454e](https://github.com/rame0/bonds-filter-tinkoff/commit/d03454e1a5a199c617d8bc9c18dfa851f7f5b2c5))
+* **ui:** уточнить типы фильтра месяцев купонов ([9bff7da](https://github.com/rame0/bonds-filter-tinkoff/commit/9bff7da06d6d65a9a50f7cd1c13627cef9a3c79f))
+
 ## [0.4.0](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.3.0...v0.4.0) (2026-04-21)
 
 
