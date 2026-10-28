@@ -3,7 +3,7 @@ import { BrokerOptions, Errors, LogLevels, MetricRegistry } from "moleculer"
 import { config } from "dotenv"
 
 process.env.TZ = "UTC"
-config()
+config({ quiet: true })
 
 const brokerConfig: BrokerOptions = {
 	namespace: "bonds-filter-tinkoff",
