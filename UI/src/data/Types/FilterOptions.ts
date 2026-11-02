@@ -104,7 +104,7 @@ export const DefaultFilterSelections: FilterOptions = {
   search: "",
   nominal: { from: 500, to: 3000 },
   price: { from: 90, to: 110 },
-  bondYield: { from: 90, to: 110 },
+  bondYield: { from: 0, to: 1000 },
   duration: { from: 12, to: 150 },
   // placementPrice: { from: 500, to: 3000 },
 
