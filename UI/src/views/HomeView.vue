@@ -80,33 +80,13 @@ import SectorsCollation from "@/data/collations/SectorsCollation"
 import type { CollationValueType } from "@/data/collations/BaseCollations"
 import type { FilterOptions } from "@/data/Types/FilterOptions"
 import { DefaultFilterSelections, defaultFilterValues } from "@/data/Types/FilterOptions"
+import { createFilterSelections } from "@/data/filterSelections"
 import type { CombinedBondsResponse } from "@/data/Interfaces/CombinedBondsResponse"
 import type { BondFilterOptionsResponse } from "@/data/Interfaces/BondList"
 import type { BondsDataStatus } from "@/data/Interfaces/BondsDataStatus"
 import type { sortState } from "@/data/Types/SortState"
 
 const STATUS_POLL_INTERVAL_MS = 10_000
-
-const createFilterSelections = (storedFilters: Partial<FilterOptions> | undefined): FilterOptions => ({
-	...DefaultFilterSelections,
-	...storedFilters,
-	nominal: {
-		...DefaultFilterSelections.nominal,
-		...storedFilters?.nominal,
-	},
-	price: {
-		...DefaultFilterSelections.price,
-		...storedFilters?.price,
-	},
-	bondYield: {
-		...DefaultFilterSelections.bondYield,
-		...storedFilters?.bondYield,
-	},
-	duration: {
-		...DefaultFilterSelections.duration,
-		...storedFilters?.duration,
-	},
-})
 
 export default {
 	name: "HomeView",
