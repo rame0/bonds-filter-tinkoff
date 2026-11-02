@@ -1,4 +1,10 @@
-## Changelog
+### Changelog
+## [0.5.2](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.5.1...v0.5.2) (2026-11-02)
+
+### Bug Fixes
+
+* **ui:** исправить фильтр доходности по умолчанию, отсекавший весь список ([868ecc7](https://github.com/rame0/bonds-filter-tinkoff/commit/868ecc764ca532d8ebf4ad5d9801e2ce25137302))
+
 ## [0.5.1](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.5.0...v0.5.1) (2026-10-28)
 
 ### Bug Fixes
