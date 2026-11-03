@@ -1,4 +1,10 @@
-### Changelog
+#### Changelog
+## [0.5.3](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.5.2...v0.5.3) (2026-11-03)
+
+### Bug Fixes
+
+* **deps:** закрыть CVE в образах и зависимостях ([4e4dec8](https://github.com/rame0/bonds-filter-tinkoff/commit/4e4dec819782e62e35ed5b05a2f96a07001e2853))
+
 ## [0.5.2](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.5.1...v0.5.2) (2026-11-02)
 
 ### Bug Fixes
