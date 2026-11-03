@@ -9,7 +9,8 @@ const loadStoredBondsMock = mock(() => [{ figi: "figi-1" }])
 const getStoredBondCountMock = mock(() => 0)
 const shouldStartFetchMock = mock(async () => true)
 const markFetchStartedMock = mock(async () => undefined)
-const clearFetchMarkerMock = mock(async () => undefined)
+const markFetchFailedMock = mock(async () => undefined)
+const markFetchSucceededMock = mock(async () => undefined)
 
 const { ensureBondsDataBuild, getOrBuildBondsData } = await import("./getOrBuildBondsData")
 
@@ -20,7 +21,8 @@ describe("getOrBuildBondsData", () => {
 		spyOn(bondDataSnapshotModule, "getStoredBondCount").mockImplementation(getStoredBondCountMock as any)
 		spyOn(fetchGate, "shouldStartFetch").mockImplementation(shouldStartFetchMock as any)
 		spyOn(fetchGate, "markFetchStarted").mockImplementation(markFetchStartedMock as any)
-		spyOn(fetchGate, "clearFetchMarker").mockImplementation(clearFetchMarkerMock as any)
+		spyOn(fetchGate, "markFetchFailed").mockImplementation(markFetchFailedMock as any)
+		spyOn(fetchGate, "markFetchSucceeded").mockImplementation(markFetchSucceededMock as any)
 		clearCacheEntries()
 		syncAllBondDataMock.mockReset()
 		syncAllBondDataMock.mockResolvedValue({ total: 1 })
@@ -31,7 +33,8 @@ describe("getOrBuildBondsData", () => {
 		shouldStartFetchMock.mockReset()
 		shouldStartFetchMock.mockResolvedValue(true)
 		markFetchStartedMock.mockReset()
-		clearFetchMarkerMock.mockReset()
+		markFetchFailedMock.mockReset()
+		markFetchSucceededMock.mockReset()
 	})
 
 	afterEach(() => {
@@ -57,6 +60,7 @@ describe("getOrBuildBondsData", () => {
 		expect(markFetchStartedMock).toHaveBeenCalledTimes(1)
 		expect(syncAllBondDataMock).toHaveBeenCalledTimes(1)
 		expect(loadStoredBondsMock).toHaveBeenCalledTimes(1)
+		expect(markFetchSucceededMock).toHaveBeenCalledTimes(1)
 		expect(result).toEqual([{ figi: "figi-1" }])
 	})
 
@@ -82,13 +86,14 @@ describe("getOrBuildBondsData", () => {
 		expect(syncAllBondDataMock).not.toHaveBeenCalled()
 	})
 
-	test("clears marker when sync fails", async () => {
+	test("marks fetch failed when sync fails", async () => {
 		syncAllBondDataMock.mockRejectedValueOnce(new Error("boom"))
 
 		await expect(getOrBuildBondsData()).rejects.toThrow("boom")
 
 		expect(markFetchStartedMock).toHaveBeenCalledTimes(1)
-		expect(clearFetchMarkerMock).toHaveBeenCalledTimes(1)
+		expect(markFetchFailedMock).toHaveBeenCalledTimes(1)
+		expect(markFetchSucceededMock).not.toHaveBeenCalled()
 	})
 
 	test("background build failure does not leave unhandled rejection", async () => {
