@@ -60,10 +60,11 @@ export async function getOrBuildBondsData(forceRebuild = false) {
 		  try {
 				await syncAllBondData(new Date())
 				const built = loadStoredBonds()
+				await fetchGate.markFetchSucceeded()
 			  lastBuildCompletedAt = new Date().toISOString()
 			  return built
 		  } catch (error) {
-			await fetchGate.clearFetchMarker()
+			await fetchGate.markFetchFailed()
 		  throw error
 	  }
   })()
