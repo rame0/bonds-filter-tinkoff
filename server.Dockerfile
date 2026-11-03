@@ -24,6 +24,10 @@ FROM oven/bun:1.4.4-alpine AS runtime-stage
 WORKDIR /app
 
 COPY --from=modules-fetch-stage /app /app
+COPY server/certs /app/certs
+
+# Tinkoff Invest API uses Russian Trusted Root CA
+ENV NODE_EXTRA_CA_CERTS=/app/certs/russian_trusted_root_ca.pem
 
 RUN addgroup -S app && adduser -S app -G app && mkdir /app/.cache && chown -R app:app /app
 USER app

@@ -3,6 +3,7 @@ import * as fetchGate from "./fetchGate"
 import { BondsDataStatus } from "./interfaces/BondsDataStatus"
 import { CombinedBondsResponse } from "./interfaces/CombinedBondsResponse"
 import { syncAllBondData } from "./syncBondData"
+import { getErrorMessage } from "./utils/error"
 
 let inFlightBuild: Promise<CombinedBondsResponse[]> | null = null
 let lastBuildStartedAt: string | undefined
@@ -31,7 +32,9 @@ export async function getBondsDataStatus(): Promise<BondsDataStatus> {
 export async function ensureBondsDataBuild() {
 	const cached = await getCachedBondsData()
 	if (!cached && !inFlightBuild && await fetchGate.shouldStartFetch()) {
-		void getOrBuildBondsData(true)
+		void getOrBuildBondsData(true).catch(error => {
+			console.error("[bonds] background build failed:", getErrorMessage(error))
+		})
 	}
 }
 
