@@ -1,4 +1,11 @@
-#### Changelog
+##### Changelog
+## [0.5.4](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.5.3...v0.5.4) (2026-11-03)
+
+### Bug Fixes
+
+* **server:** доверять корневому сертификату Минцифры для Tinkoff API ([4066e76](https://github.com/rame0/bonds-filter-tinkoff/commit/4066e76b89f7a0b822b1245d301dc78a9efe76b8))
+* **server:** не падать при ошибке фоновой загрузки облигаций ([637076c](https://github.com/rame0/bonds-filter-tinkoff/commit/637076c17e40c9f95647633462f5a4cf81828aa3))
+
 ## [0.5.3](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.5.2...v0.5.3) (2026-11-03)
 
 ### Bug Fixes
