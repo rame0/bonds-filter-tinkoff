@@ -1,4 +1,10 @@
-##### Changelog
+###### Changelog
+## [0.5.5](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.5.4...v0.5.5) (2026-11-03)
+
+### Bug Fixes
+
+* **server:** повторять загрузку облигаций после ошибки с нарастающей паузой ([b7fdf4e](https://github.com/rame0/bonds-filter-tinkoff/commit/b7fdf4ebff332f67b010894c380c4f0a99e0303c))
+
 ## [0.5.4](https://github.com/rame0/bonds-filter-tinkoff/compare/v0.5.3...v0.5.4) (2026-11-03)
 
 ### Bug Fixes
