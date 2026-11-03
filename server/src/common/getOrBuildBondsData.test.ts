@@ -11,7 +11,7 @@ const shouldStartFetchMock = mock(async () => true)
 const markFetchStartedMock = mock(async () => undefined)
 const clearFetchMarkerMock = mock(async () => undefined)
 
-const { getOrBuildBondsData } = await import("./getOrBuildBondsData")
+const { ensureBondsDataBuild, getOrBuildBondsData } = await import("./getOrBuildBondsData")
 
 describe("getOrBuildBondsData", () => {
 	beforeEach(() => {
@@ -89,5 +89,24 @@ describe("getOrBuildBondsData", () => {
 
 		expect(markFetchStartedMock).toHaveBeenCalledTimes(1)
 		expect(clearFetchMarkerMock).toHaveBeenCalledTimes(1)
+	})
+
+	test("background build failure does not leave unhandled rejection", async () => {
+		const unhandled: unknown[] = []
+		const onUnhandled = (reason: unknown) => unhandled.push(reason)
+		process.on("unhandledRejection", onUnhandled)
+		const consoleErrorSpy = spyOn(console, "error").mockImplementation(() => undefined)
+		syncAllBondDataMock.mockRejectedValueOnce(new Error("UNAVAILABLE"))
+
+		try {
+			await ensureBondsDataBuild()
+			await new Promise(resolve => setTimeout(resolve, 10))
+
+			expect(syncAllBondDataMock).toHaveBeenCalledTimes(1)
+			expect(unhandled).toEqual([])
+			expect(consoleErrorSpy).toHaveBeenCalledWith("[bonds] background build failed:", "UNAVAILABLE")
+		} finally {
+			process.off("unhandledRejection", onUnhandled)
+		}
 	})
 })
