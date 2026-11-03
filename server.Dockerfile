@@ -1,4 +1,4 @@
-FROM oven/bun:1.3.7-alpine AS build-stage
+FROM oven/bun:1.4.4-alpine AS build-stage
 WORKDIR /app
 
 COPY server .
@@ -8,7 +8,7 @@ RUN bun run build && rm -rf /app/src/
 
 
 # Install --prod
-FROM oven/bun:1.3.7-alpine AS modules-fetch-stage
+FROM oven/bun:1.4.4-alpine AS modules-fetch-stage
 WORKDIR /app
 
 ENV NODE_ENV=production
@@ -20,7 +20,7 @@ COPY --from=build-stage /app/dist /app/dist
 
 
 # Runtime
-FROM oven/bun:1.3.7-alpine AS runtime-stage
+FROM oven/bun:1.4.4-alpine AS runtime-stage
 WORKDIR /app
 
 COPY --from=modules-fetch-stage /app /app

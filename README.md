@@ -71,7 +71,7 @@ SANDBOX_ACCOUNT_ID=
 
 ### Требования
 
-* [Bun](https://bun.sh/) 1.3.7.
+* [Bun](https://bun.sh/) 1.4.4.
 
 ### Установка зависимостей
 
